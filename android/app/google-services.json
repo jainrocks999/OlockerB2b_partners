@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "511256489521",
+    "project_id": "olockerpartner-6d996",
+    "storage_bucket": "olockerpartner-6d996.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:511256489521:android:ea5110dbf8095e5ab06f10",
+        "android_client_info": {
+          "package_name": "com.olockerappb2b"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdrEAvtf8r8haOYE5ruYYV3i9liM-dyyM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
