@@ -31,6 +31,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
 import { Dropdown } from 'react-native-element-dropdown';
+import style from '../../../components/StoreButtomTab/style';
+import styles from './styles';
 const MyCatalogue = () => {
   const navigation = useNavigation();
   const focus = useIsFocused();
@@ -132,7 +134,6 @@ const MyCatalogue = () => {
         metalType: metal
       }
     };
-
     axios.request(config)
       .then((response) => {
 
@@ -179,7 +180,8 @@ const MyCatalogue = () => {
       .then((response) => {
       
         if (response.data.status == true) {
-          demo(id,index)
+          demo(id,index);
+          Toast.show(response.data.msg)
 
         }
 
@@ -218,7 +220,8 @@ const MyCatalogue = () => {
     axios.request(config)
       .then((response) => {
         if (response.data.status == true) {
-          demo(id,index)
+          demo(id,index);
+          Toast.show(response.data.msg)
 
         }
 
@@ -320,7 +323,7 @@ const MyCatalogue = () => {
       });
   };
   return (
-    <View style={{ flex: 1, backgroundColor: '#f0eeef' }}>
+    <View style={styles.container}>
       <Header
         source1={require('../../../assets/Fo.png')}
         source2={require('../../../assets/Image/dil.png')}

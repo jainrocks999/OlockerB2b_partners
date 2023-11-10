@@ -106,6 +106,31 @@ const HomeScreen = () => {
         onPress2={() => navigation.navigate('FavDetails')}
       />
        {isFetching ? <Loader /> : null}
+       {
+        selector?.length==0?
+            <View style={{ alignItems: 'center', justifyContent: 'center', alignSelf: 'center', height: '90%',}}>
+              <Text style={{
+        fontFamily: 'Acephimere',
+        fontSize: 19,
+        color: 'grey', fontWeight: '700'
+    }}> {'No Partners found in your network'} </Text>
+<TouchableOpacity
+              onPress={() => navigation.navigate('MyNetwork')}
+              style={{
+                height: 40,marginTop:30,
+                width: 130,
+                backgroundColor: '#e9056b',
+                borderRadius: 20,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{ color: '#fff', fontFamily: 'Acephimere', fontSize: 15 }}>
+                Add Partners
+              </Text>
+              </TouchableOpacity>
+            </View>
+            :
       <View>
         <View
           style={{
@@ -149,7 +174,6 @@ const HomeScreen = () => {
                 style={{
                   height: 13,
                   width: 20,
-                  marginBottom: 0,
                   tintColor: '#474747',
                   marginLeft: 5,
                 }}
@@ -238,8 +262,9 @@ const HomeScreen = () => {
             </TouchableOpacity>
           )}
         />
-        {/* <View style={{height:300}}/> */}
+       
       </View>
+}
       <StatusBar />
     </View>
   );
