@@ -151,6 +151,15 @@ const AddProducts = ({ route }) => {
     prodcutfile ? EditData() : null;
   }, [editProduct]);
   const EditData = () => {
+  //   console.log('dfffddf',products.ProductsPrice);
+  //  if(products.ProductsPrice === null)
+  //  {
+  //   console.log('virendra mish');
+  // }
+  //  else {
+  //   console.log('viruuuuuuuuuu',parseFloat(products?.ProductsPrice)?.toFixed(2))
+  // }
+
 
     setInputs(prev => ({
       ...prev,
@@ -168,7 +177,7 @@ const AddProducts = ({ route }) => {
       StoneGrandTotal: editProduct?.productStoneGrandTotal,
       DecorationGrandTotal: editProduct?.productDecoGrandTotal,
       GrossWt: products?.GrossWt,
-      txtMrp: parseFloat(products?.ProductsPrice)?.toFixed(2),
+      txtMrp:products?.ProductsPrice==null?0: parseFloat(products?.ProductsPrice)?.toFixed(2),
       isProductCertd: products?.isProductCertified,
       ImgUpload: getImage(),
       chk_sc: editProduct?.getmaping,
@@ -249,7 +258,7 @@ const AddProducts = ({ route }) => {
 
   const fetchDataByPOST1 = async (data) => {
     const Token = await AsyncStorage.getItem('loginToken')
-   
+    console.log(data);
     try {
       var headers = {
         'content-type': 'application/json',
@@ -266,6 +275,7 @@ const AddProducts = ({ route }) => {
         url: Constants.MainUrl + 'partners/createProduct',
         data: data,
       });
+     
       if (response.data.status == true) {
         setIfetching(false);
         Toast.show(response.data.msg)

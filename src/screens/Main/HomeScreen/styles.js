@@ -87,7 +87,7 @@ export default StyleSheet.create({
   },
   middle1: {
     paddingHorizontal: 20,
-    marginTop: 10,
+    marginTop: 0,
   },
   card1: {
     width: 100,
@@ -209,5 +209,18 @@ export default StyleSheet.create({
     fontWeight: '700',
     marginTop: 3,
     color:'#474747'
+  },
+   card2v1: {
+    // backgroundColor: '#fff',
+    //  height:80,
+    // borderBottomLeftRadius: 10,
+    // borderBottomRightRadius: 10,
+    // padding: 10,
+    justifyContent: 'center',
+  },
+  card2v1t: {
+    color: '#032e63',
+    fontSize: 15,marginLeft:8,
+    fontFamily: 'Acephimere',
   },
 });

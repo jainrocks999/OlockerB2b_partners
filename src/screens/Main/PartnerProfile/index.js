@@ -31,8 +31,8 @@ const HomeScreen = ({ route }) => {
   const [id1,setId]=useState();
   const selector = useSelector(state => state.SupplierDetail?.detail)
   const selector3 = useSelector(state => state.sentRequest);
-  console.log('detailss,,,,,,',selector3.suppliers);
-  console.log('detailss,,,,,,ssssss',selector);
+  // console.log('detailss,,,,,,',selector3.suppliers);
+   console.log('detailss,,,,,,ssssss',selector);
   const selector1 = useSelector(state => state.Status);
   const isFetching = useSelector(state => state.isFetching);
   const [profile, setProfile] = useState(true);
@@ -40,6 +40,7 @@ const HomeScreen = ({ route }) => {
   const [catalogue, setCatalogue] = useState(false);
   const [setting, setSetting] = useState(false);
   const [rating1, setRatting1] = useState(0);
+  const [clicked, setClicked] = useState(false);
   const BannerWidth = (Dimensions.get('window').width * 15) / 16;
   const BannerHeight = 140;
   const share = async () => {
@@ -55,6 +56,7 @@ const HomeScreen = ({ route }) => {
       // console.log('ifdddd',item.SupplierSrNo);
        setId(item.SupplierSrNo)
     }
+    setClicked(false)
     },[])
   })
   const manageTab = () => {
@@ -81,17 +83,23 @@ const HomeScreen = ({ route }) => {
     setCatalogue(false);
     setSetting(true);
   };
-  console.log('iss s s',id1);
-  const addToNetwork = async (id) => {
-   
-  
+  const onPressHandler = () => {
+    console.log('Clicked!3333',selector?.SrNo==id1? true:false);
+    if (selector?.SrNo==id1) {
+      console.log('Clicked!22222',selector?.SrNo==id1? true:false);
+      addToNetwork(selector?.SrNo);
+      setClicked(true);
+      console.log('Clicked!',selector?.SrNo==id1? true:false);
+    }
+  };
+  const addToNetwork = async () => {
     const partnerid = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken');
     dispatch({
       type: 'User_sendRequestToSupplier_Request',
       url: 'partners/sendRequestToSupplier',
       partnerId: partnerid,
-      supplierId: id,
+      supplierId: selector?.SrNo,
       Token: Token,
 
     });
@@ -162,9 +170,9 @@ const HomeScreen = ({ route }) => {
           </View>
           <View style={styles.addButtonV}>
             {selector.isAdd == 0 ?
-              <TouchableOpacity
-              disabled={selector?.SrNo===id1?true:false}
-                onPress={() => addToNetwork(selector?.SrNo)}
+              <TouchableOpacity 
+              disabled={selector?.SrNo==id1?true:false}
+              onPressIn={addToNetwork}
                 style={[styles.addButton,{backgroundColor:selector?.SrNo===id1?'#FFF':'#ea056c'}]}>
                 <Text style={[styles.text1,{fontSize:12,color:selector?.SrNo===id1?'#032e63':'#FFF',fontWeight:selector?.SrNo===id1?'900':''}]}>
                  { selector?.SrNo===id1?'Requested':'Add To Network'}
@@ -267,11 +275,9 @@ const HomeScreen = ({ route }) => {
           {catalogue == true ? <Catalogue /> : null}
           {setting == true ? <Setting /> : null}
         </View>
-        {/* <View style={{height:70}}/> */}
+      
       </ScrollView>
-      {/* <View style={{bottom:0,position:'absolute',left:0,right:0}}>
-      <BottomTab/>
-      </View> */}
+     
       <StatusBar />
     </View>
   );

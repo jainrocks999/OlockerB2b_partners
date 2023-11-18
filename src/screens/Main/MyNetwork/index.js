@@ -35,6 +35,7 @@ import style from '../../../components/StoreButtomTab/style';
 import styles from './styles';
 const MyCatalogue = () => {
   const navigation = useNavigation();
+
   const focus = useIsFocused();
   const dispatch = useDispatch();
   const selector = useSelector(state => state.Statelist?.satates)
@@ -158,7 +159,7 @@ const MyCatalogue = () => {
   const AcceptMEthod = async (id, index) => {
     const srno = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken')
-
+    setVisible1(true);
     const axios = require('axios');
     let data = new FormData();
     data.append('sp_networkId', id);
@@ -180,13 +181,17 @@ const MyCatalogue = () => {
       .then((response) => {
       
         if (response.data.status == true) {
+          console.log('aceepct  daatta',response.data);
           demo(id,index);
+          // pendingRequest();
+          setVisible1(false);
           Toast.show(response.data.msg)
 
         }
 
       })
       .catch((error) => {
+        setVisible1(false);
         console.log(error);
       });
 
@@ -198,7 +203,7 @@ const MyCatalogue = () => {
   
     const srno = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken')
-
+    setVisible1(true);
     const axios = require('axios');
     let data = new FormData();
     data.append('sp_networkId', id);
@@ -220,13 +225,17 @@ const MyCatalogue = () => {
     axios.request(config)
       .then((response) => {
         if (response.data.status == true) {
-          demo(id,index);
+          console.log('Reject daatta',response.data);
+           demo(id,index);
+          // pendingRequest();
+          setVisible1(false);
           Toast.show(response.data.msg)
 
         }
 
       })
       .catch((error) => {
+        setVisible1(false);
         console.log(error);
       });
   };
@@ -247,30 +256,17 @@ const MyCatalogue = () => {
   };
   const SentRequest = async () => {
     const srno = await AsyncStorage.getItem('Partnersrno');
-    const Token = await AsyncStorage.getItem('loginToken')
-
+    const Token = await AsyncStorage.getItem('loginToken');
     dispatch({
       type: 'Get_Sent_Request',
       url: '/partners/requestedSupplierList',
       partnerId: srno,
       Token: Token,
-      // navigation,
     });
     dispatch({
       type: 'Get_delete_Success',
       payload: undefined
     })
-  };
-
-  const searchJeweller = () => {
-    dispatch({
-      type: 'Search_Jewellers_Request',
-      url: 'RejectSupplierRequest',
-      data: {
-        SrNo: 1,
-        RejectReason: 'string',
-      },
-    });
   };
   const partnerDetaitl = async (id) => {
     const Token = await AsyncStorage.getItem('loginToken')
@@ -336,14 +332,8 @@ const MyCatalogue = () => {
       <ScrollView>
        
         <View
-          style={{
-            backgroundColor: '#032e63',
-            // height: 150,
-            width: '100%',
-            borderBottomRightRadius: 60,
-            borderBottomLeftRadius: 60,
-          }}>
-          <View style={{ alignItems: 'center', height: 160, marginTop: 0 }}>
+          style={styles.container1}>
+          <View style={styles.main}>
             {lenght > 0 ?
               <FlatListSlider
                 data={BannerData}
@@ -367,29 +357,13 @@ const MyCatalogue = () => {
         </View>
         <View style={{ marginTop: -135, paddingHorizontal: 15 }}>
           <Text
-            style={{
-              color: '#fff',
-              fontWeight: '700',
-              fontSize: 16,
-              fontFamily: 'Philosopher-Regular',
-            }}>
+            style={styles.text2}>
             Search Jeweller Partner
           </Text>
           <View
-            style={{
-              width: '100%',
-              backgroundColor: '#fff',
-              marginTop: 15,
-              elevation: 5,
-              borderRadius: 10,
-            }}>
+            style={styles.main2}>
             <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingHorizontal: 10,
-                justifyContent: 'space-between',
-              }}>
+              style={styles.main1}>
               <View style={{ paddingTop: 10 }}>
                 <Text
                   style={{
@@ -424,26 +398,11 @@ const MyCatalogue = () => {
             </View>
             <View style={{ borderWidth: 0.5, borderColor: 'grey' }} />
             <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                height: 100,
-              }}>
+              style={styles.liner}>
               <View
-                style={{
-                  padding: 0,
-                  justifyContent: 'center',
-                  width: '42%',
-                  alignItems: 'flex-start',
-                }}>
+                style={styles.linerview}>
                 <View
-                  style={{
-                    height: 45,
-                    width: '100%',
-                    marginLeft: 10,
-                    marginBottom: 5,
-                  }}>
+                  style={styles.linert}>
                   <View>
                     <Dropdown
                       style={{
@@ -606,8 +565,6 @@ const MyCatalogue = () => {
                       }}
                     />
                   </View>
-
-
                 </View>
               </View>
             </View>
@@ -641,7 +598,6 @@ const MyCatalogue = () => {
             </Text>
           ) : (
             <View style={{ paddingVertical: 10 }}>
-             {console.log('datata',data)}
               <FlatList
                 data={data}
                 renderItem={({ item }) => (
@@ -823,7 +779,8 @@ const MyCatalogue = () => {
               <View>
                 <Text style={{ color: '#565656', fontFamily: 'Acephimere' }}>{`${data7 ? data7?.length : selector1?.list?.length}${'Notification'}`}</Text>
                 <FlatList
-                  data={data7 ? data7 : selector1?.list}
+                  data={(data7 ? data7 : selector1?.list)?.slice(0, 3)}
+                   
                   renderItem={({ item, index }) => (
                     <View
                       style={{
@@ -856,7 +813,7 @@ const MyCatalogue = () => {
                       </View>
                       <View style={{ flexDirection: 'row' }}>
                         <TouchableOpacity
-                          onPress={() => AcceptMEthod(item.SupplierSrNo, index)}
+                          onPress={() => AcceptMEthod(item.SrNo, index)}
                           style={{ height: 40, width: 40 }}>
                           <Image
                             style={{ height: '100%', width: '100%' }}
@@ -864,7 +821,7 @@ const MyCatalogue = () => {
                           />
                         </TouchableOpacity>
                         <TouchableOpacity
-                          onPress={() => Reject(item.SupplierSrNo, index)}
+                          onPress={() => Reject(item.SrNo, index)}
                           style={{ height: 40, width: 40, marginLeft: 10 }}>
                           <Image
                             style={{ height: '100%', width: '100%' }}

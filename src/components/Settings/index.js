@@ -8,7 +8,7 @@ import axios from 'axios';
 import { select } from 'redux-saga/effects';
 import Toast from 'react-native-simple-toast';
 
-const Settings = () => {
+const Settings =() => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const network_id = useSelector(state => state.network_id)
@@ -64,7 +64,7 @@ const Settings = () => {
                 onPress={() => removenetwork(network_id)}
                 style={{
                   borderColor: '#e9056b',
-                  paddingHorizontal: 20,
+                  paddingHorizontal: 18,
                   paddingVertical: 6,
                   borderRadius: 8,
                   borderWidth: 1,

@@ -310,7 +310,7 @@ const MyProducts = ({ route }) => {
                         source={require('../../../assets/Image/rupay.png')}
                       />
                       <Text style={styles.cardbottom1text}>
-                        {parseFloat(item.ProductsPrice)?.toFixed(2) ?? '0'}
+                        {item?.ProductsPrice==null?0:parseFloat(item.ProductsPrice)?.toFixed(2) ?? '0'}
                       </Text>
                     </View>
                   </View>

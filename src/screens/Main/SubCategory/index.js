@@ -24,9 +24,8 @@ const SubCategory = ({ route }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const selector = useSelector(state => state.ProductDetail?.detail);
-console.log('supplier product Details',selector);
   const selector1 = useSelector(state => state.SupplierProDetail?.detail);
-
+   const productId=route?.params?.productId;
   const Detail = route.params.Details;
   const isLiked = useSelector(state => state.mg)
   
@@ -140,14 +139,14 @@ console.log('supplier product Details',selector);
 
   }
   const EditProduct = async (item) => {
-
+     console.log('hhhihihi',productId);
     const partnerid = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken');
     const Branch = await AsyncStorage.getItem('Branch');
     dispatch({
       type: 'User_editProduct_Request',
       url: 'partners//editProduct',
-      ProductSrNo: item?.SrNo,
+      ProductSrNo: productId,
       PartnerSrNo: partnerid,
       BranchSrNo: Branch,
       Token: Token,
@@ -245,6 +244,7 @@ console.log('supplier product Details',selector);
             {/* {Detail
               ? selector?.productDetail?.ProductsPrice?.substring(0, 8)
               : selector1?.productDetail?.ProductsPrice?.substring(0, 8)} */
+              selector?.productDetail?.ProductsPrice==null?0:
               parseFloat(selector?.productDetail?.ProductsPrice)?.toFixed(2)
             }
           </Text>

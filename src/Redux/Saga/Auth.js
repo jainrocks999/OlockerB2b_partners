@@ -433,6 +433,7 @@ function* ProductDetails(action) {
       })
       action.navigation.navigate('SubCategory', {
         name: action.name,
+       productId:action.productId,
         Details: true,
       });
     } else {
@@ -1073,7 +1074,6 @@ function* RemoveFromNetwork(action) {
         supplierId: action.supplierId,
         Token: action.Token,
         partnerId:action. partnerId,
-        network_id: action.network_id,
         navigation: action.navigation,
         Status: action.Status,
       })
@@ -1556,8 +1556,9 @@ function* EditProduct(action) {
       action.Token,
       data
     );
+    
     if (response.status == true) {
-
+      console.log('edit product ,,,,,,,',response);
       yield put({
         type: 'User_editProduct_Success',
         payload: response.data,

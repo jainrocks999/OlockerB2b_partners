@@ -50,7 +50,7 @@ const HomeScreen = () => {
   const deteleApi = async (id, index2) => {
     const Token = await AsyncStorage.getItem('loginToken')
     const axios = require('axios');
-
+    setAccepted(true)
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
@@ -65,9 +65,11 @@ const HomeScreen = () => {
        
         if (response.data.status == true) {
           demo(id, index2)
+          setAccepted(false)
         }
       })
       .catch((error) => {
+        setAccepted(false)
         console.log(error);
       });
 
@@ -102,7 +104,7 @@ const HomeScreen = () => {
         onPress1={() => navigation.navigate('MessageBox')}
         onPress2={() => navigation.navigate('FavDetails')}
       />
-       {isFetching ? <Loader /> : null}
+       {isFetching || accepted? <Loader /> : null}
        {
           data2?.length == 0 || selector?.suppliers?.length == 0 ?
             <View style={{ alignItems: 'center', justifyContent: 'center', alignSelf: 'center', height: '90%',}}>

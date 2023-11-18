@@ -55,7 +55,6 @@ const Addcollection = () => {
   const getDataFromChild=(data,data1)=>{
     console.log('this is data from chiled',data,data1);
       let  image2=data.Logo.split('.').pop();
-      console.log('hiiiiiiiiii',image2);
       setPhoto(`${data1}${data.Logo}`);
       setPhoto1(data.Logo);
       setPhoto2(`image/${image2}`);

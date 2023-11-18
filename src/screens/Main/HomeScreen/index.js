@@ -263,7 +263,7 @@ const HomeScreen = () => {
             data={selector1}
             style={{ marginTop: 7 }}
             renderItem={({ item }) => (
-              <View style={{borderWidth:0}}>
+              <View style={{borderWidth:0,height:175,width:125}}>
                 <TouchableOpacity
                   onPress={() => supplierprofile(item)}
                   style={[styles.cardview]}>
@@ -277,14 +277,10 @@ const HomeScreen = () => {
                     source={item.logoImage ? { uri: `${item.logoImage}` } : require('../../../assets/Image/Not.jpeg')}
                   />
                 </TouchableOpacity>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    // width: '100%',
-                    fontFamily: 'Acephimere',
-                  }}>
-                  {item.SupplierName}
-                </Text>
+                <View style={styles.card2v1}>
+                      <Text style={styles.card2v1t}>{item.SupplierName}</Text>
+                      {/* <Text style={{ fontFamily: 'Acephimere', color: '#666666', fontSize: 12 }}>{item.CityName}</Text> */}
+                    </View>
               </View>
             )}
           />
