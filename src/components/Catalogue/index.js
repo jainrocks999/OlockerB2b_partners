@@ -14,6 +14,8 @@ const Catalogue = () => {
   const ProductList1 = async item => {
     const srno = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken');
+
+    console.log('vireememem e mmenmemnmemeeme',selector,item);
     dispatch({
       type: 'User_SupplierProductList_Request',
       url: 'partners/productTypeProducts',
@@ -27,7 +29,6 @@ const Catalogue = () => {
       navigation,
     });
   };
-
   return (
     <View>
 
@@ -61,14 +62,15 @@ const Catalogue = () => {
               width: '33.3%',
               alignItems: 'center',
               // justifyContent: 'center',
-              height: 160,
+              height: 175,
               backgroundColor: '#fff',
-              borderWidth: 0.3,
+              borderWidth: 0.5,
+    borderColor:'#807f82'
             }}>
 
 
             <Image
-              style={{ height: 100, width: '100%' }}
+              style={{ height: '71%', width: '100%' }}
               // resizeMode={'stretch'}
               // source={require('../../assets/Not.png')}
               source={item.ImageName != null ? {
@@ -90,7 +92,7 @@ const Catalogue = () => {
                 style={{
                   fontFamily: 'Acephimere',
                   fontSize: 14,
-                  color: '#0d0d0d',
+                  color: '#0d0d0d',fontWeight:'700'
                 }}> {item.pTotal <= 0
                   ? `${item.pTotal} Item`
                   : `${item.pTotal} Items`}</Text>

@@ -15,7 +15,7 @@ export default class Loading extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size={Platform.OS == 'ios' ? 1 : 40} color={colors.bc} />
+        <ActivityIndicator size={Platform.OS == 'ios' ? 1 : 50} color={colors.bc} />
       </View>
     );
   }
@@ -24,7 +24,7 @@ export default class Loading extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-     backgroundColor:'rgba(248,249,249,0.2)',
+     backgroundColor:'rgba(248,249,249,0.8)',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',

@@ -229,7 +229,7 @@ const HomeScreen = () => {
                     borderTopRightRadius: 10,
                     borderTopLeftRadius: 10,
                   }}
-                  source={item.logoImage ? { uri: `${item.logoImage}` } : require('../../../assets/Image/Not.jpeg')}
+                  source={item.logoImage ? { uri: `${item.logoImage}` } : require('../../../assets/logo.png')}
 
                 />
               </View>

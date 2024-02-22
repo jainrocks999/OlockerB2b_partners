@@ -54,7 +54,7 @@ const HomeScreen = () => {
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: `https://olocker.co/api/partners/removeSupplier?network_id=${id}`,
+      url: `https://olocker.co/api/partners/removeSupplier?supplier_id=${id}`,
       headers: {
         'Olocker': `Bearer ${Token}`
       }
@@ -133,7 +133,7 @@ const HomeScreen = () => {
                             <Image
                               style={{ width: 100, height: 80, marginLeft: -10 }}
                               resizeMode="cover"
-                              source={item.logoImage ? { uri: `${item.logoImage}` } : require('../../../assets/Image/Not.jpeg')}
+                              source={item.logoImage ? { uri: `${item.logoImage}` } : require('../../../assets/logo.png')}
                             />
                           </View>
                           <View style={{ marginLeft: 10 }}>
@@ -168,8 +168,9 @@ const HomeScreen = () => {
                             justifyContent: 'center',
                             paddingVertical: 10,
                           }}>
+                            {console.log('list.....',item)}
                           <TouchableOpacity
-                            onPress={() => deteleApi(item.SrNo, index)}
+                            onPress={() => deteleApi(item.SupplierSrNo, index)}
                             style={{
                               alignItems: 'center',
                               justifyContent: 'center',
@@ -181,7 +182,7 @@ const HomeScreen = () => {
                             />
 
                             <Text
-                              style={{ marginLeft: 7, fontFamily: 'Acephimere' }}>
+                              style={{ marginLeft: 7, fontFamily: 'Acephimere',color:'#000' }}>
                               Delete Request
                             </Text>
                           </TouchableOpacity>

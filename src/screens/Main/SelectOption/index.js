@@ -104,7 +104,7 @@ const SelectOption = () => {
                     backgroundColor: '#f0f0f0',
                   }}
                   // itemTextStyle={{ fontSize: 15 }}
-                   itemContainerStyle={{ marginBottom: -15, }}
+                   itemContainerStyle={{ marginBottom: -5,borderRadius:10 }}
                     maxHeight={250}
                   labelField="label"
                   valueField="value"

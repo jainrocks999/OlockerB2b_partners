@@ -117,7 +117,7 @@ const SubCategory = ({ route }) => {
     });
   }
   const AddWishList = async (item, index) => {
-   
+   console.log('virenDRA',item);
     const partnerid = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken');
     dispatch({
@@ -166,9 +166,12 @@ const SubCategory = ({ route }) => {
       />
        {isFetching ? <Loader /> : null}
       <ScrollView>
-       
+       {console.log('viree......',selector?.productDetail)}
         <View style={styles.main}>
-          {isLiked === false ?
+          {
+        //  selector?.productDetail?.is_exsit == false 
+           isLiked === false
+           ?
             <TouchableOpacity
               onPress={() => {
                 AddWishList(selector?.productDetail?.SrNo)
@@ -332,7 +335,7 @@ const SubCategory = ({ route }) => {
               <TouchableOpacity 
                onPress={()=>  navigation.navigate('ChatScreen',{ item: selector?.productDetail })}
               style={styles.Enqure}>
-                <Text style={styles.textEQ}>ENQURE NOW</Text>
+                <Text style={styles.textEQ}>ENQUIRE NOW</Text>
               </TouchableOpacity>
           </View>)}
         </View>

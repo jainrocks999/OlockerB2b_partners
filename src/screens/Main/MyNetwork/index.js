@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -35,7 +35,7 @@ import style from '../../../components/StoreButtomTab/style';
 import styles from './styles';
 const MyCatalogue = () => {
   const navigation = useNavigation();
-
+  const scrollViewRef = useRef();
   const focus = useIsFocused();
   const dispatch = useDispatch();
   const selector = useSelector(state => state.Statelist?.satates)
@@ -54,8 +54,48 @@ const MyCatalogue = () => {
   const selector1 = useSelector(state => state.Pending);
   const data7 = useSelector(state => state.deletData1)
   const [citydemo, setCityDemo] = useState([{ label: 'Select city', value: '1' },])
+
+  console.log(selector);
+
+
+  const [search, setSearch] = useState('');
+  const [filteredDataSource, setFilteredDataSource] = useState(selector);
+  const [masterDataSource, setMasterDataSource] = useState(selector);
+  const win = Dimensions.get('window');
+
+  const searchFilterFunction = text => {
+    console.log('fadafd', text);
+    if (text) {
+      const newData = masterDataSource.filter(function (item) {
+        const itemData = `${item.label} `
+          ? `${item.label}`.toUpperCase()
+          : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setFilteredDataSource(newData);
+      setSearch(text);
+    } else {
+      setFilteredDataSource(masterDataSource);
+      setSearch(text);
+    }
+  };
+
+  const handleSearch = () => {
+    setSearch('');
+    setFilteredDataSource(masterDataSource);
+  };
+  useEffect(() => {
+    setFilteredDataSource()
+
+  }, []);
+
+
+
+
+
   const demo = (ind, index2) => {
-   
+
     const tempData = data7 ? data7 : selector1?.list
     var data = tempData.filter((item, index) => {
       return index != index2;
@@ -81,11 +121,14 @@ const MyCatalogue = () => {
       });
     }
   })
+
+
   const lenght = BannerData.length;
 
-
-
-
+  const scrollToIndex = (index) => {
+    const ITEM_HEIGHT = 50;
+    scrollViewRef.current.scrollTo({ y: index * ITEM_HEIGHT, animated: true });
+  };
 
   const state2 = async () => {
     const Token = await AsyncStorage.getItem('loginToken');
@@ -98,60 +141,60 @@ const MyCatalogue = () => {
   }
   useEffect(() => {
     setSupplier(''),
-    setState(''),
+      setState(''),
       setCity(''),
       setMetal(''),
-   setShow(false);
+      setShow(false);
     setVisible1(false);
-     setData1(''),
-    pendingRequest();
+    setData1(''),
+      pendingRequest();
     SentRequest();
-  //  getSupplier();
+    //  getSupplier();
   }
     , [focus])
 
   const getSupplier = async () => {
-   
-     if(state ==''&& supplier==''){
+
+    if (state == '' && supplier == '') {
       Toast.show('Please search by Partner name or State')
-     }else{
-    setVisible1(true);
-    const Token = await AsyncStorage.getItem('loginToken')
-    const Id = await AsyncStorage.getItem('Partnersrno');
-    const axios = require('axios');
+    } else {
+      setVisible1(true);
+      const Token = await AsyncStorage.getItem('loginToken')
+      const Id = await AsyncStorage.getItem('Partnersrno');
+      const axios = require('axios');
 
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: 'https://olocker.co/api//partners/searchSupplier',
-      headers: {
-        'Olocker': `Bearer ${Token}`
-      },
-      params: {
-        partnerId: Id,
-        supplierName: supplier,
-        stateId: state,
-        city: city,
-        metalType: metal
-      }
-    };
-    axios.request(config)
-      .then((response) => {
-
-        if (response.data.status == true) {
-          setData1(response.data.list);
-          setVisible1(false);
-          setShow(true);
-
+      let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: 'https://olocker.co/api//partners/searchSupplier',
+        headers: {
+          'Olocker': `Bearer ${Token}`
+        },
+        params: {
+          partnerId: Id,
+          supplierName: supplier,
+          stateId: state,
+          city: city,
+          metalType: metal
         }
+      };
+      axios.request(config)
+        .then((response) => {
 
-      })
-      .catch((error) => {
-        setVisible1(false)
-        Toast.show('Server not responding')
-       
-        console.log(error);
-      });
+          if (response.data.status == true) {
+            setData1(response.data.list);
+            setVisible1(false);
+            setShow(true);
+
+          }
+
+        })
+        .catch((error) => {
+          setVisible1(false)
+          Toast.show('Server not responding')
+
+          console.log(error);
+        });
     }
 
   }
@@ -162,7 +205,7 @@ const MyCatalogue = () => {
     setVisible1(true);
     const axios = require('axios');
     let data = new FormData();
-    data.append('sp_networkId', id);
+    data.append('supplier_id', id);
     data.append('statusId', '1');
     data.append('partnerId', srno);
     data.append('rejectReason', '');
@@ -179,10 +222,10 @@ const MyCatalogue = () => {
 
     axios.request(config)
       .then((response) => {
-      
+
         if (response.data.status == true) {
-          console.log('aceepct  daatta',response.data);
-          demo(id,index);
+          console.log('aceepct  daatta', response.data);
+          demo(id, index);
           // pendingRequest();
           setVisible1(false);
           Toast.show(response.data.msg)
@@ -200,13 +243,13 @@ const MyCatalogue = () => {
   };
 
   const Reject = async (id, index) => {
-  
+
     const srno = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken')
     setVisible1(true);
     const axios = require('axios');
     let data = new FormData();
-    data.append('sp_networkId', id);
+    data.append('supplier_id', id);
     data.append('statusId', '2');
     data.append('partnerId', srno);
     data.append('rejectReason', '');
@@ -225,8 +268,8 @@ const MyCatalogue = () => {
     axios.request(config)
       .then((response) => {
         if (response.data.status == true) {
-          console.log('Reject daatta',response.data);
-           demo(id,index);
+          console.log('Reject daatta', response.data);
+          demo(id, index);
           // pendingRequest();
           setVisible1(false);
           Toast.show(response.data.msg)
@@ -271,13 +314,13 @@ const MyCatalogue = () => {
   const partnerDetaitl = async (id) => {
     const Token = await AsyncStorage.getItem('loginToken')
     const srno = await AsyncStorage.getItem('Partnersrno');
-    console.log('idd,,,,,,,,',id);
+    console.log('idd,,,,,,,,', id);
     dispatch({
       type: 'User_supplierDetail_Request',
       url: '/partners/supplierDetail',
       supplierId: id.SrNo,
       Token: Token,
-      partnerId:srno,
+      partnerId: srno,
       network_id: id.networkId,
       navigation,
       Status: 1,
@@ -285,7 +328,12 @@ const MyCatalogue = () => {
 
     })
   };
+  const [visiable5, setVisible5] = useState(false);
+  const manageOption1 = val => {
+    setVisible5(false);
+    setState(val);
 
+  };
   const citySearch = async (value) => {
 
     const Token = await AsyncStorage.getItem('loginToken')
@@ -328,30 +376,30 @@ const MyCatalogue = () => {
         onPress1={() => navigation.navigate('MessageBox')}
         onPress2={() => navigation.navigate('FavDetails')}
       />
-       {isFetching || visiable1 ? <Loader /> : null}
-      <ScrollView>
-       
+      {isFetching || visiable1 ? <Loader /> : null}
+      <ScrollView ref={scrollViewRef}>
+
         <View
           style={styles.container1}>
-          <View style={styles.main}>
-            {lenght > 0 ?
+          {lenght > 0 ?
+            <View style={styles.main}>
               <FlatListSlider
                 data={BannerData}
-                height={160}
+                height={170}
                 timer={5000}
-                contentContainerStyle={{ marginVertical: 0, paddingHorizontal: 15 }}
-                indicatorContainerStyle={{ position: 'absolute', bottom: 10 }}
+                contentContainerStyle={{ marginVertical: 0, paddingHorizontal: 16 }}
+                indicatorContainerStyle={{ position: 'absolute', bottom: -16 }}
                 indicatorActiveColor={'#032e63'}
                 indicatorInActiveColor={'#ffffff'}
-                indicatorActiveWidth={5}
+                indicatorActiveWidth={10}
                 animation
                 component={<Banner />}
                 separatorWidth={15}
                 width={300}
-                autoscroll={false}
-                loop={false}
-              /> : null}
-          </View>
+                autoscroll={true}
+                loop={true}
+              />
+            </View> : null}
 
           <View style={{ height: 150 }} />
         </View>
@@ -404,6 +452,44 @@ const MyCatalogue = () => {
                 <View
                   style={styles.linert}>
                   <View>
+
+
+
+
+                    {/*                 
+                  <View style={styles.Main}>
+           
+            <View style={styles.dropdown}>
+              <Dropdown
+                style={{
+                  height: 22
+                }}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={{color:'#000',fontSize:15}}
+              
+                iconStyle={{ tintColor: '#474747' }}
+                data={selector != undefined ? selector : undefined}
+                inputSearchStyle={{
+                  borderRadius: 10,
+                  backgroundColor: '#f0f0f0',
+                }}
+                // search={true}
+                itemTextStyle={{ color: '#474747' }}
+                searchPlaceholder="search.."
+                maxHeight={250}
+                labelField="label"
+                valueField="value"
+                placeholder="Design"
+                value={state}
+                onChange={item => {
+                  citySearch(item.value), setState(item.value);
+                }}
+               
+              />
+
+            </View>
+          </View> */}
+
                     <Dropdown
                       style={{
                         color: '#032e63',
@@ -413,34 +499,39 @@ const MyCatalogue = () => {
                         height: 40,
                         // marginTop: 5
                       }}
+                      // renderInputSearch={renderInputSearch}
                       placeholderStyle={{
                         color: '#032e63',
                         width: '100%', fontWeight: '600',
-                        alignSelf: 'center',
-                        fontFamily: 'Acephimere',
+                        // alignSelf: 'center',
+                        fontFamily: 'Acephimere', fontSize: 15
                       }}
                       selectedTextStyle={{
                         color: '#032e63',
                         width: '100%',
                         alignSelf: 'center',
-                        fontFamily: 'Acephimere',
+                        fontFamily: 'Acephimere', fontSize: 15
                       }}
-                      iconStyle={{ tintColor: '#ffff' }}
+                      mode='default'
+                      iconStyle={{ tintColor: '#474747' }}
                       data={selector != undefined ? selector : undefined}
                       inputSearchStyle={{
                         borderRadius: 10,
+                        color: '#474747',
                         backgroundColor: '#f0f0f0',
                       }}
-                     itemTextStyle={{ color:'#474747' }}
+                      // dropdownPosition='top'
+                      itemTextStyle={{ color: '#474747' }}
                       itemContainerStyle={{ marginBottom: -20, }}
                       searchPlaceholder="search.."
-                    
-                      maxHeight={250}
-                      search
+
+                      maxHeight={200}
+                      //  search
                       labelField="label"
                       valueField="value"
                       placeholder="Select state"
                       value={state}
+
                       onChange={item => {
                         citySearch(item.value), setState(item.value);
                       }}
@@ -469,24 +560,27 @@ const MyCatalogue = () => {
                         color: '#032e63',
                         width: '100%', fontWeight: '600',
                         alignSelf: 'center',
-                        fontFamily: 'Acephimere',
+                        fontFamily: 'Acephimere', fontSize: 15
                       }}
                       selectedTextStyle={{
                         color: '#032e63',
                         width: '100%',
                         alignSelf: 'center',
-                        fontFamily: 'Acephimere',
+                        fontFamily: 'Acephimere', fontSize: 15
                       }}
-                      iconStyle={{ tintColor: '#ffff' }}
+                      iconStyle={{ tintColor: '#474747' }}
                       data={demoData ? demoData : citydemo}
                       inputSearchStyle={{
                         borderRadius: 10,
+                        color: '#474747',
                         backgroundColor: '#f0f0f0',
                       }}
+                      dropdownPosition='top'
                       itemContainerStyle={{ marginBottom: -10 }}
                       searchPlaceholder="search.."
                       maxHeight={250}
-                      itemTextStyle={{color:'#474747'}}
+                      itemTextStyle={{ color: '#474747' }}
+
                       search
                       labelField="label"
                       valueField="value"
@@ -522,7 +616,7 @@ const MyCatalogue = () => {
                     height: 45,
                     width: '100%',
                     borderWidth: 0,
-                    marginRight: 0,
+                    marginRight: 10,
                   }}>
 
                   <View>
@@ -537,15 +631,15 @@ const MyCatalogue = () => {
                         color: '#032e63',
                         width: '100%', fontWeight: '600',
                         alignSelf: 'center',
-                        fontFamily: 'Acephimere',
+                        fontFamily: 'Acephimere', fontSize: 15
                       }}
                       selectedTextStyle={{
                         color: '#032e63',
                         width: '100%',
                         alignSelf: 'center',
-                        fontFamily: 'Acephimere',
+                        fontFamily: 'Acephimere', fontSize: 15
                       }}
-                      iconStyle={{ tintColor: '#ffff' }}
+                      iconStyle={{ tintColor: '#474747' }}
                       data={Metal}
                       inputSearchStyle={{
                         borderRadius: 10,
@@ -554,7 +648,7 @@ const MyCatalogue = () => {
                       itemContainerStyle={{ marginBottom: -10, }}
                       // searchPlaceholder="search.."
                       maxHeight={250}
-                      itemTextStyle={{color:'#474747'}}
+                      itemTextStyle={{ color: '#474747' }}
                       // search
                       labelField="label"
                       valueField="value"
@@ -569,7 +663,7 @@ const MyCatalogue = () => {
               </View>
             </View>
           </View>
-          <View style={{ alignItems: 'center', marginTop: -20 }}>
+          <View style={{ alignItems: 'center', marginTop: -11 }}>
             <TouchableOpacity
               onPress={() => getSupplier()}
               style={{
@@ -589,12 +683,12 @@ const MyCatalogue = () => {
           {show && data.length <= 0 ? (
             <Text
               style={{
-                alignSelf: 'flex-start',
+                alignSelf: 'center',
                 marginTop: 10,
                 fontSize: 13,
-                color: 'red',
+                color: 'red', marginBottom: 10
               }}>
-              {'Data Not Found !!!!!'}
+              {'SEARCHED JEWELLER NOT FOUND'}
             </Text>
           ) : (
             <View style={{ paddingVertical: 10 }}>
@@ -613,7 +707,7 @@ const MyCatalogue = () => {
                       flexDirection: 'row',
                       justifyContent: 'space-between',
                     }}>
-                    
+
                     <View>
                       {/* <Text style={{ fontSize: 16, color: '#000', fontFamily: 'Acephimere' }}>{item.SrNo}</Text> */}
                       <Text
@@ -660,7 +754,7 @@ const MyCatalogue = () => {
               elevation: 5,
               borderRadius: 10,
             }}>
-            <View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
+            <View style={{ paddingHorizontal: 10, paddingVertical: 10, }}>
               <Text
                 style={{
                   fontSize: 18,
@@ -780,7 +874,7 @@ const MyCatalogue = () => {
                 <Text style={{ color: '#565656', fontFamily: 'Acephimere' }}>{`${data7 ? data7?.length : selector1?.list?.length}${'Notification'}`}</Text>
                 <FlatList
                   data={(data7 ? data7 : selector1?.list)?.slice(0, 3)}
-                   
+
                   renderItem={({ item, index }) => (
                     <View
                       style={{
@@ -813,7 +907,7 @@ const MyCatalogue = () => {
                       </View>
                       <View style={{ flexDirection: 'row' }}>
                         <TouchableOpacity
-                          onPress={() => AcceptMEthod(item.SrNo, index)}
+                          onPress={() => AcceptMEthod(item.SupplierSrNo, index)}
                           style={{ height: 40, width: 40 }}>
                           <Image
                             style={{ height: '100%', width: '100%' }}
@@ -821,7 +915,7 @@ const MyCatalogue = () => {
                           />
                         </TouchableOpacity>
                         <TouchableOpacity
-                          onPress={() => Reject(item.SrNo, index)}
+                          onPress={() => Reject(item.SupplierSrNo, index)}
                           style={{ height: 40, width: 40, marginLeft: 10 }}>
                           <Image
                             style={{ height: '100%', width: '100%' }}
@@ -837,9 +931,27 @@ const MyCatalogue = () => {
           </View>
         </View>
 
-        <View style={{ height: 70 }} />
+        <View style={{ height: 185 }} />
       </ScrollView>
-      <View
+
+      <PickerModel
+        visi={visiable5}
+        close={() => setVisible5(false)}
+        data={filteredDataSource ? filteredDataSource : selector}
+        onPress1={manageOption1}
+        // value={search}
+        // onChangeText={(val)=>searchFilterFunction(val)}
+
+        styles={{
+          height: '50%',
+          width: '58%',
+          top: 50,
+
+
+        }}
+      />
+
+      {/* <View
         style={{
           marginVertical: hp('2.5%'),
           position: 'absolute',
@@ -847,8 +959,8 @@ const MyCatalogue = () => {
           right: '50%',
         }}>
 
-        {/* <ActivityIndicator size="large" animating={visiable1} color={colors.bc} /> */}
-      </View>
+        <ActivityIndicator size="large" animating={visiable1} color={colors.bc} />
+      </View> */}
     </View>
   );
 };

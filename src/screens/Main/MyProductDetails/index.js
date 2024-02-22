@@ -195,10 +195,11 @@ const MyProducts = ({ route }) => {
                   style={{
                     height: hp('100%'),
                     width: wp('45%'),
-                    maxHeight: hp('25%'),
+                    maxHeight: hp('24%'),
                     borderWidth: 0,
                     borderColor: 'red',
                   }}>
+{/* {                    console.log('item,,,,,,',item)} */}
                   <View
                     style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <View
@@ -290,7 +291,7 @@ const MyProducts = ({ route }) => {
                           alignSelf: 'center',
                         }}
                         source={item.ImageName ? { uri: `${'https://olocker.co/uploads/product/'}${item.ImageName}` } :
-                          require('../../../assets/Image/Not.jpeg')}
+                          require('../../../assets/logo.png')}
                       />
                     </TouchableOpacity>
                   </View>

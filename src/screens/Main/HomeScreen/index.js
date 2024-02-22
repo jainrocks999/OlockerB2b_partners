@@ -94,17 +94,17 @@ const HomeScreen = () => {
 
   const MyNetwork = async () => {
     const Token = await AsyncStorage.getItem('loginToken');
+   
+  }
+  const ApiCallWithUseEffect = async () => {
+    const Token = await AsyncStorage.getItem('loginToken');
+    const Id = await AsyncStorage.getItem('Partnersrno');
     dispatch({
       type: 'Get_State_Request',
       url: '/partners/getStateList',
       Token: Token,
       navigation,
     });
-  }
-  const ApiCallWithUseEffect = async () => {
-    const Token = await AsyncStorage.getItem('loginToken');
-    const Id = await AsyncStorage.getItem('Partnersrno');
-
     dispatch({
       type: 'User_getBannerList_Request',
       url: 'partners//getBannerList',
@@ -218,17 +218,18 @@ const HomeScreen = () => {
             <Text style={styles.text2}>{'Onestop solution\nfor you'}</Text>
           </View>
         </ImageBackground>
+        {lenght > 0 ?
         <View style={styles.main}>
-          {lenght > 0 ?
+         
             <FlatListSlider
               data={BannerData}
               height={170}
               timer={3000}
               contentContainerStyle={{
                 marginVertical: 0,
-                paddingHorizontal: 30,
+                paddingHorizontal: 16,
               }}
-              indicatorContainerStyle={{ position: 'absolute', bottom: 10 }}
+              indicatorContainerStyle={{ position: 'absolute', bottom: -1 }}
               indicatorActiveColor={'#032e63'}
               indicatorInActiveColor={'#ffffff'}
               indicatorActiveWidth={5}
@@ -236,10 +237,10 @@ const HomeScreen = () => {
               component={<Banner />}
               separatorWidth={15}
               width={300}
-              autoscroll={false}
-              loop={false}
-            /> : null}
-        </View>
+              autoscroll={true}
+              loop={true}
+            /> 
+        </View>: null}
         <View style={styles.itemview}>
           <View style={styles.itemview1}>
             <Image
@@ -261,20 +262,20 @@ const HomeScreen = () => {
             showsHorizontalScrollIndicator={false}
             horizontal={true}
             data={selector1}
-            style={{ marginTop: 7 }}
+            style={{ marginTop: 7, }}
             renderItem={({ item }) => (
-              <View style={{borderWidth:0,height:175,width:125}}>
+              <View style={{borderWidth:0,height:175,width:120,margin:5}}>
                 <TouchableOpacity
                   onPress={() => supplierprofile(item)}
                   style={[styles.cardview]}>
                   <Image
                     style={{
-                      width: win.width * 0.33,
+                      width: '100%',
                       height: '100%',
                       resizeMode: 'contain',
                       borderRadius: 10,
                     }}
-                    source={item.logoImage ? { uri: `${item.logoImage}` } : require('../../../assets/Image/Not.jpeg')}
+                    source={item.logoImage ? { uri: `${item.logoImage}` } : require('../../../assets/logo.png')}
                   />
                 </TouchableOpacity>
                 <View style={styles.card2v1}>
@@ -317,9 +318,7 @@ const HomeScreen = () => {
               <Text style={styles.textc}>{'Customers'}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() =>
-                MyNetwork()
-              }
+              onPress={() => navigation.navigate('MyNetwork1',{ screen: 'MyNetwork' })}
               style={{ alignItems: 'center' }}>
               <View style={styles.card1}>
                 <Image

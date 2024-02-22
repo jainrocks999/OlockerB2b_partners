@@ -87,9 +87,10 @@ export default StyleSheet.create({
   card1: {
     width: '33.3%',
     alignItems: 'center',
-    height: 160,
+    height: 175,
     backgroundColor: '#fff',
-    borderWidth: 0.3,
+    borderWidth: 0.5,
+    borderColor:'#807f82'
   },
 
   card1img: {

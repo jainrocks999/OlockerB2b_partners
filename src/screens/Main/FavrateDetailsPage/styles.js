@@ -23,7 +23,7 @@ export default StyleSheet.create({
     paddingHorizontal: 5,
   },
   cardview: {
-    height: hp('25%'),
+    height: hp('26%'),
     // height:Platform.OS=="android"?210:210,
     backgroundColor: '#fff',
     // flex:1,
@@ -77,7 +77,7 @@ export default StyleSheet.create({
   cardbottom1: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: -5,
+    marginLeft: -8,
     marginTop: 0,
   },
   cardbottom1text: {

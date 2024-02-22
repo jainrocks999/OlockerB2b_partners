@@ -78,20 +78,21 @@ const MyProducts = ({ route }) => {
         source={require('../../../assets/L.png')}
         source2={require('../../../assets/Fo.png')}
         //  source2={require('../../../assets/Image/dil.png')}
-        title={'Favourite List'}
+        title={'Wish List'}
         onPress={() =>
           navigation.reset({ index: 0, routes: [{ name: 'Home' }] })
         }
         onPress2={() => navigation.navigate('MessageBox')}
       />
       {isFetching ? <Loader /> : null}
-      {/* <ScrollView> */}
+     
       {WishList?.wishlistitems?.length == 0 ?
 
         <View style={{ justifyContent: 'center', alignSelf: 'center', height: '90%', }}>
           <Text style={{ color: 'grey', fontFamily: 'Acephimere', fontSize: 19, fontWeight: '700' }}> {'No WishList Data'} </Text>
           {/* <Text style={styles.tlength}>{data2?.length === 0 ? 'No Pending Approval' : `${selector?.suppliers?.length}${'Pending Approval'}`}</Text> */}
         </View> :
+         <ScrollView style={{flex:1}}>
         <View>
           <View style={styles.main}>
             <View>
@@ -143,9 +144,9 @@ const MyProducts = ({ route }) => {
                           <Image
                             style={{
                               height: hp('2.4%'),
-                              width: wp('5.8%'),
+                              width: wp('6%'),
                               marginLeft: 5,
-                              marginTop: 2,
+                              marginTop: 5,
                               tintColor: 'red',
                             }}
                             source={require('../../../assets/Image/dil.png')}
@@ -156,7 +157,7 @@ const MyProducts = ({ route }) => {
                             style={{
                               height: hp('2%'),
                               width: wp('6%'),
-                              marginTop: 5,
+                              marginTop: 10,
                               marginLeft: 8,
                             }}
                             source={require('../../../assets/Image/share1.png')}
@@ -168,7 +169,7 @@ const MyProducts = ({ route }) => {
                           borderTopRightRadius: 10,
                           borderBottomLeftRadius: 10,
                           backgroundColor: '#24a31e',
-                          marginTop: Platform.OS == 'android' ? -36 : -44,
+                          marginTop: Platform.OS == 'android' ? hp('-5%') : -44,
                           alignSelf: 'flex-end',
                           height: hp('2.4%'),
                           width: '45%',
@@ -196,7 +197,7 @@ const MyProducts = ({ route }) => {
                           alignSelf: 'center',
                           // borderWidth: 5,
                         }}
-                        source={item.ImageName ? { uri: `${WishList.imagepath}${item.ImageName}` } : require('../../../assets/Image/Not.jpeg')}
+                        source={item.ImageName ? { uri: `${WishList.imagepath}${item.ImageName}` } : require('../../../assets/logo.png')}
                       />
                     </TouchableOpacity>
                     <View
@@ -216,9 +217,11 @@ const MyProducts = ({ route }) => {
             />
           </View>
         </View>
+        <View style={{ height: 70 }} />
+        </ScrollView>
       }
-      <View style={{ height: 70 }} />
-      {/* </ScrollView> */}
+      {/*  */}
+     
     </View>
   );
 };
@@ -226,19 +229,19 @@ export default MyProducts;
 const data1 = [
   {
     title: 'Milind Jewellers',
-    title1: require('../../../assets/Image/Not.jpeg'),
+    title1: require('../../../assets/logo.png'),
     text: 'We can supply product you have as..',
     time: 'Last replied on 07 Sep,2020',
   },
   {
     title: 'Mahabir Jewellers',
-    title1: require('../../../assets/Image/Not.jpeg'),
+    title1: require('../../../assets/logo.png'),
     text: 'Payments term can be discussed as per..',
     time: 'Last replied on 01 Sep,2020',
   },
   {
     title: 'Narendra Jewellers',
-    title1: require('../../../assets/Image/Not.jpeg'),
+    title1: require('../../../assets/logo.png'),
     text: 'We can supply product you have as..',
     time: 'Last replied on 03 Sep,2020',
   },

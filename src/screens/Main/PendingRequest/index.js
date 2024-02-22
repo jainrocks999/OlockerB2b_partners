@@ -47,7 +47,7 @@ const HomeScreen = () => {
 setVisible1(true);
     const axios = require('axios');
     let data = new FormData();
-    data.append('sp_networkId', id);
+    data.append('supplier_id', id);
     data.append('statusId', '1');
     data.append('partnerId', srno);
     data.append('rejectReason', '');
@@ -87,7 +87,7 @@ setVisible1(true);
 setVisible2(true)
     const axios = require('axios');
     let data = new FormData();
-    data.append('sp_networkId', id);
+    data.append('supplier_id', id);
     data.append('statusId', '2');
     data.append('partnerId', srno);
     data.append('rejectReason', '');
@@ -187,7 +187,7 @@ setVisible2(true)
                   <Image
                     style={{ height: '100%', width: '100%' }}
                     resizeMode={'cover'}
-                    source={item.logoImage ? { uri: item.logoImage } : require('../../../assets/Image/Not.jpeg')}
+                    source={item.logoImage ? { uri: item.logoImage } : require('../../../assets/logo.png')}
                   />
 
                 </View>
@@ -224,7 +224,7 @@ setVisible2(true)
                       marginTop: 20,
                     }}>
                     <TouchableOpacity
-                      onPress={() => AcceptMEthod(item.SrNo, index)}
+                      onPress={() => AcceptMEthod(item.SupplierSrNo, index)}
                       style={{
                         backgroundColor: '#5dc95c',
                         paddingHorizontal: 15,
@@ -243,7 +243,7 @@ setVisible2(true)
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      onPress={() => RejectMEthod(item.SrNo, index)}
+                      onPress={() => RejectMEthod(item.SupplierSrNo, index)}
                       style={{
                         backgroundColor: 'red',
                         paddingHorizontal: 15,

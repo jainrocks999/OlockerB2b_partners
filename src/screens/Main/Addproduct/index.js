@@ -1829,7 +1829,7 @@ const AddProducts = ({ route }) => {
           }
         </View>
 
-        <View style={{ marginHorizontal: 20, marginTop: 15 }}>
+        <View style={{ marginHorizontal: 50, marginTop: 1 ,paddingVertical:15}}>
           <TouchableOpacity onPress={() => AddProduct2()}
             style={{
               height: 40,

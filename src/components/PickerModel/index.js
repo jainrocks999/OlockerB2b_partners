@@ -8,6 +8,7 @@ import {
   View,
   TouchableOpacity,
   Image,
+  TextInput
 } from 'react-native';
 
 const AcModal = props => {
@@ -20,15 +21,14 @@ const AcModal = props => {
         }}
         style={props.styles}>
         <View style={styles.container}>
-          {/* <Text
-            style={{
-              fontSize: 16,
-              fontWeight: '700',
-              paddingHorizontal: 25,
-              marginVertical: 10,
-            }}>
-            {''}
-          </Text> */}
+          <View style={{marginLeft:0,}}>
+          <TextInput style={{}}
+          placeholder='search by'
+          value={props.value}
+          onChangeText={(val)=>props.onChangeText}
+
+          />
+          </View>
 
           <FlatList
             data={props.data}
@@ -68,7 +68,7 @@ const AcModal = props => {
 const styles = StyleSheet.create({
   btn: {
     backgroundColor: 'white',
-    alignItems: 'center',
+    // alignItems: 'center',
     paddingVertical: 15,
     marginHorizontal: 20,
     borderRadius: 10,
@@ -79,7 +79,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     paddingVertical: 0,
     backgroundColor: '#f6f6f6',
-    marginTop: '59%',
+    // marginTop: '59%',
+    //  top: '90%',
+     borderWidth:1,
+    // position:'relative',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

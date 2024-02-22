@@ -73,7 +73,7 @@ function* AddwishList(action) {
       // if (action && action.navigation) {
       //   action.navigation.navigate('FavDetails',)
       // }
-
+     
       Toast.show(response.msg);
     } else {
       yield put({
@@ -505,7 +505,7 @@ function* StateList(action) {
         type: 'Get_State_Success',
         payload: response,
       });
-      action.navigation.navigate('MyNetwork1', { screen: 'MyNetwork' })
+      // action.navigation.navigate('MyNetwork1', { screen: 'MyNetwork' })
     } else {
       yield put({
         type: 'Get_State_Error',
@@ -1054,7 +1054,7 @@ function* RemoveFromNetwork(action) {
 
   try {
     const data = {
-      network_id: action.network_id,
+      supplier_id: action.supplierId,
     };
     const response = yield call(
       Api.fetchDataByGET1,

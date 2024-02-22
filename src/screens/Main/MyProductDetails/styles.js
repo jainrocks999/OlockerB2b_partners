@@ -24,6 +24,7 @@ export default StyleSheet.create({
        // height:Platform.OS=="android"?210:210,
         backgroundColor: '#fff',
         // flex:1,
+        // borderWidth:1,
         margin: 6,
         borderRadius: 10,
         elevation: 3,

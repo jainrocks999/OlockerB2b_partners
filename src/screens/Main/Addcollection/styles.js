@@ -38,7 +38,7 @@ xbtn: {
     paddingVertical: 20,
   },
   modalView: {
-    height: hp(65),
+    height: hp(60),
     width: wp(85),
     backgroundColor: 'white',
      alignSelf: 'center',
@@ -95,7 +95,7 @@ modalText: {
     marginBottom: 0,
     paddingHorizontal: 5,
     paddingVertical: 10,
-    paddingBottom: 50,
+    paddingBottom: 20,
     borderWidth: 1,
     borderColor: '#ccc',
   },

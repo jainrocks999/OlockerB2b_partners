@@ -43,6 +43,8 @@ const Login = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const isFetching = useSelector(state => state.isFetching);
+  const [visible,setVisible]=useState(true);
+  
   // const [isfetching, setFetching] = useState(false);
   const pertnerLogin = async values => {
 
@@ -65,7 +67,9 @@ const Login = () => {
   };
 
   const Demo = async values => {
-    let token = await messaging().getToken();
+     let token1 = await messaging().getToken();
+    const token = await AsyncStorage.getItem('Tokenfcm');
+    console.log('dsscaa',token,token1);
     dispatch({
       type: 'User_Login_Request',
       url: 'partners//login',
@@ -146,7 +150,7 @@ const Login = () => {
               style={styles.image}
               source={require('../../../assets/lock1.png')}
             /> */}
-                    <View style={{ width: wp('53%'), marginLeft: 1 }}>
+                    <View style={{ width: wp('50%'), marginLeft: 1,flexDirection:'row' }}>
                       <TextInput
                         style={styles.input1}
                         placeholder="Enter your Password"
@@ -155,9 +159,22 @@ const Login = () => {
                         onBlur={handleBlur('password')}
                         value={values.password}
                         keyboardType={'default'}
-                        secureTextEntry={true}
+                        secureTextEntry={visible}
                       // returnKeyType="done"
                       />
+                        {visible?
+                      <TouchableOpacity
+                       style={{marginTop:10}}
+                       onPress={()=>setVisible(!visible)}>
+                        <Image style={{height:16,width:16,tintColor:'grey'}}source={require('../../../assets/Eye1.png')}/>
+                      </TouchableOpacity>
+                      :
+                      <TouchableOpacity
+                      style={{marginTop:10}}
+                       onPress={()=>setVisible(!visible)}>
+                        <Image style={{height:16,width:16,tintColor:'grey'}} source={require('../../../assets/Eye.png')}/>
+                      </TouchableOpacity>
+                      }
                     </View>
                   </View>
                   <View style={styles.error}>
@@ -182,7 +199,7 @@ const Login = () => {
             source={require('../../../assets/oloc.png')}
           /> */}
                 </View>
-                <View style={{ alignItems: 'center' }}>
+                {/* <View style={{ alignItems: 'center' }}>
                   <View style={styles.bottom}>
                     <Text
                       style={{
@@ -202,7 +219,7 @@ const Login = () => {
                       </Text>
                     </TouchableOpacity>
                   </View>
-                </View>
+                </View> */}
               </View>
             </KeyboardAwareScrollView>
           </ScrollView>

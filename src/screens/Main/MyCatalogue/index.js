@@ -191,28 +191,29 @@ const MyCatalogue = ({ route }) => {
             setTc(layout.height);
           }}>
           <View style={styles.container}>
+          {lenght > 0 ?
             <View style={styles.container1}>
-              {lenght > 0 ?
+             
                 <FlatListSlider
                   data={BannerData}
                   height={170}
                   timer={3000}
                   contentContainerStyle={{
                     marginVertical: 0,
-                    paddingHorizontal: 30,
+                    paddingHorizontal: 16,
                   }}
-                  indicatorContainerStyle={{ position: 'absolute', bottom: 10 }}
+                  indicatorContainerStyle={{ position: 'absolute', bottom: -16 }}
                   indicatorActiveColor={'#032e63'}
                   indicatorInActiveColor={'#ffffff'}
-                  indicatorActiveWidth={5}
+                  indicatorActiveWidth={10}
                   animation
                   component={<Banner />}
                   separatorWidth={15}
                   width={300}
-                  autoscroll={false}
-                  loop={false}
-                /> : null}
-            </View>
+                  autoscroll={true}
+                  loop={true}
+                /> 
+            </View>: null}
             <View
               ref={scrollViewRef}
               // ref={scrollViewRef}
@@ -222,6 +223,7 @@ const MyCatalogue = ({ route }) => {
               }}
               style={styles.main}>
               <TouchableOpacity
+               disabled={partner==true?true:false}
                 style={{ alignItems: 'center' }}
                 onPress={
                   () => setUserdata(false)
@@ -237,6 +239,7 @@ const MyCatalogue = ({ route }) => {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setUserdata(true)}
+                disabled={partner==true?true:false}
                 style={styles.touch}>
                 <View style={styles.main1}>
                   <Image
@@ -323,13 +326,13 @@ const MyCatalogue = ({ route }) => {
                           alignSelf: 'center',
                         }}
                         // resizeMode={'stretch'}
-                        source={require('../../../assets/Image/Not.jpeg')}
+                        source={require('../../../assets/logo.png')}
                       />
                     ) : (
                       <Image
                         style={{
                           width: win.width * 0.33,
-                          height: '74%',
+                          height: '71%',
                           resizeMode: 'contain',
                           alignSelf: 'center',
                           // borderWidth: 5,
@@ -350,7 +353,7 @@ const MyCatalogue = ({ route }) => {
                         {item.Value}
                       </Text>
 
-                      <Text style={[styles.card1t, { color: '#0d0d0d' }]}>
+                      <Text style={[styles.card1t, { color: '#0d0d0d',fontWeight:'700', }]}>
                         {item.pTotal <= 0
                           ? `${item.pTotal} Item`
                           : `${item.pTotal} Items`}
@@ -378,7 +381,7 @@ const MyCatalogue = ({ route }) => {
                       <Image
                         style={styles.card2img}
                         resizeMode="stretch"
-                        source={item.logoImage ? { uri: `${item.logoImage}` } : require('../../../assets/Image/Not.jpeg')}
+                        source={item.logoImage ? { uri: `${item.logoImage}` } : require('../../../assets/logo.png')}
                       />
                     </View>
                     <View style={styles.card2v1}>
@@ -408,13 +411,13 @@ const MyCatalogue = ({ route }) => {
                     <Image
                       style={{
                         width: win.width * 0.33,
-                        height: '74%',
+                        height: '71%',
                         resizeMode: 'contain',
                         alignSelf: 'center',
                         // borderWidth: 5,
                       }}
                       resizeMode={'stretch'}
-                      source={item.ImageName === '' ? require('../../../assets/Image/Not.jpeg') : {
+                      source={item.ImageName === '' ? require('../../../assets/logo.png') : {
                         uri: `${ImagePath.path2}${'uploads/product_type/'}${item.ImageName}`
                       }}
                     />
@@ -427,7 +430,7 @@ const MyCatalogue = ({ route }) => {
                         ]}>
                         {item.Value}
                       </Text>
-                      <Text style={[styles.card1t, { color: '#0d0d0d' }]}>
+                      <Text style={[styles.card1t, { color: '#0d0d0d',fontWeight:'700' }]}>
                         {item.pTotal <= 0
                           ? `${item.pTotal} Item`
                           : `${item.pTotal} Items`}
@@ -482,7 +485,7 @@ const MyCatalogue = ({ route }) => {
                           // borderWidth: 5,
                         }}
                         source={item.ImageName ?
-                          { uri: `${ImagePath.path2}${'uploads/collection/'}${item.ImageName}` } : require('../../../assets/Image/Not.jpeg')}
+                          { uri: `${ImagePath.path2}${'uploads/collection/'}${item.ImageName}` } : require('../../../assets/logo.png')}
                       />
 
                     </View>
