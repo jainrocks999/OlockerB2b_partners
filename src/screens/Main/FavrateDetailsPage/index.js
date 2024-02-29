@@ -52,6 +52,27 @@ const MyProducts = ({ route }) => {
     });
   }
 
+
+
+  const ProductDetalis = async item => {
+console.log('virendra,,,,,favlist  ,,,,',item);
+    const partnerid = await AsyncStorage.getItem('Partnersrno');
+    const Token = await AsyncStorage.getItem('loginToken');
+    dispatch({
+      type: 'User_singleProductDetail_Request',
+      url: 'partners/singleProductDetail',
+      userId: partnerid,
+      userType: 'partner',
+      productId: item.SrNo,
+      Token: Token,
+      name: item.ItemName,
+      login_user_id: partnerid,
+      login_user_type: 'partner',
+      mg: item.is_exist,
+      navigation,
+    });
+  };
+
   const RemoveWislist = async (item, index) => {
 
     const partnerid = await AsyncStorage.getItem('Partnersrno');
@@ -78,7 +99,7 @@ const MyProducts = ({ route }) => {
         source={require('../../../assets/L.png')}
         source2={require('../../../assets/Fo.png')}
         //  source2={require('../../../assets/Image/dil.png')}
-        title={'Wish List'}
+        title={'Wishlist'}
         onPress={() =>
           navigation.reset({ index: 0, routes: [{ name: 'Home' }] })
         }
@@ -181,7 +202,7 @@ const MyProducts = ({ route }) => {
                       </View>
                     </View>
                     <TouchableOpacity
-                      // onPress={() => manageCategory1(item.Product)}
+                       onPress={() =>ProductDetalis(item)}
                       style={{
                         height: hp('13%'),
                         width: wp('33%'),
@@ -202,7 +223,7 @@ const MyProducts = ({ route }) => {
                     </TouchableOpacity>
                     <View
                       style={{ height: hp('3%'), width: '100%', marginLeft: 20 }}>
-                      <Text style={styles.cardbottomtext}>{item.ItemName}</Text>
+                      <Text style={styles.cardbottomtext}>{`ID# ${item.ProductSku}`}</Text>
                       <View style={styles.cardbottom1}>
                         <Image
                           style={{ width: 16, height: 20 }}

@@ -35,13 +35,20 @@ const MyCatalogue = ({ route }) => {
   const [userdata, setUserdata] = useState(false);
   const isFetching = useSelector(state => state.isFetching);
   const selector = useSelector(state => state.Collection?.collection);
+
+
+
+
   const selector1 = useSelector(state => state.SupplierList?.suppliers);
   const selector2 = useSelector(state => state.Categories);
   const selector3 = useSelector(state => state.SupplierCategories);
   const selector4 = useSelector(state => state.BannerList?.data);
+
+
+
   const BannerData = [];
   selector4?.map((item) => {
-    if (item.ImageSection == "supplierCatalog" && item.isActive == 1) {
+    if (item.ImageSection == "partnerCatalog" && item.isActive == 1) {
       const url = `${ImagePath.path2}${item.ImageUrl}${item.ImageName
         }`;
       BannerData.push({
@@ -193,7 +200,7 @@ const MyCatalogue = ({ route }) => {
           <View style={styles.container}>
           {lenght > 0 ?
             <View style={styles.container1}>
-             
+{console.log('fgbgjkdsgs',BannerData)}
                 <FlatListSlider
                   data={BannerData}
                   height={170}
@@ -203,9 +210,9 @@ const MyCatalogue = ({ route }) => {
                     paddingHorizontal: 16,
                   }}
                   indicatorContainerStyle={{ position: 'absolute', bottom: -16 }}
-                  indicatorActiveColor={'#032e63'}
+                  indicatorActiveColor={'#ffffff'}
                   indicatorInActiveColor={'#ffffff'}
-                  indicatorActiveWidth={10}
+                  indicatorActiveWidth={5}
                   animation
                   component={<Banner />}
                   separatorWidth={15}
@@ -229,7 +236,11 @@ const MyCatalogue = ({ route }) => {
                   () => setUserdata(false)
                   // navigation.navigate('MyProducts')
                 }>
+                  
                 <View style={styles.main1}>
+                <View style={{height:30,width:30,borderRadius:15,backgroundColor:'#da062f',zIndex:1,alignSelf:'flex-end',}}>
+                <Text style={{fontSize:20,color:'#fff',textAlign:'center'}}>{selector2?.list?.length}</Text>
+                </View>
                   <Image
                     style={styles.img}
                     source={require('../../../assets/Image/my.png')}
@@ -241,7 +252,11 @@ const MyCatalogue = ({ route }) => {
                 onPress={() => setUserdata(true)}
                 disabled={partner==true?true:false}
                 style={styles.touch}>
+                 
                 <View style={styles.main1}>
+                <View style={{height:30,width:30,borderRadius:15,backgroundColor:'#da062f',zIndex:5,alignSelf:'flex-end',}}>
+                <Text style={{fontSize:20,color:'#fff',textAlign:'center'}}>{selector?.length}</Text>
+                </View>
                   <Image
                     style={styles.img1}
                     source={require('../../../assets/Image/neck.png')}
@@ -455,9 +470,9 @@ const MyCatalogue = ({ route }) => {
                   <View
                     style={{
                       height: hp('23%'),
-                      width: '99%',
+                      width: '100%',
                       marginTop: '0.5%',
-                      alignSelf: 'center',
+                      // alignSelf: 'center',
                       borderWidth: 0.5,
                     }}>
                     <View
@@ -471,19 +486,18 @@ const MyCatalogue = ({ route }) => {
                     </View>
                     <View
                       style={{
-                        height: hp('19.8%'),
+                        height: hp('20%'),
                         width: wp('100%'),
                         // maxHeight: hp('21.5%'),
                       }}>
 
                       <Image
                         style={{
-                          width: win.width * 0.93,
-                          height: '100%',
-                          // resizeMode: 'contain',
-                          alignSelf: 'center',
-                          // borderWidth: 5,
+                          width: win.width * 0.99,
+                          height: '100%',borderRadius:10
+                           
                         }}
+                     resizeMode='stretch'
                         source={item.ImageName ?
                           { uri: `${ImagePath.path2}${'uploads/collection/'}${item.ImageName}` } : require('../../../assets/logo.png')}
                       />

@@ -49,11 +49,11 @@ export default StyleSheet.create({
   },
   img: {
     height: 100,
-    width: 100,
+    width: 100,marginTop:-31
   },
   img1: {
     height: 100,
-    width: 95,
+    width: 95,marginTop:-31
   },
   tt: {
     color: '#fff',

@@ -29,63 +29,96 @@ PushNotification.createChannel(
   (created) => console.log(`createChannel returned '${created}'`)
 );
 
-PushNotification.configure({
-  onRegister: function (token) {
-    console.log("TOKEN: virendra", token);
-    AsyncStorage.setItem('Tokenfcm',token.token)
-  },
-    onNotification: function (notification) {
-      PushNotification.localNotification({
-        title: notification.message,
-        message: notification.title,
-      });
-    console.log("NOTIFICATION:", notification);  
-    notification.finish(PushNotificationIOS.FetchResult.NoData);
-  },
-    onAction: function (notification) {
-    console.log("ACTION:", notification.action);
-    console.log("NOTIFICATION:", notification);
-    },
-    onRegistrationError: function(err) {
-    console.error(err.message, err);
-  },
-    permissions: {
-    alert: true,
-    badge: true,
-    sound: true,
-  },
-  popInitialNotification: true,
-  requestPermissions: true,
-}); PushNotification.configure({
-  onRegister: function (token) {
-    console.log("TOKEN: 12", token);
-    AsyncStorage.setItem('Tokenfcm',token.token)
-  },
-    onNotification: function (notification) {
-      PushNotification.localNotification({
-        title: notification.message,
-        message: notification.title,
-      });
-    console.log("NOTIFICATION:56", notification);  
-    notification.finish(PushNotificationIOS.FetchResult.NoData);
-  },
-    onAction: function (notification) {
-    console.log("ACTION:", notification.action);
-    console.log("NOTIFICATION:", notification);
-    },
-    onRegistrationError: function(err) {
-    console.error(err.message, err);
-  },
-    permissions: {
-    alert: true,
-    badge: true,
-    sound: true,
-  },
-  popInitialNotification: true,
-  requestPermissions: true,
-});
+// PushNotification.configure({
+//   onRegister: function (token) {
+//     console.log("TOKEN: virendra", token);
+//     AsyncStorage.setItem('Tokenfcm',token.token)
+//   },
+//     onNotification: function (notification) {
+//       PushNotification.localNotification({
+//         title: notification.message,
+//         message: notification.title,
+//       });
+//     console.log("NOTIFICATION:", notification);  
+//     notification.finish(PushNotificationIOS.FetchResult.NoData);
+//   },
+//     onAction: function (notification) {
+//     console.log("ACTION:", notification.action);
+//     console.log("NOTIFICATION:", notification);
+//     },
+//     onRegistrationError: function(err) {
+//     console.error(err.message, err);
+//   },
+//     permissions: {
+//     alert: true,
+//     badge: true,
+//     sound: true,
+//   },
+//   popInitialNotification: true,
+//   requestPermissions: true,
+// }); 
 const App = () => {
+
+  const initializeNotifications = () => {
+    PushNotification.deleteChannel('default');
+    PushNotification.createChannel(
+      {
+        channelId: 'default', // (required)
+        channelName: 'default', // (required)
+        soundName: 'notification.mp3', // (optional) See `soundName` parameter of `localNotification` function
+        importance: 4, // (optional) default: 4. Int value of the Android notification importance
+        vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
+        playSound: true,
+      },
+      created => console.log(`Notification channel created '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
+    );
+    PushNotification.configure({
+      onRegister: function (token) {
+             console.log("TOKEN: virendra", token);
+             AsyncStorage.setItem('Tokenfcm',token.token)
+           },
+
+      onNotification: function (notification) {
+        if (notification.userInteraction) {
+          if (notification.data.toScreen) {
+          }
+        } else {
+          PushNotification.localNotification({
+            allowWhileIdle: true,
+            ignoreInForeground: false,
+            title: notification.title,
+            message: notification.message,
+            soundName: 'notification.mp3',
+            visibility: 'public',
+            channelId: 'default',
+            playSound: true,
+          });
+          console.log('notification ,android',notification);
+        }
+      },
+    });
+
+    if (Platform.OS === 'ios') {
+      messaging().onMessage(async remoteMessage => {
+        PushNotificationIOS.presentLocalNotification({
+          alertTitle: remoteMessage?.notification?.title || '',
+          alertBody: remoteMessage?.notification?.body || '',
+          userInfo: remoteMessage.data,
+          isSilent: false,
+          applicationIconBadgeNumber: 0,
+        });
+      });
+    }
+  };
+
+
+
+
+
+  
   useEffect(() => {
+
+    initializeNotifications();
     crashlytics().log('Analytics page just mounted')
     getCrashlyticsDetail()
     return () => {

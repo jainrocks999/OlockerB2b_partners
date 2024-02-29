@@ -131,7 +131,7 @@ const HomeScreen = () => {
                        
                           <View style={styles.cardv2}>
                             <Image
-                              style={{ width: 100, height: 80, marginLeft: -10 }}
+                              style={{ width: 100, height: 80, marginLeft: -10,borderRadius:10 }}
                               resizeMode="cover"
                               source={item.logoImage ? { uri: `${item.logoImage}` } : require('../../../assets/logo.png')}
                             />

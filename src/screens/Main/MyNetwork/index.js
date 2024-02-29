@@ -112,7 +112,7 @@ const MyCatalogue = () => {
   const selector4 = useSelector(state => state.BannerList?.data);
   const BannerData = [];
   selector4?.map((item) => {
-    if (item.ImageSection == "supplierCatalog" && item.isActive == 1) {
+    if (item.ImageSection == "partnerMyNetwork" && item.isActive == 1) {
       const url = `${ImagePath.path2}${item.ImageUrl}${item.ImageName
         }`;
       BannerData.push({
@@ -383,6 +383,7 @@ const MyCatalogue = () => {
           style={styles.container1}>
           {lenght > 0 ?
             <View style={styles.main}>
+              
               <FlatListSlider
                 data={BannerData}
                 height={170}

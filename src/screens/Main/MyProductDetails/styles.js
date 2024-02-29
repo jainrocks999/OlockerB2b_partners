@@ -20,7 +20,7 @@ export default StyleSheet.create({
         paddingHorizontal: 5,
     },
     cardview: {
-        height:hp('25%'),
+        height:hp('23%'),
        // height:Platform.OS=="android"?210:210,
         backgroundColor: '#fff',
         // flex:1,

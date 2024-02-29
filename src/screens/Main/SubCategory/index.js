@@ -166,7 +166,7 @@ const SubCategory = ({ route }) => {
       />
        {isFetching ? <Loader /> : null}
       <ScrollView>
-       {console.log('viree......',selector?.productDetail)}
+      
         <View style={styles.main}>
           {
         //  selector?.productDetail?.is_exsit == false 

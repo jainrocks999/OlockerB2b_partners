@@ -34,8 +34,10 @@ const HomeScreen = () => {
   const selector1 = useSelector(state => state.SupplierList?.suppliers);
   const selector2 = useSelector(state => state.BannerList?.data);
   const BannerData = [];
+
+  
   selector2?.map((item) => {
-    if (item.ImageSection == "supplierHome" && item.isActive == 1) {
+    if (item.ImageSection == "partnerHome" && item.isActive == 1) {
       const url = `${ImagePath.path2}${item.ImageUrl}${item.ImageName
         }`;
       BannerData.push({

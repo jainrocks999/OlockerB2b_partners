@@ -124,7 +124,7 @@ const HomeScreen = ({ route }) => {
             <View
               style={styles.main1}>
               <Image   style={{ width: '100%', height: '100%', borderRadius: 10 }}
-                source={selector?.logoImage ? { uri: selector.logoImage } : require('../../../assets/Image/Not.jpeg')}
+                source={selector?.logoImage ? { uri: selector.logoImage } : require('../../../assets/logo.png')}
               />
             </View>
             <View style={styles.details}>
