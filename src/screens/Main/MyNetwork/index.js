@@ -54,9 +54,8 @@ const MyCatalogue = () => {
   const selector1 = useSelector(state => state.Pending);
   const data7 = useSelector(state => state.deletData1)
   const [citydemo, setCityDemo] = useState([{ label: 'Select city', value: '1' },])
-
-  console.log(selector);
-
+  const networklist = useSelector(state => state.SupplierList?.suppliers);
+  const sentRequest1 = useSelector(state => state.sentRequest);
 
   const [search, setSearch] = useState('');
   const [filteredDataSource, setFilteredDataSource] = useState(selector);
@@ -64,7 +63,7 @@ const MyCatalogue = () => {
   const win = Dimensions.get('window');
 
   const searchFilterFunction = text => {
-    console.log('fadafd', text);
+   
     if (text) {
       const newData = masterDataSource.filter(function (item) {
         const itemData = `${item.label} `
@@ -140,24 +139,27 @@ const MyCatalogue = () => {
     });
   }
   useEffect(() => {
-    setSupplier(''),
-      setState(''),
-      setCity(''),
-      setMetal(''),
+    
+      setState('');
+      setSupplier('');
       setShow(false);
     setVisible1(false);
     setData1(''),
       pendingRequest();
     SentRequest();
     //  getSupplier();
+
+   
   }
     , [focus])
 
   const getSupplier = async () => {
-
+// console.log('getettetete',supplier, state, city,metal);
     if (state == '' && supplier == '') {
       Toast.show('Please search by Partner name or State')
     } else {
+
+      console.log('eerteertet',supplier, state, city,metal);
       setVisible1(true);
       const Token = await AsyncStorage.getItem('loginToken')
       const Id = await AsyncStorage.getItem('Partnersrno');
@@ -178,6 +180,7 @@ const MyCatalogue = () => {
           metalType: metal
         }
       };
+      // console.log('data get ,,,,',params);
       axios.request(config)
         .then((response) => {
 
@@ -190,6 +193,7 @@ const MyCatalogue = () => {
 
         })
         .catch((error) => {
+          console.log('ereererre',error);
           setVisible1(false)
           Toast.show('Server not responding')
 
@@ -321,7 +325,7 @@ const MyCatalogue = () => {
       supplierId: id.SrNo,
       Token: Token,
       partnerId: srno,
-      network_id: id.networkId,
+      supplier_id: id.SrNo,
       navigation,
       Status: 1,
 
@@ -336,7 +340,11 @@ const MyCatalogue = () => {
   };
   const citySearch = async (value) => {
 
-    const Token = await AsyncStorage.getItem('loginToken')
+    const Token = await AsyncStorage.getItem('loginToken');
+    
+    setCity('');
+    setMetal('');
+    setSupplier('');
     setVisible1(true);
     const axios = require('axios');
 
@@ -357,6 +365,7 @@ const MyCatalogue = () => {
         if (response.data.status == true) {
           setData2(response.data.cities);
           setVisible1(false);
+          
         }
       })
       .catch((error) => {
@@ -387,7 +396,7 @@ const MyCatalogue = () => {
               <FlatListSlider
                 data={BannerData}
                 height={170}
-                timer={5000}
+                timer={3000}
                 contentContainerStyle={{ marginVertical: 0, paddingHorizontal: 16 }}
                 indicatorContainerStyle={{ position: 'absolute', bottom: -16 }}
                 indicatorActiveColor={'#032e63'}
@@ -398,7 +407,7 @@ const MyCatalogue = () => {
                 separatorWidth={15}
                 width={300}
                 autoscroll={true}
-                loop={true}
+                loop={false}
               />
             </View> : null}
 
@@ -781,7 +790,15 @@ const MyCatalogue = () => {
                   justifyContent: 'center',
                   width: '33%',
                 }}>
-                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+{networklist?.length == 0?
+  <View>
+  <Text style={{ color: '#565656', fontFamily: 'Acephimere' }}>{''}</Text>
+</View>:
+        <View style={{height:18,width:30,bottom:-5,backgroundColor:'#e9056b',alignSelf:'flex-end',borderRadius:10}}>
+<Text style={{color:'#fff',textAlign:'center'}}>{`${networklist.length}`}</Text>
+        </View>}
+
+                      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                   <Image
                     style={{ height: 40, width: 42, tintColor: '#032e63' }}
                     source={require('../../../assets/PartnerImage/4.png')}
@@ -813,6 +830,17 @@ const MyCatalogue = () => {
                   justifyContent: 'center',
                   width: '33%',
                 }}>
+
+
+{data7?.length == 0 || selector1?.list?.length == 0 ?
+  <View>
+  <Text style={{ color: '#565656', fontFamily: 'Acephimere' }}>{''}</Text>
+</View>:
+
+                  <View style={{height:18,width:30,bottom:-5,backgroundColor:'#da062f',alignSelf:'flex-end',borderRadius:10}}>
+<Text style={{color:'#fff',textAlign:'center'}}>{`${data7 ? data7?.length : selector1?.list?.length}`}</Text>
+        </View>
+}
                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                   <Image
                     style={{ height: 42, width: 50 }}
@@ -846,6 +874,14 @@ const MyCatalogue = () => {
                   justifyContent: 'center',
                   width: '33%',
                 }}>
+
+{sentRequest1?.suppliers?.length == 0?
+  <View>
+  <Text style={{ color: '#565656', fontFamily: 'Acephimere' }}>{''}</Text>
+</View>:
+        <View style={{height:18,width:30,bottom:-2,backgroundColor:'#e9056b',alignSelf:'flex-end',borderRadius:10}}>
+<Text style={{color:'#fff',textAlign:'center'}}>{`${sentRequest1?.suppliers?.length}`}</Text>
+        </View>}
                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                   <Image
                     style={{ height: 42, width: 52 }}
@@ -859,7 +895,7 @@ const MyCatalogue = () => {
                     color: '#343434',
                     fontFamily: 'Acephimere',
                   }}>
-                  Send Request
+                  Sent Request
                 </Text>
               </TouchableOpacity>
             </View>

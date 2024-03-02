@@ -46,11 +46,20 @@ const MyProducts = ({route}) => {
                   0,
                 )} K`}</Text>
                 <View style={styles.Bv}>
+                <Text style={{ fontFamily: 'Roboto-Medium',
+    fontSize: 13,
+    
+    fontWeight: '600',
+    color:'#474747'}}>({`${item.Purity}`})</Text>
+                  <View style={{flexDirection:'row',bottom:-3,alignItems:'center',justifyContent:'center'}}>
+
+                 
                   <Image
                     style={{height: 16, width: 20}}
                     source={require('../../../assets/Image/rupay.png')}
                   />
-                  <Text style={styles.Btt}>{item.PM}</Text>
+                  <Text style={styles.Btt}>{item.AM}</Text>
+                  </View>
                 </View>
               </ImageBackground>
             )}

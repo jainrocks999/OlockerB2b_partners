@@ -193,10 +193,10 @@ const MessageBox2 = () => {
               
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate('ChatScreen', { item: item });
+                  navigation.navigate('ChatScreen', { item: item ,Id:false});
                 }}
                 style={styles.Usercard}>
-                  {console.log('dddata a a',item)}
+                  {/* {console.log('dddata a a',item)} */}
                 <View style={{
                   height: 60, width: 60, borderRadius: 30,
                   backgroundColor: '#f0f0f0', marginRight: 10, marginTop: 5,

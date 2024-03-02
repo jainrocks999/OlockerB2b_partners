@@ -45,7 +45,10 @@ export default StyleSheet.create({
   main: {
     alignItems: 'center',
     height: 200,
-    marginTop: -120,
+    marginTop: -120, borderWidth:5,
+    // paddingVertical: 20,
+    // borderBottomLeftRadius: 30,
+    // borderBottomRightRadius: 30,
   },
   itemview: {
     marginTop: 10,
@@ -198,9 +201,9 @@ export default StyleSheet.create({
     color:'#474747'
   },
   Bv: {
-    bottom: 15,
+    bottom: 20,
     position: 'absolute',
-    flexDirection: 'row',
+    // flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -217,13 +220,13 @@ export default StyleSheet.create({
     // borderBottomLeftRadius: 10,
     // borderBottomRightRadius: 10,
     // padding: 10,
-    alignSelf:'center',
+   alignItems:'center',
     marginTop:5
     //justifyContent: 'center',
   },
   card2v1t: {
     color: '#032e63',
-    fontSize: 15,marginLeft:10,width:'90%',
+    fontSize: 15,
     fontFamily: 'Acephimere',
   },
 });

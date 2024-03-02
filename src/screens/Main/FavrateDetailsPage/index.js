@@ -61,8 +61,8 @@ console.log('virendra,,,,,favlist  ,,,,',item);
     dispatch({
       type: 'User_singleProductDetail_Request',
       url: 'partners/singleProductDetail',
-      userId: partnerid,
-      userType: 'partner',
+      userId:  item.PartnerSrNo==0? item.SupplierSrNo: item.PartnerSrNo,
+      userType:  item.PartnerSrNo==0?'supplier':'partner',
       productId: item.SrNo,
       Token: Token,
       name: item.ItemName,
@@ -120,14 +120,14 @@ console.log('virendra,,,,,favlist  ,,,,',item);
               <Text style={styles.text}>{WishList?.wishlistitems?.length == 1 ? `${WishList?.wishlistitems?.length} Item` : `${WishList?.wishlistitems?.length} Items`}</Text>
             </View>
           </View>
-         
+          {console.log('virendra,,,,,favlist  ,,,1212,',WishList?.wishlistitems)}
           <View style={styles.card}>
             <FlatList
               data={WishList?.wishlistitems}
               numColumns={2}
               renderItem={({ item, index }) => (
                 <View style={styles.cardview}>
-                 
+               
                   <View
                     style={{
                       height: hp('100%'),
@@ -185,6 +185,8 @@ console.log('virendra,,,,,favlist  ,,,,',item);
                           />
                         </TouchableOpacity>
                       </View>
+
+                     
                       <View
                         style={{
                           borderTopRightRadius: 10,

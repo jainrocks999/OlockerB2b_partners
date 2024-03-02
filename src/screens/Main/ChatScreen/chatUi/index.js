@@ -28,7 +28,7 @@ const ChatScreen2 = ({ ...props }) => {
 
 
   const GetMessage = async () => {
-
+      console.log('dsfsdjkjsdk');
     const partnerid = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken');
     setUserId(parseInt(partnerid));
@@ -36,7 +36,7 @@ const ChatScreen2 = ({ ...props }) => {
       type: 'get_Message_Request',
       url: 'partners/getMessage',
       sender_id: parseInt(partnerid),
-      reciver_id: parseInt(props.data.SrNo),
+      reciver_id:props?.Id? parseInt(props?.data?.SupplierSrNo):parseInt(props.data.SrNo),
       user_type: 'supplier',
       Token: Token,
     });
@@ -44,7 +44,7 @@ const ChatScreen2 = ({ ...props }) => {
 
 
   const onSend = async msg => {
-
+console.log('ssioghsgsug', props?.Id? parseInt(props?.data?.SupplierSrNo):parseInt(props.data.SrNo),);
     const partnerid = await AsyncStorage.getItem('Partnersrno');
     // setUserId(parseInt(partnerid))
     const Token = await AsyncStorage.getItem('loginToken')
@@ -55,7 +55,7 @@ const ChatScreen2 = ({ ...props }) => {
       type: 'Message_Send_Request',
       url: 'partners/msgSentSuccessPartnerSide',
       sender_id: userId,
-      reciver_id: parseInt(props.data.SrNo),
+      reciver_id: props?.Id? parseInt(props?.data?.SupplierSrNo):parseInt(props.data.SrNo),
       user_type: "partner",
       message: text,
       Token: Token,

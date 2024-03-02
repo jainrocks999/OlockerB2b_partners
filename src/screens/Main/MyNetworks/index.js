@@ -87,7 +87,7 @@ const HomeScreen = () => {
       supplierId: id.SupplierSrNo,
       Token: Token,
       partnerId:srno,
-      network_id: id.SrNo,
+      supplier_id: id.SupplierSrNo,
       navigation,
       Status: 2,
 

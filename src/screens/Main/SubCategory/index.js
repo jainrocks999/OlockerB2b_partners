@@ -332,8 +332,10 @@ const SubCategory = ({ route }) => {
               <TouchableOpacity style={styles.Enqure}>
                 <Text style={styles.textEQ}>ADD TO CATALOGUE</Text>
               </TouchableOpacity>
+
+            {console.log('selector?.productDetail....',selector)}
               <TouchableOpacity 
-               onPress={()=>  navigation.navigate('ChatScreen',{ item: selector?.productDetail })}
+               onPress={()=>  navigation.navigate('ChatScreen',{ item: selector?.productDetail,Id:true })}
               style={styles.Enqure}>
                 <Text style={styles.textEQ}>ENQUIRE NOW</Text>
               </TouchableOpacity>

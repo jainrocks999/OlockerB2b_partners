@@ -299,7 +299,7 @@ const MyProducts = ({ route }) => {
                     style={{
                       height: hp('3%'),
                       width: '100%',
-                      marginLeft: 20,
+                      marginLeft: 35,
                     }}>
                     <Text
                       style={

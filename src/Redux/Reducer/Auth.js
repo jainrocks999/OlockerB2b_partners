@@ -47,6 +47,7 @@ initialstate = {
   EditProduct: [],
   HproductSrNo: '',
   productEdit: false,
+  Notification:[],
   datadelete: {
     decorative: false,
     stone: false,
@@ -453,6 +454,12 @@ export default (state = initialstate, action) => {
     case 'Add_Collection_Error':
       return { ...state, isFetching: false };
 
+      case 'Get_pushNotificationList_Request':
+        return { ...state, isFetching: true };
+      case 'Get_pushNotificationList_Success':
+        return { ...state, isFetching: false, Notification: action.payload };
+      case 'Get_pushNotificationList_Error':
+        return { ...state, isFetching: false };
 
     default:
       return state;

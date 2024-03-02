@@ -26,7 +26,7 @@ const HomeScreen = () => {
   const selector = useSelector(state => state.sentRequest);
   const data2 = useSelector(state => state.deletData)
   const dispatch = useDispatch();
-
+console.log('length.....',selector?.length);
 
   const isFetching = useSelector(state => state.isFetching)
   const [rejected, setRejected] = useState(false);

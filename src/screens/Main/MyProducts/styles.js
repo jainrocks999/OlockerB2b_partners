@@ -27,9 +27,9 @@ export default StyleSheet.create({
     color:'#474747'
   },
   Bv: {
-    bottom: 15,
+    bottom: 20,
     position: 'absolute',
-    flexDirection: 'row',
+    // flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },

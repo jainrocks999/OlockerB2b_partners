@@ -200,7 +200,7 @@ const MyCatalogue = ({ route }) => {
           <View style={styles.container}>
           {lenght > 0 ?
             <View style={styles.container1}>
-{console.log('fgbgjkdsgs',BannerData)}
+
                 <FlatListSlider
                   data={BannerData}
                   height={170}
@@ -218,7 +218,7 @@ const MyCatalogue = ({ route }) => {
                   separatorWidth={15}
                   width={300}
                   autoscroll={true}
-                  loop={true}
+                  loop={false}
                 /> 
             </View>: null}
             <View
@@ -238,7 +238,7 @@ const MyCatalogue = ({ route }) => {
                 }>
                   
                 <View style={styles.main1}>
-                <View style={{height:30,width:30,borderRadius:15,backgroundColor:'#da062f',zIndex:1,alignSelf:'flex-end',}}>
+                <View style={{height:30,width:30,borderRadius:15,backgroundColor:'#da062f',zIndex:1,alignSelf:'flex-end',bottom:5}}>
                 <Text style={{fontSize:20,color:'#fff',textAlign:'center'}}>{selector2?.list?.length}</Text>
                 </View>
                   <Image
@@ -254,7 +254,7 @@ const MyCatalogue = ({ route }) => {
                 style={styles.touch}>
                  
                 <View style={styles.main1}>
-                <View style={{height:30,width:30,borderRadius:15,backgroundColor:'#da062f',zIndex:5,alignSelf:'flex-end',}}>
+                <View style={{bottom:5,height:30,width:30,borderRadius:15,backgroundColor:'#da062f',zIndex:5,alignSelf:'flex-end',}}>
                 <Text style={{fontSize:20,color:'#fff',textAlign:'center'}}>{selector?.length}</Text>
                 </View>
                   <Image

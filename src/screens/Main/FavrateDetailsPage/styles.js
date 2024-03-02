@@ -23,7 +23,7 @@ export default StyleSheet.create({
     paddingHorizontal: 5,
   },
   cardview: {
-    height: hp('25.5%'),
+    height: hp('26%'),
     // height:Platform.OS=="android"?210:210,
     backgroundColor: '#fff',
     // flex:1,
@@ -70,7 +70,7 @@ export default StyleSheet.create({
     paddingHorizontal: 20,
   },
   cardbottomtext: {
-    color: '#050505',
+    color: '#050505',marginTop:5,
     fontFamily: 'Acephimere',
     fontSize: 13,
   },

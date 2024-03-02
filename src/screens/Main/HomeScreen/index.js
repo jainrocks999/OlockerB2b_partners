@@ -101,6 +101,28 @@ const HomeScreen = () => {
   const ApiCallWithUseEffect = async () => {
     const Token = await AsyncStorage.getItem('loginToken');
     const Id = await AsyncStorage.getItem('Partnersrno');
+
+           
+     dispatch({
+      type:'Get_pushNotificationList_Request',
+      url:'/partners/pushNotificationList',
+      partnerId:Id,
+      Token:Token
+     })
+
+
+      dispatch({
+        type: 'Get_Sent_Request',
+        url: '/partners/requestedSupplierList',
+        partnerId: Id,
+        Token: Token,
+      });
+      dispatch({
+        type: 'Get_delete_Success',
+        payload: undefined
+      })
+
+
     dispatch({
       type: 'Get_State_Request',
       url: '/partners/getStateList',
@@ -146,7 +168,7 @@ const HomeScreen = () => {
       supplierId: id.SupplierSrNo,
       Token: Token,
       partnerId:Id,
-      network_id: id.SrNo,
+      supplier_id: id.SupplierSrNo,
       navigation,
       Status: 2
 
@@ -186,7 +208,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView style={styles.scroll}>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
         {isFetching ? <Loader /> : null}
         <ImageBackground
           style={styles.imgback}
@@ -220,8 +242,43 @@ const HomeScreen = () => {
             <Text style={styles.text2}>{'Onestop solution\nfor you'}</Text>
           </View>
         </ImageBackground>
-        {lenght > 0 ?
-        <View style={styles.main}>
+        
+
+
+        {/* <View style={{ alignItems: 'center',
+    height: 200,
+    marginTop: -120,}}>
+          <FlatListSlider
+            data={selector2}
+            height={170}
+            timer={3000}
+            contentContainerStyle={{
+              marginVertical: 0,
+              paddingHorizontal: 30,
+            }}
+            indicatorContainerStyle={{position: 'absolute', bottom: 4}}
+            indicatorActiveColor={'#032e63'}
+            indicatorInActiveColor={'#ffffff'}
+            indicatorActiveWidth={5}
+            animation
+            component={<Banner />}
+            separatorWidth={15}
+            width={300}
+            autoscroll={false}
+            loop={false}
+          />
+        </View>
+
+ */}
+
+
+
+
+
+      {lenght > 0 ?
+        <View style=
+         {styles.main}
+        >
          
             <FlatListSlider
               data={BannerData}
@@ -240,9 +297,9 @@ const HomeScreen = () => {
               separatorWidth={15}
               width={300}
               autoscroll={true}
-              loop={true}
+              loop={false}
             /> 
-        </View>: null}
+        </View>: null} 
         <View style={styles.itemview}>
           <View style={styles.itemview1}>
             <Image
@@ -362,11 +419,19 @@ const HomeScreen = () => {
                   0,
                 )} K`}</Text>
                 <View style={styles.Bv}>
+                <Text style={{ fontFamily: 'Roboto-Medium',
+    fontSize: 13,
+    
+    fontWeight: '600',
+    color:'#474747'}}>({`${item.Purity}`})</Text>
+                  <View style={{flexDirection:'row',bottom:-3,alignItems:'center',justifyContent:'center'}}>
+
                   <Image
                     style={{ height: 16, width: 20 }}
                     source={require('../../../assets/Image/rupay.png')}
                   />
-                  <Text style={styles.Btt}>{item.PM}</Text>
+                  <Text style={styles.Btt}>{item.AM}</Text>
+                </View>
                 </View>
               </ImageBackground>
             )}

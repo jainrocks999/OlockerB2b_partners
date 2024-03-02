@@ -957,7 +957,7 @@ function* GetMeassege(action) {
           },
         });
       }),
-        Toast.show('get successss')
+        // Toast.show('get successss')
 
       yield put({
         type: 'get_Message_Success',
@@ -1617,6 +1617,49 @@ function* collectionimg(action) {
   }
 }
 
+function* Notification(action){
+  try {
+    console.log('Notification.......action',action);
+    const data = {
+      partnerId:action.partnerId
+    
+    }
+    const response = yield call(
+      Api.fetchDataByGET1,
+      action.url,
+      action.Token,
+      data
+    );
+  
+   if (response.status == true) {
+    console.log('Notification,,,,,response ,,,12321321321',response.data);
+    yield put({
+      type: 'Get_pushNotificationList_Success',
+      payload: response.data,
+    });
+  Toast.show(response?.msg)
+
+  } else {
+    yield put({
+      type: 'Get_pushNotificationList_Error',
+
+    });
+    Toast.show(response?.msg)
+  }
+
+
+
+  } catch (error) {
+    yield put({
+      type: 'Get_pushNotificationList_Error',
+
+    });
+  }
+
+}
+
+
+
 export default function* authSaga() {
   yield takeEvery('User_Login_Request', doLogin);
   yield takeEvery('User_collection_Request', getCollection);
@@ -1659,6 +1702,7 @@ export default function* authSaga() {
   yield takeEvery('product_removeStone_Request', RemoveStone);
   yield takeEvery('User_editProduct_Request', EditProduct);
   yield takeEvery('Get_creativeImgList_Request',collectionimg);
+  yield takeEvery('Get_pushNotificationList_Request',Notification)
 
 
 }
