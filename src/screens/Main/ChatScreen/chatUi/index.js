@@ -36,7 +36,7 @@ const ChatScreen2 = ({ ...props }) => {
       type: 'get_Message_Request',
       url: 'partners/getMessage',
       sender_id: parseInt(partnerid),
-      reciver_id:props?.Id? parseInt(props?.data?.SupplierSrNo):parseInt(props.data.SrNo),
+      reciver_id:props?.Id? parseInt(props?.data?.SrNo):parseInt(props.data.SrNo),
       user_type: 'supplier',
       Token: Token,
     });
@@ -55,7 +55,7 @@ console.log('ssioghsgsug', props?.Id? parseInt(props?.data?.SupplierSrNo):parseI
       type: 'Message_Send_Request',
       url: 'partners/msgSentSuccessPartnerSide',
       sender_id: userId,
-      reciver_id: props?.Id? parseInt(props?.data?.SupplierSrNo):parseInt(props.data.SrNo),
+      reciver_id: props?.Id? parseInt(props?.data?.SrNo):parseInt(props.data.SrNo),
       user_type: "partner",
       message: text,
       Token: Token,

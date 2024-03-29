@@ -32,7 +32,7 @@ const HomeScreen = ({ route }) => {
   const selector = useSelector(state => state.SupplierDetail?.detail)
   const selector3 = useSelector(state => state.sentRequest);
   // console.log('detailss,,,,,,',selector3.suppliers);
-   console.log('detailss,,,,,,ssssss',selector);
+   console.log('detailss,,,,,,ssssss',selector.isAdd);
   const selector1 = useSelector(state => state.Status);
   const isFetching = useSelector(state => state.isFetching);
   const [profile, setProfile] = useState(true);
@@ -135,6 +135,8 @@ const HomeScreen = ({ route }) => {
              
               <View
                 style={styles.star}>
+
+{selector.isAdd == 1 ?
                 <Stars
                   half={true}
                   default={0}
@@ -146,7 +148,7 @@ const HomeScreen = ({ route }) => {
                   fullStar={require('../../../assets/Image/star.png')}
                   emptyStar={require('../../../assets/Image/star1.png')}
                 />
-
+:null}
                 <View style={{ flexDirection: 'row' }}>
                   <TouchableOpacity
                     onPress={() => Linking.openURL(`tel:${selector.MobileNo}`)}
@@ -213,7 +215,9 @@ const HomeScreen = ({ route }) => {
               </View>
               <View  style ={styles.card}>
                 <TouchableOpacity
-                   onPress={() => navigation.navigate('Customer1',{screen:'Messagebox'})}
+                   onPress={() => navigation.navigate('ChatScreen',{ item: selector,Id:true })
+                    //  navigation.navigate('Customer1',{screen:'Messagebox'})
+                  }
                   style={styles.tabStyle}>
                   {message ? (
                      <Image style={styles.img1}

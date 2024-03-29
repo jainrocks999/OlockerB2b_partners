@@ -17,54 +17,19 @@ import crashlytics from '@react-native-firebase/crashlytics';
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification from "react-native-push-notification";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { GetMessageCommon } from './src/screens/Main/ChatScreen/common';
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreAllLogs();
-PushNotification.createChannel(
-  {
-    channelId: "default-channel-id",
-    channelName: "My channel",
-    vibrate: true,
-  },
-  (created) => console.log(`createChannel returned '${created}'`)
-);
 
-// PushNotification.configure({
-//   onRegister: function (token) {
-//     console.log("TOKEN: virendra", token);
-//     AsyncStorage.setItem('Tokenfcm',token.token)
-//   },
-//     onNotification: function (notification) {
-//       PushNotification.localNotification({
-//         title: notification.message,
-//         message: notification.title,
-//       });
-//     console.log("NOTIFICATION:", notification);  
-//     notification.finish(PushNotificationIOS.FetchResult.NoData);
-//   },
-//     onAction: function (notification) {
-//     console.log("ACTION:", notification.action);
-//     console.log("NOTIFICATION:", notification);
-//     },
-//     onRegistrationError: function(err) {
-//     console.error(err.message, err);
-//   },
-//     permissions: {
-//     alert: true,
-//     badge: true,
-//     sound: true,
-//   },
-//   popInitialNotification: true,
-//   requestPermissions: true,
-// }); 
+
 const App = () => {
 
   const initializeNotifications = () => {
-    PushNotification.deleteChannel('default');
+    PushNotification.deleteChannel('default-channel-id');
     PushNotification.createChannel(
       {
-        channelId: 'default', // (required)
-        channelName: 'default', // (required)
+        channelId: 'default-channel-id', // (required)
+        channelName: 'My channel', // (required)
         soundName: 'notification.mp3', // (optional) See `soundName` parameter of `localNotification` function
         importance: 4, // (optional) default: 4. Int value of the Android notification importance
         vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
@@ -79,23 +44,26 @@ const App = () => {
            },
 
       onNotification: function (notification) {
-        if (notification.userInteraction) {
-          if (notification.data.toScreen) {
-          }
-        } else {
+        // if (notification.userInteraction) {
+        //   if (notification.data.toScreen) {
+        //   }
+        // } else {
           PushNotification.localNotification({
             allowWhileIdle: true,
             ignoreInForeground: false,
-            title: notification.title,
-            message: notification.message,
+             title: notification.message,
+            message: notification.title,
             soundName: 'notification.mp3',
             visibility: 'public',
             channelId: 'default',
             playSound: true,
           });
+          GetMessageCommon(notification?.title,'supplier')
           console.log('notification ,android',notification);
+
+
         }
-      },
+      // },
     });
 
     if (Platform.OS === 'ios') {
@@ -127,12 +95,13 @@ const App = () => {
   }, [])
 
    const getCrashlyticsDetail = async() => {
-    // const user_id=await AsyncStorage.getItem(Storage.user_id)
+    const Id = await AsyncStorage.getItem('Partnersrno');
+    const userid =await AsyncStorage.getItem('userEmail')
     // const name=await AsyncStorage.getItem(Storage.name)
-
+console.log('jfjkffjdjfkfd',Id,userid);
     try {
-      crashlytics().setUserId('123')
-      crashlytics().setAttribute('username','virendra')
+      crashlytics().setUserId(Id)
+      crashlytics().setAttribute('username',userid)
     } catch (err) {
       crashlytics().recordError(err)
     }

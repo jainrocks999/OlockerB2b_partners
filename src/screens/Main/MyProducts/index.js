@@ -55,7 +55,7 @@ const MyProducts = ({route}) => {
 
                  
                   <Image
-                    style={{height: 16, width: 20}}
+                    style={{height: 16, width: 20,marginTop:3}}
                     source={require('../../../assets/Image/rupay.png')}
                   />
                   <Text style={styles.Btt}>{item.AM}</Text>

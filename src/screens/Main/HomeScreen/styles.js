@@ -45,7 +45,7 @@ export default StyleSheet.create({
   main: {
     alignItems: 'center',
     height: 200,
-    marginTop: -120, borderWidth:5,
+    marginTop: -120, 
     // paddingVertical: 20,
     // borderBottomLeftRadius: 30,
     // borderBottomRightRadius: 30,
@@ -69,18 +69,18 @@ export default StyleSheet.create({
     fontFamily: 'Roboto-Medium',
   },
   cardview: {
-    shadowColor: 'black',
-    shadowOffset: {width: 3, height: 2},
-    shadowOpacity: 0.5,
-     shadowRadius: 0,
-    elevation: 8,
-    borderRadius: 10,
-    width: '97%',
+    // shadowColor: 'black',
+    // shadowOffset: {width: 3, height: 2},
+    // shadowOpacity: 0.5,
+    //  shadowRadius: 0,
+    // elevation: 8,
+    // borderRadius: 10,
+    width: '100%',
     // margin:10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    // alignItems: 'center',
+    // justifyContent: 'center',
     height: '70%',
-    backgroundColor: '#red',
+    // backgroundColor: '#fff',
   },
   cardimg: {
     height: 120,
@@ -100,7 +100,7 @@ export default StyleSheet.create({
   middle: {
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     flexDirection: 'row',
     paddingVertical: 10,
   },
@@ -221,7 +221,7 @@ export default StyleSheet.create({
     // borderBottomRightRadius: 10,
     // padding: 10,
    alignItems:'center',
-    marginTop:5
+     marginTop:5
     //justifyContent: 'center',
   },
   card2v1t: {

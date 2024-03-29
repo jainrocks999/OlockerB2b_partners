@@ -15,6 +15,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading from '../../../../components/Loader';
+import Toast from 'react-native-simple-toast';
 const DiamondViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...props }) => {
     const dispatch = useDispatch();
     const productType = useSelector(state => state.ProductItem);
@@ -49,6 +50,21 @@ const DiamondViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...p
         });
     }, [AddDiamond1?.result]);
 
+const closeFunction =()=>{
+    close();
+    setInputs({
+        Diamondwt: '',
+        ChargAmt: '',
+        DiamondWtUnit: '',
+        DiamondName: '',
+        DiamondShape: '',
+        DiamondQuality: '',
+        hDiamondSrNo: '',
+        hProductSrNo: 0,
+        isAdd: 1,
+    });
+}
+
     const handleInputs = (text, input) => {
         setInputs(prev => ({ ...prev, [text]: input }));
     };
@@ -62,10 +78,35 @@ const DiamondViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...p
         return { label: item.Value, value: item.Value }
     })
 
+    const validateInputs = () => {
+      
+            if (inputs.Diamondwt=='') {
+            Toast.show('Please enter the diamond weight');   
+            return;
+           }else if(inputs.DiamondWtUnit==''){
+            Toast.show('Please select the unit weight');   
+            return;
+           }else if(inputs.DiamondName==''){
+            Toast.show('Please select the diamond details');   
+            return;
+           }else if(inputs.DiamondShape==''){
+            Toast.show('Please select the diamond shape');   
+            return;
+           }else if(inputs.DiamondQuality==''){
+            Toast.show('Please select the diamond quality');   
+            return;
+           }
+        
+    }
+
 
     const AddDiamond = async (isEdit, item) => {
-       
-
+      
+        // if(item.SrNo == ""){
+        //     if (!validateInputs()) {
+        //         return;
+        //     } 
+        // }
         if (isEdit) {
             setInputs({
                 Diamondwt: item?.StoneWt,
@@ -78,6 +119,22 @@ const DiamondViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...p
             });
         }
         else {
+            if (inputs.Diamondwt==0) {
+                Toast.show('Please enter the diamond weight');   
+                return;
+               }else if(inputs.DiamondWtUnit==''){
+                Toast.show('Please select the unit weight');   
+                return;
+               }else if(inputs.DiamondName==''){
+                Toast.show('Please select the diamond details');   
+                return;
+               }else if(inputs.DiamondShape==''){
+                Toast.show('Please select the diamond shape');   
+                return;
+               }else if(inputs.DiamondQuality==''){
+                Toast.show('Please select the diamond quality');   
+                return;
+               }
             const Token = await AsyncStorage.getItem('loginToken');
             const Id = await AsyncStorage.getItem('Partnersrno');
 
@@ -118,10 +175,11 @@ const DiamondViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...p
 
         <View style={styles.container}>
             <Modal animationType='fade' transparent visible={visi} >
+            <View style={{flex:1,backgroundColor:'rgba(69, 71, 71,0.9)',justifyContent:'center'}}>
                 {isFetching ? <Loading /> : null}
                 <View style={styles.modalView}>
                     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: wp(4) }}>
-                        <TouchableOpacity onPress={() => close()} style={styles.crossbtn}>
+                        <TouchableOpacity onPress={() => closeFunction()} style={styles.crossbtn}>
                             <Text style={styles.xbtn}>X</Text>
                         </TouchableOpacity>
                         <View style={styles.modalText}>
@@ -250,6 +308,7 @@ const DiamondViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...p
                                 <TextInput style={styles.input1}
                                     placeholderTextColor='#474747'
                                 placeholder='Diamond weight'
+                                keyboardType='numeric'
                                     value={inputs.Diamondwt}
                                     onChangeText={inputs => handleInputs('Diamondwt', inputs)}
                                 />
@@ -305,6 +364,7 @@ const DiamondViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...p
                                     <TextInput style={styles.input1}
                                     placeholderTextColor='#474747'
                                     placeholder='Amount in Rs.'
+                                    keyboardType='numeric'
                                         value={inputs.ChargAmt}
                                         onChangeText={(input) => handleInputs('ChargAmt', input)}
                                     />
@@ -448,11 +508,11 @@ const DiamondViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...p
                         <TouchableOpacity style={styles.buttonOpen}
                             onPress={() => AddDiamond('')}
                         >
-                            <Text style={{ color: 'white', fontSize: wp(4.5), fontWeight: 'bold' }}>Add Metal Detail</Text>
+                            <Text style={{ color: 'white', fontSize: wp(4.5), fontWeight: 'bold' }}>Add Diamond Detail</Text>
                         </TouchableOpacity>
                     </ScrollView>
                 </View>
-
+</View>
 
             </Modal>
         </View>

@@ -20,8 +20,9 @@ export default StyleSheet.create({
         width: wp(85),
         backgroundColor: 'white',
         alignSelf: 'center',
+      
         elevation: 5,
-        marginTop: wp(3),
+        // marginTop: wp(13),
         borderRadius: wp(2),
         paddingHorizontal: wp(4)
 
@@ -107,17 +108,18 @@ export default StyleSheet.create({
         marginTop: 15,
     },
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor:'rgba(69, 71, 71,0.7)'
     },
 
     crossbtn: {
         height: hp(5),
         width: hp(5),
         backgroundColor: '#032e63',
-        borderRadius: wp(4.5),
+        borderRadius: wp(5.5),
         position: 'absolute',
-        right: wp(4),
-        top: wp(4),
+        right: wp(1),
+        top: wp(2),
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -127,7 +129,7 @@ export default StyleSheet.create({
         fontWeight: 'bold'
     },
     deta: {
-        fontSize: wp(2.5),
+        fontSize: wp(3),
         fontWeight: 'bold',
         color: 'grey',
         // marginLeft: wp(2),

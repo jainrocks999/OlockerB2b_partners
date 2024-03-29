@@ -5,7 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  FlatList,TextInput
+  FlatList,TextInput, Alert
 } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import styles from './styles';
@@ -61,7 +61,7 @@ const AddProducts = ({ route }) => {
     ItemName: '',
     Status: 'Live',
     ProductSku: '',
-    StyleID: 0,
+    StyleID: '',
     Hallmarked: 1,
     radioGender: 'Male',
     IsBestSeller: false,
@@ -137,13 +137,7 @@ const AddProducts = ({ route }) => {
             type: 'image/jpg',
             name: item.ImageName,
           };
-        }) : [
-          {
-            uri: 'https://thumbs.dreamstime.com/b/diamond-ring-rose-resting-pink-flower-45235273.jpg?w=768',
-            name: 'diamond-ring-rose-resting-pink-flower-45235273.jpg',
-            type: 'image/jpg',
-          },
-        ]
+        }) : []
 
     return imageArr;
   };
@@ -223,7 +217,11 @@ const AddProducts = ({ route }) => {
     }
 
     data.ImgUpload;
-
+    if (inputs.ImgUpload.length <= 0) {
+      Toast.show('Please Select an Image');
+      
+      return; // If no image selected, stop execution of the function
+    }
     let data2 = new FormData();
     await Object.keys(data).map(async (item, index) => {
       if (item === 'chk_sc') {
@@ -231,6 +229,10 @@ const AddProducts = ({ route }) => {
           data2.append(`chk_sc[${index}]`, item);
         });
       } else if (item === 'ImgUpload') {
+        if(data[item].length<=0){
+          Toast.show('Please Select an Image')
+          return;
+        }
         data[item].map((item, index) => {
           data2.append(`ImgUpload[${index}]`, item);
         })
@@ -265,7 +267,7 @@ const AddProducts = ({ route }) => {
         "Olocker": `Bearer ${Token}`,
       }
      
-      setIfetching(true)
+      setIfetching(true);
       const response = await axios({
         method: 'POST',
         headers: {
@@ -285,7 +287,7 @@ const AddProducts = ({ route }) => {
       }
 
     } catch (error) {
-      setIfetching(false)
+      setIfetching(false);
       Toast.show('something went wrong')
       throw error;
     }
@@ -397,7 +399,8 @@ const AddProducts = ({ route }) => {
       DiamondQuality: DiamondQuality,
       txtVDiamondWt: `${diamondWt} Gms.`,
     }));
-    VeryFy1();
+   
+  diamondWt!=0?  VeryFy1():null
     getProductPrice();
   };
 
@@ -432,7 +435,8 @@ const AddProducts = ({ route }) => {
       hStonesSrNo: hStonesSrNo,
       txtVStoneWt: `${StoneWt} Gms.`,
     }));
-    VeryFy1();
+
+   StoneWt!=0? VeryFy1():null
     getProductPrice();
   };
 
@@ -471,7 +475,8 @@ const AddProducts = ({ route }) => {
       DecoWtUnit: ['Gms.'],
       txtVDecoWt: `${DecoWt} Gms.`,
     }));
-    VeryFy1();
+   
+     DecoWt!=0? VeryFy1():null
     getProductPrice();
   }
 
@@ -507,21 +512,10 @@ const AddProducts = ({ route }) => {
       hdnGrossWt: GrossWt1,
 
     }));
-
-    VeryFy1();
+  hMetalWt!=0||GrossWt1!=undefined ? VeryFy1():null;
     getProductPrice();
 
   }
-
-
-  // useEffect(() => {
-  //   inputs.radioPriceCalculator == 0 ? calculatePrice() : null;
-  // }, [
-  //   inputs.DiamondChargeableAmount,
-  //   inputs.StoneChargeableAmount,
-  //   inputs.DecorativeChargeableAmount,
-  //   inputs.txtLabourCharges
-  // ]);
   useEffect(() => {
     inputs.radioPriceCalculator == 0 ? getProductPrice() : null;
   }, [
@@ -533,7 +527,6 @@ const AddProducts = ({ route }) => {
   const getProductPrice = async () => {
 
     const data = {
-
       current_session_id: prodcutfile ? 0 : session_id,
       IsWastage: inputs.radioIsWastage,
       LabourCharges: inputs.txtLabourCharges,
@@ -555,7 +548,11 @@ const AddProducts = ({ route }) => {
     }
   };
 
-
+  const handleOnVisible = (indexx,items )=> {
+    
+    const res=  inputs.ImgUpload.filter(item=>item.name!=items.name)
+    setInputs(prev=>({...prev,ImgUpload:res}))
+   };
 
 
   const calculatePrice = () => {
@@ -684,7 +681,7 @@ const AddProducts = ({ route }) => {
     }
   };
   const navigation = useNavigation();
-  const renderItem = item => {
+  const renderItem = (item1) => {
     return (
       <>
         <View
@@ -699,31 +696,38 @@ const AddProducts = ({ route }) => {
           }}>
           <CheckBox 
             onChange={() => {
-              handleCategory(item.SrNo);
+              //  handleCategory(item1?.SrNo);}}
+   if (inputs?.chk_sc?.includes(item1?.SrNo)) {
+                let res = inputs?.chk_sc?.filter(item => item != item1?.SrNo);
+                handleInputs('chk_sc', res);
+              } else {
+                handleInputs('chk_sc', [...inputs?.chk_sc,item1?.SrNo]);
+              }
             }}
-            value={inputs.chk_sc.includes(item.SrNo) ? true : false}
+            value={inputs?.chk_sc?.includes(item1?.SrNo) ? true : false}
             tintColors={{ true: '#032e63', false: '#032e63' }}
 
+           
           />
           <Text
             style={{
-              fontSize: 18,
+              fontSize: 14,
               marginLeft: 5,
               fontWeight: '700',
               color: '#000',
             }}>
-            {item.Name}
+            {item1?.Name}
           </Text>
         </View>
       </>
     );
   };
   const handleCategory = SrNo => {
-    if (inputs.chk_sc.includes(SrNo)) {
-      let res = inputs.chk_sc.filter(item => item != SrNo);
+    if (inputs?.chk_sc?.includes(SrNo)) {
+      let res = inputs?.chk_sc?.filter(item => item != SrNo);
       handleInputs('chk_sc', res);
     } else {
-      handleInputs('chk_sc', [...inputs.chk_sc, SrNo]);
+      handleInputs('chk_sc', [...inputs?.chk_sc, SrNo]);
     }
   };
   return (
@@ -771,11 +775,7 @@ const AddProducts = ({ route }) => {
               {' '}
               Choose Price Calculation Method
             </Text>
-          </View>{
-            // Break Up Pricing
-
-            //   MRP Pricing
-          }
+          </View>
           <View style={styles.breakupV}>
             <RadioButton
               value={inputs.radioPriceCalculator}
@@ -806,10 +806,6 @@ const AddProducts = ({ route }) => {
           </View>
 
         </View>
-        {//  MRP Pricing
-          // Break Up Pricing
-          //FILL PRODUCT DETAILS
-        }
         <View>
 
 
@@ -831,6 +827,13 @@ const AddProducts = ({ route }) => {
                   itemTextStyle={{ color: '#474747',}}
                   data={productType?.productType}
                   maxHeight={250}
+                  search
+                  searchPlaceholder="search.."
+                  inputSearchStyle={{
+                     borderRadius: 10,
+                    color: '#474747',
+                     backgroundColor: '#fff',
+                  }}
                   labelField="Value"
                   valueField="lable"
                   placeholder={
@@ -907,7 +910,7 @@ const AddProducts = ({ route }) => {
                   styles.dropdown,
                   { borderWidth: 1, borderColor: '#979998' },
                 ]}
-                placeholder="option"
+                placeholder="ProductSKU"
                 placeholderTextColor='#474747'
                 value={inputs.ProductSku}
                 onChangeText={input => {
@@ -919,7 +922,7 @@ const AddProducts = ({ route }) => {
           </View>
           <View style={styles.mrt}>
             <Text style={styles.text}>
-              Style Id <Text style={{ color: 'red' }}>*</Text>
+              Style Id
             </Text>
             <View>
               <TextInput
@@ -940,7 +943,7 @@ const AddProducts = ({ route }) => {
         }
         <View style={[styles.mrt, { marginTop: wp(4) }]}>
 
-        <Text style={styles.TextMain}>
+        <Text style={styles.text}>
             {' '}
             Hallmarked
           </Text>
@@ -981,7 +984,7 @@ const AddProducts = ({ route }) => {
         </View>
         <View style={styles.mrt}>
 
-        <Text style={styles.TextMain}>
+        <Text style={styles.text}>
             {' '}
             Gender
           </Text>
@@ -1057,7 +1060,7 @@ const AddProducts = ({ route }) => {
                   tintColors={{ true: '#032e63', false: '#032e63' }}
                 />
               </View>
-              <Text style={{ fontSize: wp(4.5), color: '#000', fontWeight: '600' }}>
+              <Text style={styles.textBreack}>
                 Is Best Seller
               </Text>
             </View>
@@ -1067,11 +1070,7 @@ const AddProducts = ({ route }) => {
         {itemField?.lblDimension == 1 ? (
           <View style={{ marginHorizontal: wp(3), marginTop: wp(5) }}>
             <Text
-              style={{
-                fontSize: wp(4.5),
-                fontWeight: '800',
-                color: '#000',
-              }}>
+              style={styles.text}>
               Dimensions
             </Text>
             <View
@@ -1096,7 +1095,8 @@ const AddProducts = ({ route }) => {
                     placeholder="Width"
                     placeholderTextColor='#474747'
                     editable={itemField?.divWidth == 1 ? true : false}
-                    style={{ fontSize: wp(4.5), fontWeight: '700', flex: 1, color: 'black', }}
+                    style={{ color: 'black', }}
+                    keyboardType='numeric'
                     value={inputs.txtProductWidth}
                     onChangeText={input =>
                       handleInputs('txtProductWidth', input)
@@ -1133,8 +1133,9 @@ const AddProducts = ({ route }) => {
                     placeholder="Height"
                     placeholderTextColor='#474747'
                     editable={itemField?.divHeight == 1 ? true : false}
-                    style={{ fontSize: wp(4.5), fontWeight: '700', flex: 1, color: 'black', }}
+                    style={{ color: 'black', }}
                     value={inputs.txtProductHeight}
+                    keyboardType='numeric'
                     onChangeText={input =>
                       handleInputs('txtProductHeight', input)
                     }
@@ -1177,8 +1178,9 @@ const AddProducts = ({ route }) => {
                     placeholder="Thikness"
                     placeholderTextColor='#474747'
                     editable={itemField?.divBreadth == 1 ? true : false}
-                    style={{ fontSize: wp(4.5), fontWeight: '700', flex: 1, color: 'black', }}
+                    style={{color: 'black', }}
                     value={inputs.txtProductBreadth}
+                    keyboardType='numeric'
                     onChangeText={input =>
                       handleInputs('txtProductBreadth', input)
                     }
@@ -1216,8 +1218,9 @@ const AddProducts = ({ route }) => {
                     value={inputs.txtSize}
                     placeholder="Size"
                     placeholderTextColor='#474747'
+                    keyboardType='numeric'
                     onChangeText={input => handleInputs('txtSize', input)}
-                    style={{ fontSize: wp(4.5), fontWeight: '700', flex: 1, color: 'black', }}
+                    style={{  color: 'black', }}
                   />
                   <View
                     style={{
@@ -1242,7 +1245,7 @@ const AddProducts = ({ route }) => {
         <View
           style={{
             flexDirection: 'row',
-            marginHorizontal: 10,
+            marginHorizontal: 12,
             marginTop: 15,
             justifyContent: 'space-between',
           }}>
@@ -1269,7 +1272,7 @@ const AddProducts = ({ route }) => {
         <View
           style={{
             flexDirection: 'row',
-            marginHorizontal: wp(2),
+            marginHorizontal:12,
             marginTop: wp(2),
             justifyContent: 'space-between',
           }}>
@@ -1320,7 +1323,7 @@ const AddProducts = ({ route }) => {
 
                   placeholderTextColor='#474747'
                   editable={false}
-                  style={{ fontSize: wp(4), fontWeight: '700' }}
+                  style={{ fontSize:13, fontWeight: '500' }}
                 />
               </View>
             </View>
@@ -1342,7 +1345,7 @@ const AddProducts = ({ route }) => {
                   placeholder={GrossWt1 ? GrossWt1 : inputs.GrossWt ? inputs.GrossWt : 'Gross Wt.'}
                   placeholderTextColor='#474747'
                   editable={false}
-                  style={{ fontSize: wp(4), fontWeight: '700' }}
+                  style={{ fontSize:13, fontWeight: '500' }}
                 />
               </View>
             </View>
@@ -1373,7 +1376,7 @@ const AddProducts = ({ route }) => {
                   placeholderTextColor='#474747'
                   // value={inputs.hMetalWt}
                   editable={false}
-                  style={{ fontSize: wp(4), fontWeight: '700' }}
+                  style={{ fontSize:13, fontWeight: '500' }}
                 />
               </View>
             </View>
@@ -1401,7 +1404,8 @@ const AddProducts = ({ route }) => {
                   placeholderTextColor='#474747'
                   // value={inputs.DiamondGrandTotal}
                   editable={false}
-                  style={{ fontSize: wp(4), fontWeight: '700' }}
+                  style={{ fontSize:13, fontWeight: '500' }}
+                  // style={{ fontSize: wp(4), fontWeight: '700' }}
                 />
               </View>
             </View>
@@ -1429,7 +1433,8 @@ const AddProducts = ({ route }) => {
                   }
                   placeholderTextColor='#474747'
                   editable={false}
-                  style={{ fontSize: wp(4), fontWeight: '700' }}
+                  style={{ fontSize:13, fontWeight: '500' }}
+                  // style={{ fontSize: wp(4), fontWeight: '700' }}
                 />
               </View>
             </View>
@@ -1455,7 +1460,7 @@ const AddProducts = ({ route }) => {
                   style={{ fontSize: wp(4), fontWeight: '700' }}
                 /> */}
                 <Text
-                  style={{ fontSize: wp(5), fontWeight: '500', color: 'white' }}>
+                  style={{ fontSize: 15, fontWeight: '500', color: 'white' }}>
                   Verify Wt.
                 </Text>
               </TouchableOpacity>
@@ -1473,7 +1478,7 @@ const AddProducts = ({ route }) => {
             {msg?.VeryFy}
           </Text>
         </View>
-        <View style={{ marginVertical: 20 }}>
+        <View style={{ marginVertical: 0 }}>
           {inputs.radioPriceCalculator == 0 ? (
             <>
               <View style={styles.mrt}>
@@ -1539,7 +1544,7 @@ const AddProducts = ({ route }) => {
                   borderRadius: wp(2),
                   marginTop: wp(2),
                   paddingHorizontal: 5,
-                  marginHorizontal: wp(3),
+                  marginHorizontal: wp(3),marginBottom:3
                 }}>
                   <TextInput style={{color:'#474747'}}
                   value={inputs.txtLabourCharges}
@@ -1552,6 +1557,7 @@ const AddProducts = ({ route }) => {
                       : 'Amount in Rs.'
                   }
                   placeholderTextColor='#474747'
+                  keyboardType='numeric'
                 />
               </View>
             </>
@@ -1559,8 +1565,8 @@ const AddProducts = ({ route }) => {
           {
             //Chargeable amount for Product RS
           }
-          <View style={{ marginTop: wp(3) }}>
-          <Text style={styles.TextMain}>
+          <View style={{ marginTop: 0 }}>
+          <Text style={styles.text}>
               {' '}
               {inputs.radioPriceCalculator == 0
                 ? 'Chargeable amount for Product RS'
@@ -1582,7 +1588,7 @@ const AddProducts = ({ route }) => {
                     ? inputs.txtProductCharges
                     : inputs.txtMrp
                 }
-               
+                keyboardType='numeric'
                 onChangeText={input =>
                   handleInputs(
                     inputs.radioPriceCalculator == 0
@@ -1602,9 +1608,9 @@ const AddProducts = ({ route }) => {
           }
           <View style={{ marginTop: wp(3.5) }}>
 
-          <Text style={styles.TextMain}>
+          <Text style={styles.text}>
               {' '}
-              CERTIFICATION DETAILS
+              Certification Details
             </Text>
             <Text
               style={{
@@ -1637,13 +1643,7 @@ const AddProducts = ({ route }) => {
             {inputs?.isProductCertd == '1' ? (
               <>
                 <Text
-                  style={{
-                    marginLeft: wp(3),
-                    fontSize: wp(4.5),
-                    marginTop: wp(2),
-                    fontWeight: 'bold',
-                    color: 'black',
-                  }}>
+                  style={[styles.text,{marginTop:10}]}>
                   Certification agency
                 </Text>
                 <View
@@ -1669,15 +1669,14 @@ const AddProducts = ({ route }) => {
             ) : null}
           </View>
 
-          <TouchableOpacity
-            onPress={() => uploadImage()}
-            style={styles.upload}>
-            <Entypo name="upload" size={20} color={'#032e63'} />
-            <Text style={{ color: '#032e63', fontWeight: '700', fontSize: wp(4) }}>
-              Upload Images 6
+<View style={[styles.mrt,{marginBottom:10}]}>
+            <Text style={[styles.text,{marginLeft:-6}]}>
+             Upload Max. 6 Images
             </Text>
-          </TouchableOpacity>
+            </View>
 
+
+{inputs.ImgUpload?.length>0?
           <View
             style={{
               height: hp(17),
@@ -1691,6 +1690,26 @@ const AddProducts = ({ route }) => {
               keyExtractor={(item, index) => index}
               horizontal={true}
               renderItem={({ item, index }) => (
+                <View>
+                <TouchableOpacity
+                  onPress={() => {
+                    Alert.alert(
+                      'Are you want to Delete image ?',
+                      '',
+                      [
+                        {
+                          text: 'Cancel',
+                          onPress: () => {
+                            cancelable: false;
+                          },
+                          style: 'cancel',
+                        },
+                        {text: 'ok', onPress: () => handleOnVisible(index,item)},
+                      ],
+                      {cancelable: false},
+                    );
+                  
+                  }}>
                 <Image
                   style={{
                     height: hp(15),
@@ -1700,21 +1719,34 @@ const AddProducts = ({ route }) => {
                   }}
                   source={{ uri: item.uri }}
                 />
+                </TouchableOpacity>
+                </View>
               )}
             />
           </View>
+        :null}
+        
+        <TouchableOpacity
+            onPress={() => uploadImage()}
+            style={styles.upload}>
+            <Entypo name="upload" size={20} color={'#032e63'} />
+            <Text style={{ color: '#032e63', fontWeight: '700', fontSize: wp(4) }}>
+              Upload Image
+              
+            </Text>
+          </TouchableOpacity>
         </View>
 
-        <View style={{ marginHorizontal: wp(3), marginTop: 0 }}>
+        <View style={{ marginHorizontal: wp(3),  marginTop: 15 }}>
         <Text style={styles.TextMain}>
-            CHOOSE CATEGORIES TO PRODUCT
+            Choose Categories To Product
           </Text>
-          <Text style={{ fontSize: wp(3), fontWeight: '800', color: 'grey' }}>
-            (DEFINE TABS:- TICKS MARK ALL THE TABS WHERE YOU WANT THIS JEWELLERY
-            TO APPEAR IN CLINT SEARCH)
+          <Text style={{ fontSize: wp(4), fontWeight: '800', color: 'grey' }}>
+            (Define Tabs:- Ticks Mark All The Tabs Where You Want This Jewellery
+            To Appear In Clint Search)
           </Text>
         </View>
-        <View style={{ marginTop: wp(3.5) }}>
+        <View style={{ marginTop: wp(2.5) }}>
           <FlatList
             data={productType?.category}
             renderItem={({ item }) => (
@@ -1726,12 +1758,12 @@ const AddProducts = ({ route }) => {
                 <View style={{
                   marginHorizontal: 20,
                   borderBottomWidth: 0,
-                  marginTop: 5,
+                  marginTop: 0,
                   height: 40,
-                  backgroundColor: '#032E63',
+                  backgroundColor: '#032E63',justifyContent:'center'
                 }}>
                   <Text style={{
-                    fontSize: 20, fontWeight: '700',
+                    fontSize: 15, fontWeight: '700',
                     marginLeft: 10,
                     color: '#fff'
                   }}>{item.Name}</Text>
@@ -1748,11 +1780,11 @@ const AddProducts = ({ route }) => {
                     style={{ borderBottomWidth: 2, height: 40 }}
                     placeholderStyle={[
                       styles.placeholderStyle,
-                      { fontWeight: '800', fontSize: 18, marginLeft: 10, color: '#000' },
+                      { fontWeight: '800', fontSize: 15, marginLeft: 10, color: '#000' },
                     ]}
                     selectedTextStyle={[
                       styles.selectedTextStyle,
-                      { fontSize: 18, fontWeight: '700', color: '#000', marginLeft: 10 },
+                      { fontSize: 15, fontWeight: '700', color: '#000', marginLeft: 10 },
                     ]}
                     iconStyle={{ width: 30, height: 30 }}
                     data={item.subcategory}
@@ -1761,38 +1793,42 @@ const AddProducts = ({ route }) => {
                     valueField="Name"
                     placeholder="Select"
                     value={inputs.chk_sc}
+                      onChange={()=>{}}
                     renderItem={renderItem}
-                    itemTextStyle={{ fontSize: 18, fontWeight: '700', color: '#000' }}         
+                    itemTextStyle={{ fontSize: 15, fontWeight: '700', color: 'red' }}         
                   />
                 </View>
               </TouchableOpacity>
             )}
           />
         </View>
-        <View style={{ marginHorizontal: 10, marginTop: 15 }}>
+        <View style={{ marginHorizontal: 10, marginTop: 10,marginBottom:10 }}>
         <Text style={styles.TextMain}>
-            CHOOSE CATEGORIES TO PRODUCT
+            Choose Collection To Product
           </Text>
-          <Text style={{ fontSize: wp(4), fontWeight: '800', color: 'grey' }}>
-            (DEFINE TABS:- TICKS MARK ALL THE TABS WHERE YOU WANT THIS JEWELLERY
-            TO APPEAR IN CLINT SEARCH)
+          <Text style={{ fontSize: wp(4), fontWeight: '800', color: 'grey', }}>
+            (Define Tabs:- Ticks Mark All The Tabs Where You Want This Jewellery
+            To Appear In Clint Search)
           </Text>
         </View>
         <View>
           {productType?.collection &&
+          <View style={{borderWidth:2,marginHorizontal:15,height:hp(35),zIndex:2}}>
+            <ScrollView nestedScrollEnabled>
             <FlatList
               data={productType?.collection}
+              scrollEnabled={false}
               renderItem={({ item }) => (
                 <View
                   style={{
                     marginHorizontal: 20,
-                    borderWidth: 2,
-                    marginTop: 15,
+                    // borderWidth: 2,
+                    marginTop: 10,
                     borderBottomWidth: 0,
                   }}>
                   <View
                     style={{
-                      borderBottomWidth: 2,
+                      // borderBottomWidth: 2,
                       height: 40,
                       flexDirection: 'row',
                       alignItems: 'center',
@@ -1815,7 +1851,7 @@ const AddProducts = ({ route }) => {
                     />
                     <Text
                       style={{
-                        fontSize: 18,
+                        fontSize: 15,
                         marginLeft: 5,
                         fontWeight: '700',
                         color: '#000',
@@ -1826,6 +1862,8 @@ const AddProducts = ({ route }) => {
                 </View>
               )}
             />
+            </ScrollView>
+            </View>
           }
         </View>
 
@@ -1838,7 +1876,7 @@ const AddProducts = ({ route }) => {
               justifyContent: 'center',
               backgroundColor: '#032e63',
             }}>
-            <Text style={{ fontSize: 18, color: 'white', fontWeight: '600' }}>
+            <Text style={{ fontSize: 18, color: 'white', fontWeight: '600',textAlign:'center',marginBottom:5 }}>
               {prodcutfile ? 'Update Product' : 'Add Product'}
             </Text>
           </TouchableOpacity>
@@ -1851,7 +1889,7 @@ const AddProducts = ({ route }) => {
               marginTop: 15,
               backgroundColor: '#666564',
             }}>
-            <Text style={{ fontSize: 18, color: 'white', fontWeight: '600' }}>
+            <Text style={{ fontSize: 18, color: 'white', fontWeight: '600',textAlign:'center',marginBottom:5 }}>
               Cancel
             </Text>
           </TouchableOpacity>

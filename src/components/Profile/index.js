@@ -6,6 +6,8 @@ const Profile = () => {
   const selector = useSelector(state => state.SupplierDetail?.detail)
   const isFetching = useSelector(state => state.isFetching);
   const ownerImagePath = useSelector(state => state.SupplierDetail?.ownerImagePath)
+
+ console.log('frgegrwftgwer',selector);
   return (
     <View style={{ flex: 1, backgroundColor: '#fff', paddingVertical: 20 }}>
       {/* {isFetching ? <Loader /> : null} */}
@@ -51,7 +53,7 @@ const Profile = () => {
           }}>
           <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'Acephimere' }}>Founders</Text>
         </TouchableOpacity>
-{ console.log('detail logo image ,,,,,',selector?.ownerDetail)}
+
     
         <View style={{ flexDirection: 'row' }}>
           {selector?.ownerDetail?.map((item) =>
@@ -189,7 +191,7 @@ const Profile = () => {
                 </Text>
               </View>
             </View>
-{console.log('profile.........',selector,)}
+
             {/* <View style={{ flexDirection: 'row', marginTop: 20 }}>
               <Image
                 style={{ height: 28, width: 28 }}

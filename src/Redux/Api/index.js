@@ -19,7 +19,7 @@ export default class Api {
       return response.data;
 
     } catch (error) {
-      Toast.show("Please Try again..")
+      // Toast.show("Please Try again..")
       console.log('vireeeeenenne.....', error);
       throw error;
     }
@@ -84,7 +84,7 @@ export default class Api {
 
       return response.data;
     } catch (error) {
-      Toast.show('Server not responding')
+      // Toast.show('Server not responding')
       console.log('error123', error);
       throw error;
     }
@@ -104,7 +104,7 @@ export default class Api {
 
       return response.data;
     } catch (error) {
-      Toast.show('Server not responding')
+      // Toast.show('Server not responding')
       console.log('error123', error);
       throw error;
     }
@@ -152,7 +152,7 @@ export default class Api {
       return response.data;
     } catch (error) {
       console.log(error);
-      Toast.show('Server not responding')
+      // Toast.show('Server not responding')
 
       throw error;
     }
@@ -175,7 +175,7 @@ export default class Api {
 
       return response.data;
     } catch (error) {
-      Toast.show('Server not responding')
+      // Toast.show('Server not responding')
       console.log('error123', error);
       throw error;
     }
@@ -195,7 +195,7 @@ export default class Api {
       });
       return response.data;
     } catch (error) {
-      Toast.show('Server not responding')
+      // Toast.show('Server not responding')
       throw error;
     }
   };

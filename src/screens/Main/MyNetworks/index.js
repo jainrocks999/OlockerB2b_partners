@@ -144,8 +144,8 @@ const HomeScreen = () => {
           <View style={{ width: '50%' }}>
             <Text style={{ color: '#565656', fontFamily: 'Acephimere' }}>
               {selector?.length <= 1
-                ? `${selector?.length} Partner`
-                : `${selector?.length} Partners`}
+                ? `${selector?.length} Supplier`
+                : `${selector?.length} Suppliers`}
             </Text>
           </View>
           <View

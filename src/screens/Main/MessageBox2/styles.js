@@ -6,8 +6,8 @@ import {
 } from 'react-native-responsive-screen';
 export default StyleSheet.create({
   img: {
-    height: 18,
-    width: 12,
+    height: 19,
+    width: 13,
   },
   img1: {
     height: 20,

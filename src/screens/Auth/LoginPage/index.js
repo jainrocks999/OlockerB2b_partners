@@ -23,8 +23,6 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-
-import messaging from '@react-native-firebase/messaging';
 const loginValidationSchema = yup.object().shape({
   email: yup
     .string()
@@ -67,9 +65,9 @@ const Login = () => {
   };
 
   const Demo = async values => {
-     let token1 = await messaging().getToken();
+   
     const token = await AsyncStorage.getItem('Tokenfcm');
-    console.log('dsscaa',token,token1);
+   
     dispatch({
       type: 'User_Login_Request',
       url: 'partners//login',

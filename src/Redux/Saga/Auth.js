@@ -147,6 +147,7 @@ function* doLogin(action) {
       AsyncStorage.setItem('Partnersrno', response.id);
       AsyncStorage.setItem('loginToken', response.token);
       AsyncStorage.setItem('Branch', response.branch_id);
+      AsyncStorage.setItem('userEmail', action.email);
       action.navigation.replace('Home');
       // Toast.show(response.message);
     } else {
@@ -159,6 +160,7 @@ function* doLogin(action) {
     yield put({
       type: 'User_Login_Error',
     });
+        Toast.show(error);
   }
 }
 // Collection
@@ -188,6 +190,7 @@ function* getCollection(action) {
     yield put({
       type: 'User_collection_Error',
     });
+        Toast.show(error);
   }
 }
 // Gold price
@@ -216,6 +219,7 @@ function* getGold(action) {
     yield put({
       type: 'User_collection_Error',
     });
+        Toast.show(error);
   }
 }
 // Supplier List
@@ -244,6 +248,7 @@ function* SupplierList(action) {
     yield put({
       type: 'User_SupplierList_Error',
     });
+        Toast.show(error);
   }
 }
 // my Product list
@@ -286,6 +291,7 @@ function* ProductList(action) {
     yield put({
       type: 'User_ProductList_Error',
     });
+        Toast.show(error);
   }
 }
 //SupplierProductList
@@ -329,6 +335,7 @@ function* SupplierProductList(action) {
     yield put({
       type: 'User_SupplierProductList_Error',
     });
+        Toast.show(error);
   }
 }
 
@@ -363,6 +370,7 @@ function* SupplierCategories(action) {
     yield put({
       type: 'User_SupplierCategories_Error',
     });
+        Toast.show(error);
   }
 }
 
@@ -402,6 +410,7 @@ function* ProductCategories(action) {
     yield put({
       type: 'User_categories_Error',
     });
+        Toast.show(error);
   }
 }
 
@@ -445,6 +454,7 @@ function* ProductDetails(action) {
     yield put({
       type: 'User_singleProductDetail_Error',
     });
+        Toast.show(error);
   }
 }
 
@@ -487,6 +497,7 @@ function* SupplierProductDetails(action) {
     yield put({
       type: 'User_SupplierProDetail_Error',
     });
+        Toast.show(error);
   }
 }
 
@@ -515,6 +526,7 @@ function* StateList(action) {
     yield put({
       type: 'Get_State_Error',
     });
+        Toast.show(error);
   }
 }
 // Pending Request 
@@ -546,6 +558,7 @@ function* pendinRequest(action) {
     yield put({
       type: 'Get_Pending_Error',
     });
+        Toast.show(error);
   }
 }
 
@@ -578,6 +591,7 @@ function* SentRequest(action) {
     yield put({
       type: 'Get_Sent_Error',
     });
+        Toast.show(error);
   }
 }
 
@@ -617,6 +631,7 @@ function* AcecptRequest(action) {
     yield put({
       type: 'Get_/updateSupplierRequest_Error',
     });
+        Toast.show(error);
   }
 }
 
@@ -658,6 +673,7 @@ function* RejectRequest(action) {
     yield put({
       type: 'Get_/updateSupplierRequest1_Error',
     });
+        Toast.show(error);
   }
 }
 // Supplier Details 
@@ -694,6 +710,7 @@ function* SupplierDetail(action) {
     yield put({
       type: 'User_supplierDetail_Error',
     });
+        Toast.show(error);
   }
 }
 
@@ -739,6 +756,7 @@ function* WishListRequest(action) {
       yield put({
         type: 'Get_wishListProduct_Error',
       });
+          Toast.show(error);
     }
   }
 }
@@ -768,6 +786,7 @@ function* BannerLIst(action) {
     yield put({
       type: 'User_getBannerList_Error',
     });
+        Toast.show(error);
   }
 }
 
@@ -808,6 +827,7 @@ function* Addcollection(action) {
     yield put({
       type: 'Add_Collection_Error',
     });
+        Toast.show(error);
   }
 }
 // Remove WishList 
@@ -894,6 +914,7 @@ function* RemoveWishlist(action) {
     yield put({
       type: 'Get_removeProductWishlist_Error',
     });
+        Toast.show(error);
   }
 }
 // partner contact 
@@ -926,6 +947,7 @@ function* partnerContact(action) {
     yield put({
       type: 'Patner_Contact_Error',
     });
+        Toast.show(error);
   }
 }
 // GetMessage 
@@ -973,6 +995,7 @@ function* GetMeassege(action) {
     yield put({
       type: 'get_Message_Error',
     });
+        Toast.show(error);
   }
 }
 // Sent Message 
@@ -996,6 +1019,14 @@ function* SentMeassge(action) {
         reciver_id: action.reciver_id,
         user_type: 'supplier',
         Token: action.Token,
+      });
+      yield put({
+      
+          type: 'Patner_Contact_Request',
+          url: 'supplier//supplierListForPartners',
+          user_id: action.sender_id,
+          Token: action.Token,
+      
       })
 
     } else {
@@ -1008,6 +1039,7 @@ function* SentMeassge(action) {
     yield put({
       type: 'Message_Send_Error',
     });
+        Toast.show(error);
   }
 }
 // Add To Network
@@ -1021,7 +1053,7 @@ function* AddToNetwork(action) {
     const response = yield call(Api.fetchDataByPOST1, action.url, data, action.Token,);
     // console.log('...............>>>>>>>>.', response);
     if (response.status == true) {
-      Toast.show('')
+     
       yield put({
         type: 'User_sendRequestToSupplier_Success',
         payload: response
@@ -1046,6 +1078,7 @@ function* AddToNetwork(action) {
     yield put({
       type: 'User_sendRequestToSupplier_Error',
     });
+        Toast.show(error);
   }
 }
 
@@ -1082,12 +1115,13 @@ function* RemoveFromNetwork(action) {
       yield put({
         type: 'User_removeNetworkSupplier_Error',
       });
+      Toast.show(response.msg)
     }
   } catch (error) {
     yield put({
       type: 'User_removeNetworkSupplier_Error',
     });
-    Toast.show(response.msg)
+        Toast.show(error);
   }
 }
 // Item List
@@ -1127,6 +1161,7 @@ function* ItemList11(action) {
     yield put({
       type: 'product_TypeList_Error',
     });
+        Toast.show(error);
   }
 }
 // Add Metal
@@ -1168,6 +1203,7 @@ function* AddMetal(action) {
     yield put({
       type: 'product_addMetal_Error',
     });
+        Toast.show(error);
   }
 }
 // Add Diamond 
@@ -1210,6 +1246,7 @@ function* AddDaimond(action) {
     yield put({
       type: 'product_addDiamond_Error',
     });
+        Toast.show(error);
   }
 }
 // Add Stone 
@@ -1247,6 +1284,7 @@ function* AddStone(action) {
     yield put({
       type: 'product_addStone_Error',
     });
+        Toast.show(error);
   }
 }
 // Add Decorative 
@@ -1283,6 +1321,7 @@ function* AddDecorative(action) {
     yield put({
       type: 'product_addDecorative_Error',
     });
+        Toast.show(error);
   }
 }
 
@@ -1311,20 +1350,20 @@ function* VeryMEtal(action) {
         payload: response.msg,
       });
 
-      Toast.show(response.msg)
+      // Toast.show(response.msg)
 
     } else {
       yield put({
         type: 'product_verifyWt_Error1',
         payload: response.msg,
       });
-      Toast.show(response.msg)
+      // Toast.show(response.msg)
     }
   } catch (error) {
     yield put({
       type: 'product_verifyWt_Error',
     });
-    Toast.show('Something went wrong');
+        Toast.show(error);
   }
 }
 
@@ -1359,7 +1398,7 @@ function* ItemField(action) {
     yield put({
       type: 'get_itemfieldlist_Error',
     });
-    Toast.show('Something went wrong');
+        Toast.show(error);
   }
 }
 
@@ -1393,6 +1432,7 @@ function* AddProducts(action) {
     yield put({
       type: 'product_createProduct_Error',
     });
+        Toast.show(error);
   }
 }
 // Remove Metal 
@@ -1429,7 +1469,7 @@ function* RemoveMetal(action) {
     yield put({
       type: 'product_removeMetal_Error',
     });
-    Toast.show('Something went wrong');
+        Toast.show(error);
   }
 }
 
@@ -1467,7 +1507,7 @@ function* RemoveDiamond(action) {
     yield put({
       type: 'product_removeDiamond_Error',
     });
-    Toast.show('Something went wrong');
+        Toast.show(error);
   }
 }
 // Remove Decorative 
@@ -1503,6 +1543,7 @@ function* RemoveDecorative(action) {
       type: 'product_removeDecorative_Error',
 
     });
+        Toast.show(error);
   }
 }
 
@@ -1540,6 +1581,7 @@ function* RemoveStone(action) {
       type: 'product_removeStone_Error',
 
     });
+        Toast.show(error);
   }
 }
 // Edit Product 
@@ -1578,6 +1620,7 @@ function* EditProduct(action) {
       type: 'User_editProduct_Error',
 
     });
+        Toast.show(error);
   }
 }
 // collection image 
@@ -1614,12 +1657,12 @@ function* collectionimg(action) {
       type: 'Get_creativeImgList_Error',
 
     });
+        Toast.show(error);
   }
 }
 
 function* Notification(action){
   try {
-    console.log('Notification.......action',action);
     const data = {
       partnerId:action.partnerId
     
@@ -1632,19 +1675,20 @@ function* Notification(action){
     );
   
    if (response.status == true) {
-    console.log('Notification,,,,,response ,,,12321321321',response.data);
+   
     yield put({
       type: 'Get_pushNotificationList_Success',
       payload: response.data,
     });
-  Toast.show(response?.msg)
+  // Toast.show(response?.msg)
 
   } else {
     yield put({
       type: 'Get_pushNotificationList_Error',
 
     });
-    Toast.show(response?.msg)
+   
+    // Toast.show(response?.msg)
   }
 
 
@@ -1654,11 +1698,94 @@ function* Notification(action){
       type: 'Get_pushNotificationList_Error',
 
     });
+        Toast.show(error);
   }
 
 }
 
+function* partnerProfile(action){
+  try {
+    console.log('parnter ......action',action);
+    const data = {
+      partnerId:action.partnerId
+    
+    }
+    const response = yield call(
+      Api.fetchDataByGET1,
+      action.url,
+      action.Token,
+      data
+    );
+  
+   if (response.status == true) {
+    console.log('partner kllklk,,,response ,,,12321321321',response.data);
+    yield put({
+      type: 'User_editProfile_Success',
+      payload: response.data,
+    });
+  // Toast.show(response?.msg)
 
+  } else {
+    yield put({
+      type: 'User_editProfile_Error',
+
+    });
+  }
+
+
+
+  } catch (error) {
+    yield put({
+      type: 'User_editProfile_Error',
+
+    });
+        Toast.show(error);
+  }
+}
+
+function* Getcity(action){
+  try {
+    console.log('city..... ......action',action);
+    const data = {
+      stateId:action.stateId
+    
+    }
+    const response = yield call(
+      Api.fetchDataByGET1,
+      action.url,
+      action.Token,
+      data
+    );
+  
+   if (response.status == true) {
+    console.log('partner cityusdjfjskkjs,,12321321321',response);
+    yield put({
+      type: 'Get_getCities_Success',
+      payload: response,
+    });
+ action.navigation.navigate('Editprofile',{
+  selector:action.selector,
+  extractedImages:action.extractedImages
+
+ })
+
+  } else {
+    yield put({
+      type: 'Get_getCities_Error',
+
+    });
+  }
+
+
+
+  } catch (error) {
+    yield put({
+      type: 'Get_getCities_Error',
+
+    });
+        Toast.show(error);
+  }
+}
 
 export default function* authSaga() {
   yield takeEvery('User_Login_Request', doLogin);
@@ -1702,7 +1829,9 @@ export default function* authSaga() {
   yield takeEvery('product_removeStone_Request', RemoveStone);
   yield takeEvery('User_editProduct_Request', EditProduct);
   yield takeEvery('Get_creativeImgList_Request',collectionimg);
-  yield takeEvery('Get_pushNotificationList_Request',Notification)
+  yield takeEvery('Get_pushNotificationList_Request',Notification);    
+  yield takeEvery('User_editProfile_Request',partnerProfile);
+  yield takeEvery('Get_getCities_Request',Getcity);
 
 
 }

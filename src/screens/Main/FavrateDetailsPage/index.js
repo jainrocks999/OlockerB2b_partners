@@ -164,8 +164,8 @@ console.log('virendra,,,,,favlist  ,,,,',item);
                         >
                           <Image
                             style={{
-                              height: hp('2.4%'),
-                              width: wp('6%'),
+                              height: hp('2.3%'),
+                              width: wp('5.5%'),
                               marginLeft: 5,
                               marginTop: 5,
                               tintColor: 'red',
@@ -177,7 +177,7 @@ console.log('virendra,,,,,favlist  ,,,,',item);
                           <Image
                             style={{
                               height: hp('2%'),
-                              width: wp('6%'),
+                              width: wp('5.7%'),
                               marginTop: 10,
                               marginLeft: 8,
                             }}

@@ -103,12 +103,12 @@ const HomeScreen = () => {
     const Id = await AsyncStorage.getItem('Partnersrno');
 
            
-     dispatch({
-      type:'Get_pushNotificationList_Request',
-      url:'/partners/pushNotificationList',
-      partnerId:Id,
-      Token:Token
-     })
+    //  dispatch({
+    //   type:'Get_pushNotificationList_Request',
+    //   url:'/partners/pushNotificationList',
+    //   partnerId:Id,
+    //   Token:Token
+    //  })
 
 
       dispatch({
@@ -323,16 +323,18 @@ const HomeScreen = () => {
             data={selector1}
             style={{ marginTop: 7, }}
             renderItem={({ item }) => (
-              <View style={{borderWidth:0,height:175,width:120,margin:5}}>
+              <View style={{borderWidth:0,height:165,width:165,margin:5}}>
                 <TouchableOpacity
                   onPress={() => supplierprofile(item)}
-                  style={[styles.cardview]}>
+                  style={[styles.cardview43,{height:'70%',width:'100%'}]}>
+
+            
                   <Image
                     style={{
                       width: '100%',
                       height: '100%',
-                      resizeMode: 'contain',
-                      borderRadius: 10,
+                        // resizeMode: 'cover',
+                         borderRadius: 10,
                     }}
                     source={item.logoImage ? { uri: `${item.logoImage}` } : require('../../../assets/logo.png')}
                   />
@@ -352,6 +354,7 @@ const HomeScreen = () => {
                 navigation.navigate('MyCatalogue', {
                   data: data,
                   collections: collections,
+                 
                 })
               }
               style={{ alignItems: 'center' }}>
@@ -363,19 +366,7 @@ const HomeScreen = () => {
               </View>
               <Text style={styles.textc}>{'Catalogue'}</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('Customer1', { screen: 'Customers' })
-              }
-              style={{ alignItems: 'center' }}>
-              <View style={styles.card1}>
-                <Image
-                  style={styles.img4}
-                  source={require('../../../assets/Image/custmer.png')}
-                />
-              </View>
-              <Text style={styles.textc}>{'Customers'}</Text>
-            </TouchableOpacity>
+        
             <TouchableOpacity
               onPress={() => navigation.navigate('MyNetwork1',{ screen: 'MyNetwork' })}
               style={{ alignItems: 'center' }}>
@@ -427,7 +418,7 @@ const HomeScreen = () => {
                   <View style={{flexDirection:'row',bottom:-3,alignItems:'center',justifyContent:'center'}}>
 
                   <Image
-                    style={{ height: 16, width: 20 }}
+                    style={{ height: 16, width: 20 ,marginTop:3}}
                     source={require('../../../assets/Image/rupay.png')}
                   />
                   <Text style={styles.Btt}>{item.AM}</Text>

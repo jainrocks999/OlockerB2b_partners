@@ -35,7 +35,7 @@ const MyCatalogue = ({ route }) => {
   const [userdata, setUserdata] = useState(false);
   const isFetching = useSelector(state => state.isFetching);
   const selector = useSelector(state => state.Collection?.collection);
-
+  const [supplier,setSupplier]=useState();
 
 
 
@@ -86,8 +86,11 @@ const MyCatalogue = ({ route }) => {
     }
   }, [isFocused])
   const collectionDataR = async () => {
+    AsyncStorage.setItem('supplierID','');
     const Token = await AsyncStorage.getItem('loginToken');
     const Id = await AsyncStorage.getItem('Partnersrno');
+    const supplier =await AsyncStorage.getItem('supplierID');
+   setSupplier(supplier);
     dispatch({
       type: 'User_categories_Request',
       url: 'partners/productTypeList',
@@ -139,10 +142,12 @@ const MyCatalogue = ({ route }) => {
       navigation,
     });
   };
-
+ 
   const manageProfile = async id => {
     const Token = await AsyncStorage.getItem('loginToken');
+   
     AsyncStorage.setItem('supplierID', id);
+    setSupplier(id)
     dispatch({
       type: 'User_SupplierCategories_Request',
       url: 'partners/productTypeList',
@@ -150,6 +155,7 @@ const MyCatalogue = ({ route }) => {
       userType: 'supplier',
       Token: Token,
     });
+   
   };
 
   const manageProduct = async () => {
@@ -161,6 +167,12 @@ const MyCatalogue = ({ route }) => {
       userId: Id,
       userType: 'partner',
       Token: Token,
+    });
+    dispatch({
+      type: 'User_collection_Request',
+      url: '/partners/collectionList',
+      Token: Token,
+      partnerId: Id,
     });
     setProduct(true);
     setPartner(false);
@@ -360,6 +372,7 @@ const MyCatalogue = ({ route }) => {
                       />
                     )}
                     <View style={styles.card1v}>
+                      
                       <Text
                         style={[
                           styles.card1t,
@@ -387,20 +400,29 @@ const MyCatalogue = ({ route }) => {
                 showsHorizontalScrollIndicator={false}
                 horizontal={true}
                 data={selector1}
-                style={{ margin: 10, marginTop: 0, marginBottom: 0 }}
+                style={{ margin: 10, marginTop: 0, marginBottom: 10 }}
                 renderItem={({ item }) => (
                   <TouchableOpacity
                     onPress={() => manageProfile(item.SupplierSrNo)}
-                    style={styles.card2}>
-                    <View style={styles.card2v}>
+                    style={[styles.card2,{  shadowColor:supplier==item.SupplierSrNo?'#032e63':'#fff',
+                     shadowOpacity: 0.6,
+                     shadowOffset: { width: 0, height: 2 },
+                     shadowRadius: 20,
+                       elevation: 6,borderWidth:supplier==item.SupplierSrNo?1:0
+                    }]}>
+   
+                    <View style={[styles.card2v,{borderWidth:0}
+                      ]}>
                       <Image
-                        style={styles.card2img}
+                        style={[styles.card2img,{width:supplier==item.SupplierSrNo?'100%':'100%'}]}
                         resizeMode="stretch"
                         source={item.logoImage ? { uri: `${item.logoImage}` } : require('../../../assets/logo.png')}
                       />
                     </View>
-                    <View style={styles.card2v1}>
-                      <Text style={styles.card2v1t}>{item.SupplierName}</Text>
+                    <View style={[styles.card2v1,{}]}>
+                      {supplier==item.SupplierSrNo?
+                      <Text style={styles.card2v1t}>{item.SupplierName}</Text>:
+                      <Text style={[{color:'grey',fontSize:15,fontFamily: 'Acephimere',}]}>{item.SupplierName}</Text>}
                       {/* <Text style={{ fontFamily: 'Acephimere', color: '#666666', fontSize: 12 }}>{item.CityName}</Text> */}
                     </View>
                   </TouchableOpacity>
@@ -409,9 +431,9 @@ const MyCatalogue = ({ route }) => {
             ) : null}
 
             {partner == true ? (
-              <Text style={styles.partnert}>Partner Categories List</Text>
+              <Text style={styles.partnert}>Supplier Categories List</Text>
             ) : null}
-            {partner == true ? (
+           {supplier? (
               <FlatList
                 data={selector3?.list}
                 numColumns={3}

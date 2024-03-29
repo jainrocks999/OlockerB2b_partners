@@ -12,10 +12,10 @@ export default StyleSheet.create({
     marginHorizontal: wp(3),
     // borderWidth: 1
   },
-  modelText:{ fontSize: wp(5), fontWeight: '500', color: '#032e63' },
+  modelText:{ fontSize: 15, fontWeight: '500', color: '#032e63' },
   upload:{
     alignSelf: 'center',
-    marginTop: 15,
+    marginTop: 5,
     borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'space-evenly',
@@ -25,7 +25,7 @@ export default StyleSheet.create({
     borderRadius: wp(3.5),
     width: '55%',
   },
-  TextMain:{ fontSize: wp(4.5), fontWeight: '800', color: '#000' },
+  TextMain:{ fontSize: 18, fontWeight: '800', color: '#000' },
   textBreack:{ fontSize: wp(3.8), fontWeight: '600',color:'#474747' },
   dropdown: {
     marginTop: wp(2),
@@ -197,7 +197,7 @@ export default StyleSheet.create({
 
     width: '49%',
     height: hp(5.5),
-    borderRadius: wp(4),
+    borderRadius: wp(3),
     alignItems: 'center',
     justifyContent: 'center',
   },

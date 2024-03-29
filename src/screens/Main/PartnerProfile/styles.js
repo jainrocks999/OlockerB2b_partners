@@ -37,7 +37,7 @@ blankV:{ height: 20,marginTop:15,alignItems:'center' },
         alignItems:'center',
         justifyContent:'center'
     },
-    text2:{ marginTop: 3, fontFamily: 'Acephimere', fontSize: 13 },
+    text2:{ marginTop: 3, fontFamily: 'Acephimere', fontSize: 13,color:'#000' },
     img1:{ width: 50, height: 50 },
     tabContainer:{
         width:'100%',

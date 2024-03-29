@@ -266,7 +266,7 @@ const MyProducts = ({ route }) => {
                       <Image
                         style={{
                           height: hp('2%'),
-                          width: wp('6.1%'),
+                          width: wp('5.7%'),
                           marginTop: 10, marginLeft: 0
 
                         }}

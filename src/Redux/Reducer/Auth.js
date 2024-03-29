@@ -5,6 +5,8 @@ initialstate = {
   isFetching: false,
   Login1: '',
   Collection: [],
+  partnerprofile:[],
+  City:[],
   Gold: [],
   SupplierList: [],
   ProductList: [],
@@ -63,9 +65,24 @@ export default (state = initialstate, action) => {
       return { ...state, isFetching: false, mg: action.payload };
 
     case 'product_session_Success':
-      return { ...state, isFetching: false, session: action.payload };
+      return { ...state, isFetching: false, session: action.payload }; 
 
-   
+      Get_getCities_Request
+      case 'Get_getCities_Request':
+        return { ...state, isFetching: true };
+      case 'Get_getCities_Success':
+        return { ...state, isFetching: false, City: action.payload };
+      case 'Get_getCities_Error':
+        return { ...state, isFetching: false };
+
+
+      case 'User_editProfile_Request':
+        return { ...state, isFetching: true };
+      case 'User_editProfile_Success':
+        return { ...state, isFetching: false, partnerprofile: action.payload };
+      case 'User_editProfile_Error':
+        return { ...state, isFetching: false };
+
       case 'Get_creativeImgList_Request':
         return { ...state, isFetching: true };
       case 'Get_creativeImgList_Success':

@@ -10,14 +10,14 @@ export default function ChatScreen() {
   const route = useRoute();
   const item = route.params?.item;
   const id =route.params?.Id
-
+const EmpData =route.params.empty
   console.log('.....233232',item,id);
   return (
     <View style={{ flex: 1 }}>
 
-      <ChatHeader name={item.ContactPersonName}/>
+      <ChatHeader name={item.SupplierName}/>
       <View style={{ flex: 1 }}>
-        <ChatScreen2 data={item} Id={id} />
+        <ChatScreen2 data={item} Id={id} New Data={EmpData} />
       </View>
     </View>
   )

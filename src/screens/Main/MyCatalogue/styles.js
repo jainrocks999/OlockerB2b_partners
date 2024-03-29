@@ -115,17 +115,17 @@ export default StyleSheet.create({
   card2: {
     width: 120,
     margin: 5,
-    borderRadius: 20,
-    height: 145,
-    marginTop: 0,
+    borderRadius: 10,
+    height: 137,
+ backgroundColor:'#fff'
   },
   card2v: {
-    height: 80,
+    height: 90,
     borderTopRightRadius: 10,
     borderTopLeftRadius: 10,
   },
   card2img: {
-    width: '100%',
+    // width: '99%',
     height: 80,
     borderTopRightRadius: 10,
     borderTopLeftRadius: 10,
@@ -135,12 +135,13 @@ export default StyleSheet.create({
     //  height:80,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
-    padding: 10,
-    justifyContent: 'center',
+    // padding: 10,
+    justifyContent: 'center',alignItems:'center'
   },
   card2v1t: {
     color: '#032e63',
     fontSize: 15,
+    // fontWeight:'700',
     fontFamily: 'Acephimere',
   },
   card3: {

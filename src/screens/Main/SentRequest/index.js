@@ -26,8 +26,6 @@ const HomeScreen = () => {
   const selector = useSelector(state => state.sentRequest);
   const data2 = useSelector(state => state.deletData)
   const dispatch = useDispatch();
-console.log('length.....',selector?.length);
-
   const isFetching = useSelector(state => state.isFetching)
   const [rejected, setRejected] = useState(false);
   const [pending, setPending] = useState(true);
@@ -93,6 +91,27 @@ console.log('length.....',selector?.length);
     setAccepted(false);
     setRejected(true);
   };
+
+  const DeleteModel = (item, index) => {
+    Alert.alert(
+      'Are you sure you want to delete sent request?',
+      '',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => {
+            cancelable: false;
+          },
+          style: 'cancel',
+        },
+        { text: 'ok', onPress: () => deteleApi(item,index) },
+      ],
+      { cancelable: false },
+    );
+  };
+
+
+
   return (
     <View style={styles.conatiner}>
       <Header
@@ -170,7 +189,7 @@ console.log('length.....',selector?.length);
                           }}>
                             {console.log('list.....',item)}
                           <TouchableOpacity
-                            onPress={() => deteleApi(item.SupplierSrNo, index)}
+                            onPress={() => DeleteModel(item.SupplierSrNo, index)}
                             style={{
                               alignItems: 'center',
                               justifyContent: 'center',

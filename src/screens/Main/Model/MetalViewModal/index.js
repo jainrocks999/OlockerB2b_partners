@@ -17,7 +17,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading from '../../../../components/Loader';
-
+import Toast from 'react-native-simple-toast'
 const MetalViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...props }) => {
     const productType = useSelector(state => state.ProductItem);
     const isFetching = useSelector(state => state.isFetching)
@@ -56,11 +56,28 @@ const MetalViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
 
     }, [MetalList?.result])
 
+ const closeFunction =()=>{
+    close();
+    setInputs({
+        purity: '',
+        metaltype: '',
+        grosswt: '',
+        metalnetwt: '',
+        unitwt: '',
+        hMetalWt: '',
+        MetalWt: '',
+        hProductSrNo: '',
+        isAdd: 1,
+        current_session_id: prodcutfile ? 0 : session_id,
+    })
+ }
+
+
     const dispatch = useDispatch();
     const session_id = useSelector(state => state.session)
 
     const AddMetal = async (isEdit, item) => {
-
+     
        
         if (isEdit) {
             setInputs({
@@ -77,6 +94,23 @@ const MetalViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
         }
 
         else {
+            if(inputs.grosswt==0){
+                Toast.show('Please enter gross wt');
+                return;
+              }else if(inputs.metaltype==''){
+                Toast.show('Please select metal type');
+                return;
+              }else if(inputs.purity==''){
+                Toast.show('Please select metal purity');
+                return;
+              }
+              else if(inputs.metalnetwt==0){
+                Toast.show('Please enter metal wt');
+                return;
+              }else if(inputs.unitwt==''){
+                Toast.show('Please select metal unit wt');
+                return;
+              }
             const Token = await AsyncStorage.getItem('loginToken');
             const Id = await AsyncStorage.getItem('Partnersrno');
             dispatch({
@@ -116,11 +150,12 @@ const MetalViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
 
         <View style={styles.container}>
             <Modal animationType='fade' transparent visible={visi} >
+                <View style={{flex:1,backgroundColor:'rgba(69, 71, 71,0.9)',  justifyContent:'center',}}>
                 {isFetching ? <Loading /> : null}
                 <View style={styles.modalView}>
                
                     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: wp(4) }}>
-                    <TouchableOpacity onPress={() => close()} style={styles.crossbtn}>
+                    <TouchableOpacity onPress={() => closeFunction()} style={styles.crossbtn}>
                             <Text style={styles.xbtn}>X</Text>
                         </TouchableOpacity>
                         <View style={styles.modalText}>
@@ -232,6 +267,7 @@ const MetalViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
                                 placeholder='Gross Wt Gms.'
                                     value={inputs.grosswt}
                                     placeholderTextColor='#474747'
+                                    keyboardType='numeric'
                                     onChangeText={(text) => handleInputs('grosswt', text)}
                                 />
                             </View>
@@ -332,8 +368,9 @@ const MetalViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
                         <Text style={[styles.buttonClose, { marginLeft: wp(3) }]}>Metal net wt.<Text style={{ color: 'red' }}>*</Text></Text>
                         <View style={[styles.inputFiled, { marginHorizontal: wp(2) }]}>
                             <TextInput style={styles.textinput1}
-                             placeholder='Gross Wt Gms.'
+                             placeholder='Metal Wt Gms.'
                                 value={inputs.metalnetwt}
+                                keyboardType='numeric'
                                 placeholderTextColor='#474747'
                                 onChangeText={(text) => handleInputs('metalnetwt', text)}
                             />
@@ -374,7 +411,7 @@ const MetalViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
                                 search
                                 labelField="label"
                                 valueField="value"
-                                placeholder="Gross of wt"
+                                placeholder="metal unit of wt"
                                 value={inputs.unitwt}
                                 onChange={item => {
 
@@ -396,7 +433,7 @@ const MetalViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
                         </TouchableOpacity>
                     </ScrollView>
                 </View>
-
+                </View>
 
             </Modal>
         </View>

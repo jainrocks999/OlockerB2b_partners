@@ -17,6 +17,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading from '../../../../components/Loader';
+import Toast from 'react-native-simple-toast';
 const StoneViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...props }) => {
     const productType = useSelector(state => state.ProductItem);
     const session_id = useSelector(state => state.session);
@@ -50,6 +51,22 @@ const StoneViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
     }, [AddStone1?.result])
 
 
+
+const closefunction =()=>{
+    close();
+    setInputs({
+        StoneWt: '',
+        StoneWtUnit: '',
+        ChargAmt: '',
+        StoneName: '',
+        isAdd: 1,
+        hProductSrNo: 0,
+        hStonesSrNo: '',
+        current_session_id: prodcutfile ? 0 : session_id,
+    })
+}
+
+
     const handleInputs = (text, input) => {
         setInputs(prev => ({ ...prev, [text]: input }));
     };
@@ -59,7 +76,7 @@ const StoneViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
     })
 
     const AddStone = async (isEdit, item) => {
-      
+         
         if (isEdit) {
             setInputs({
                 ChargAmt: item?.StoneChargeableAmount,
@@ -73,7 +90,18 @@ const StoneViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
         }
 
         else {
-
+            if(inputs.StoneWt==0){
+                Toast.show('Please enter the stone weight');
+                return;
+              }
+              else if(inputs.StoneWtUnit==''){
+                Toast.show('Please select stone unit weight');
+                return;
+              }
+              else if(inputs.StoneName==''){
+                Toast.show('Please select stone Name');
+                return;
+              }
             const Token = await AsyncStorage.getItem('loginToken');
             const Id = await AsyncStorage.getItem('Partnersrno');
             dispatch({
@@ -110,10 +138,12 @@ const StoneViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
     return (
         <View style={styles.container}>
             <Modal animationType='fade' transparent visible={visi} >
+            <View style={{flex:1,backgroundColor:'rgba(69, 71, 71,0.9)',justifyContent:'center'}}>
+
                 {isFetching ? <Loading /> : null}
                 <View style={styles.modalView}>
                     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: wp(4) }}>
-                        <TouchableOpacity onPress={() => close()} style={styles.crossbtn}>
+                        <TouchableOpacity onPress={() => closefunction()} style={styles.crossbtn}>
                             <Text style={styles.xbtn}>X</Text>
                         </TouchableOpacity>
                         <View style={styles.modalText}>
@@ -269,6 +299,7 @@ const StoneViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
                                 <TextInput style={styles.input1}
                                     placeholderTextColor='#474747'
                                 placeholder='Stone Wt '
+                                keyboardType='numeric'
                                     value={inputs.StoneWt}
                                     onChangeText={inputs => handleInputs('StoneWt', inputs)}
                                 />
@@ -312,7 +343,7 @@ const StoneViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
                                 search
                                 labelField="label"
                                 valueField="value"
-                                placeholder="Cts"
+                                placeholder="Cts.."
                                 value={inputs.StoneWtUnit}
                                 onChange={item => {
                                     handleInputs('StoneWtUnit', item.value)
@@ -327,7 +358,7 @@ const StoneViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
                                     <TextInput style={styles.input1}
                                     placeholderTextColor='#474747'
                                     placeholder='Amount in Rs.'
-
+                                    keyboardType='numeric'
                                         value={inputs.ChargAmt}
                                         onChangeText={(input) => handleInputs('ChargAmt', input)}
                                     />
@@ -392,6 +423,7 @@ const StoneViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
                             <Text style={{ color: 'white', fontSize: wp(4.5), fontWeight: 'bold' }}>Add Stone Detail</Text>
                         </TouchableOpacity>
                     </ScrollView>
+                </View>
                 </View>
             </Modal>
         </View>

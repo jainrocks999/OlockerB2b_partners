@@ -48,9 +48,10 @@ const SubCategory = ({ route }) => {
   );
   const [stockNo, setStock] = useState(
     selector?.productDetail?.ItemName)
-
+   
   const [demo, setDemo] = useState(
-    selector?.productDetail?.ItemDesc?.substring(0, 27)
+   
+    `${parseFloat(selector?.productDetail?.GrossWt).toFixed(2)} GM`
 
   );
 
@@ -232,7 +233,7 @@ const SubCategory = ({ route }) => {
               separatorWidth={15}
               width={310}
               autoscroll={false}
-              loop={false}
+              loop={lenght >=1 ? true : false}
             />
             : null}
           {/* })} */}
@@ -321,7 +322,7 @@ const SubCategory = ({ route }) => {
               </View>
             </View>
           </View>
-          {Detail ?null:
+          {/* {Detail ?null:
           (<View style={{
             alignItems:'center',
             justifyContent:'space-between',
@@ -339,7 +340,7 @@ const SubCategory = ({ route }) => {
               style={styles.Enqure}>
                 <Text style={styles.textEQ}>ENQUIRE NOW</Text>
               </TouchableOpacity>
-          </View>)}
+          </View>)} */}
         </View>
         <View style={{ height: 100 }} />
       </ScrollView>

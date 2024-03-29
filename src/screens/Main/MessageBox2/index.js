@@ -22,25 +22,32 @@ import { TextInput } from 'react-native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
+import Toast from 'react-native-simple-toast';
 
 const MessageBox2 = () => {
   const navigation = useNavigation();
-  const selector = useSelector(state => state.patnerContact)
-  const isFetching = useSelector(state => state.isFetching);
   const isFoucse = useIsFocused();
-
+  const [data1,setData1]=useState();
+  console.log('supplier,,,, contact list675776 ,',data1);
+  const[visible,setVisiable]=useState(false);
   const [search, setSearch] = useState('');
-  const [filteredDataSource, setFilteredDataSource] = useState(selector);
-  const [masterDataSource, setMasterDataSource] = useState(selector);
+  const [filteredDataSource, setFilteredDataSource] = useState();
+useEffect(()=>{
+  setFilteredDataSource(data1)
+  setMasterDataSource(data1)
+},[data1])
+
+  const [masterDataSource, setMasterDataSource] = useState();
   const searchFilterFunction = text => {
     if (text) {
       const newData = masterDataSource.filter(function (item) {
-        const itemData = `${item?.ContactPersonName} ${item?.Timestamp?.substring(0, 29)} `
-          ? `${item?.ContactPersonName} ${item?.Timestamp?.substring(0, 29)}`.toUpperCase()
+        const itemData = `${item?.SupplierName} ${item?.created_at?.substring(0, 29)} `
+          ? `${item?.SupplierName} ${item?.created_at?.substring(0, 29)}`.toUpperCase()
           : ''.toUpperCase();
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
+      console.log('new data>>>>>>>>>>>>>',newData);
       setFilteredDataSource(newData);
       setSearch(text);
     } else {
@@ -54,24 +61,57 @@ const MessageBox2 = () => {
     setFilteredDataSource(masterDataSource);
   };
 
-
-  useEffect(() => {
-    manageBusiness();
-  }, [isFoucse])
-
   const dispatch = useDispatch();
+ 
+ 
   const manageBusiness = async () => {
    
     const Id = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken')
-    dispatch({
-      type: 'Patner_Contact_Request',
-      url: 'supplier//supplierListForPartners',
-      user_id: Id,
-      Token: Token,
-    });
+    // dispatch({
+    //   type: 'Patner_Contact_Request',
+    //   url: 'supplier//supplierListForPartners',
+    //   user_id: Id,
+    //   Token: Token,
+    // });
+setVisiable(true);
+    const axios = require('axios');
+
+let config = {
+  method: 'get',
+  maxBodyLength: Infinity,
+  url: `https://olocker.co/api/supplier//supplierListForPartners?user_id=${Id}`,
+  headers: { 
+    'Olocker': `Bearer ${Token}`
+  }
+};
+
+axios.request(config)
+.then((response) => {
+  if(response.data.status==true){
+    setData1(response.data.data);
+   console.log(JSON.stringify(response.data.data));
+   setVisiable(false);
+  }else{
+    
+    setData1(response.data.data);
+    setVisiable(false);
+    Toast.show(response?.data?.msg);
+  }
+})
+.catch((error) => {
+  setVisiable(false);
+  console.log(error);
+});
+
 
   };
+  useEffect(() => {
+    if(isFoucse){
+    manageBusiness();
+   
+    }
+  }, [isFoucse])
 
   const Logout = () => {
     Alert.alert(
@@ -102,11 +142,11 @@ const MessageBox2 = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
-      {isFetching ? <Loader /> : null}
+      {visible ? <Loader /> : null}
 
       <View style={styles.container}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity
+          <TouchableOpacity style={{height:25,width:45,borderWidth:0,justifyContent:'center'}}
             delayPressIn={0}
             onPress={() => navigation.goBack()}>
             <Image
@@ -114,7 +154,7 @@ const MessageBox2 = () => {
               source={require('../../../assets/L.png')}
             />
           </TouchableOpacity>
-          <Text style={[styles.text, { marginLeft: 15 }]}>Message Box</Text>
+          <Text style={[styles.text, { marginLeft: 0 }]}>Message Box</Text>
         </View>
         <View style={styles.headertouch}>
           <TouchableOpacity
@@ -174,7 +214,7 @@ const MessageBox2 = () => {
           />
         </View> */}
         <View style={[styles.searchbar, { marginTop: 20 }]}>
-          <TextInput placeholder="Search Business" 
+          <TextInput placeholder="Search" 
           placeholderTextColor='#474747'
           style={{ fontSize: 18 ,color:'#474747'}}
             value={search}
@@ -187,13 +227,14 @@ const MessageBox2 = () => {
         <View>
 
           <FlatList
-            data={filteredDataSource ? filteredDataSource : selector}
+            data={filteredDataSource}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
               
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('ChatScreen', { item: item ,Id:false});
+             
                 }}
                 style={styles.Usercard}>
                   {/* {console.log('dddata a a',item)} */}
@@ -205,14 +246,14 @@ const MessageBox2 = () => {
                   <Text
                     style={{ fontSize: 22, fontWeight: '700',color:'#474747' }}
 
-                  > {item?.ContactPersonName?.substring(0, 1).toUpperCase()}</Text>
+                  > {item?.SupplierName?.substring(0, 1).toUpperCase()}</Text>
                 </View>
                 <View style={{ justifyContent: 'center', width: '65%', marginLeft: 10 }}>
                   <Text
                     style={{ fontSize: 18, fontWeight: '800', color: '#000' }}>
-                    {item?.ContactPersonName}
+                    {item?.SupplierName}
                   </Text>
-                  <Text>{item?.Timestamp?.substring(0, 29)}</Text>
+                  <Text>{item?.created_at?.substring(0, 19)}</Text>
                 </View>
                 {/* <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                   <Text style={{ fontWeight: '800' }}>Now</Text>

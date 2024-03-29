@@ -109,7 +109,7 @@ setVisible2(true)
         if (response.data.status == true) {
           setVisible2(false);
           demo(id,index);
-          Toast.show(response?.data?.msg);
+          // Toast.show(response?.data?.msg);
           
 
         }
@@ -164,13 +164,13 @@ setVisible2(true)
         :
         <View>
           {/* {`${data2 ? data2?.length : selector?.suppliers?.length} Pending Approval`} */}
-          <Text style={{ color: '#565656', fontFamily: 'Acephimere' ,marginLeft:10}}>{`${data2 ? data2?.length : selector?.list?.length}${' Pending Requests'}`}</Text>
+          <Text style={{ color: '#565656', fontFamily: 'Acephimere' ,marginLeft:10,marginTop:15}}>{`${data2 ? data2?.length : selector?.list?.length}${' Pending Requests'}`}</Text>
           <FlatList
             data={data2 ? data2 : selector?.list}
             renderItem={({ item, index }) => (
               <View
                 style={{
-                  marginTop: 20,
+                  marginTop: 15,
                   paddingHorizontal: 20,
                   flexDirection: 'row',
                 }}>
@@ -237,7 +237,7 @@ setVisible2(true)
                         style={{
                           color: '#fff',
                           fontSize: 12,
-                          fontFamily: 'Acephimere',
+                          fontFamily: 'Acephimere',textAlign:'center'
                         }}>
                         Accept
                       </Text>
@@ -257,9 +257,9 @@ setVisible2(true)
                         style={{
                           color: '#fff',
                           fontSize: 12,
-                          fontFamily: 'Acephimere',
+                          fontFamily: 'Acephimere',textAlign:'center'
                         }}>
-                        REJECT
+                        Reject
                       </Text>
                     </TouchableOpacity>
                   </View>

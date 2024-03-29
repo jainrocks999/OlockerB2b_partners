@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -9,16 +9,43 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Header from '../../../components/CustomHeader';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import StatusBar from '../../../components/StatusBar';
 import BottomTab from '../../../components/StoreButtomTab';
 import Loader from '../../../components/Loader';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const HomeScreen = () => {
   const navigation = useNavigation();
- const selector =useSelector(state=>state.Notification)
- console.log('notifiyyyyyyy...........',selector);
- 
+ const selector =useSelector(state=>state.Notification);
+ const isFetching= useSelector(state=>state.isFetching)
+ const dispatch =useDispatch();
+  const isfocus=useIsFocused();
+useEffect(()=>{
+if(isfocus){
+  Apicall();
+}
+},[isfocus])
+const Apicall =async()=>{
+  const Token = await AsyncStorage.getItem('loginToken');
+    const Id = await AsyncStorage.getItem('Partnersrno');
+  dispatch({
+    type:'Get_pushNotificationList_Request',
+    url:'/partners/pushNotificationList',
+    partnerId:Id,
+    Token:Token
+   })
+}
+
+ const supplierprofile = async (id) => {
+  const Token = await AsyncStorage.getItem('loginToken');
+  const Id = await AsyncStorage.getItem('Partnersrno');
+ console.log('data...get,,,,,',id);
+ if(id.title=='New Invitation Request'){
+  navigation.navigate('MyNetwork1',{screen:'PendingRequest'})
+ }else if(id.title=='Request Accepted')
+ navigation.navigate('MyNetwork1',{screen:'MyNetworks'})
+}
 
   return (
     <View style={{flex: 1, backgroundColor: '#f0eeef'}}>
@@ -30,7 +57,7 @@ const HomeScreen = () => {
         onPress={() => navigation.goBack()}
         onPress2={() => navigation.navigate('FavDetails')}
       />
-     
+     {isFetching?<Loader/>:null}
       <ScrollView style={{paddingHorizontal:0}}>
       <Text  style={{color:'#000',marginLeft:10,marginTop:10}}>{`${selector.length}${'  Notification'}`}</Text>
         <View style={{marginBottom:20}}>
@@ -48,8 +75,9 @@ const HomeScreen = () => {
     shadowOffset: {width: 3, height: 12},
     shadowOpacity: 0.8,
      shadowRadius: 0,
-    elevation: 8,
-                  }}>
+    elevation: 8,}}>
+
+      <TouchableOpacity onPress={()=>supplierprofile(item)}>
                   <View
                     style={{
                       flexDirection: 'row',
@@ -69,7 +97,7 @@ const HomeScreen = () => {
                       </Text>
                     </View>
                   </View>
-                  
+                  </TouchableOpacity>
                   <View
                     style={{
                       flexDirection: 'row',

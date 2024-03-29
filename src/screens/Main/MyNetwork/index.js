@@ -147,11 +147,24 @@ const MyCatalogue = () => {
     setData1(''),
       pendingRequest();
     SentRequest();
-    //  getSupplier();
+   networklist1();
 
    
   }
     , [focus])
+    
+const networklist1 =async()=>{
+  const Token = await AsyncStorage.getItem('loginToken')
+      const Id = await AsyncStorage.getItem('Partnersrno');
+
+  dispatch({
+    type: 'User_SupplierList_Request',
+    url: '/partners/supplierList',
+    Token: Token,
+    partnerId: Id,
+    // navigation,
+  });
+}
 
   const getSupplier = async () => {
 // console.log('getettetete',supplier, state, city,metal);
@@ -532,11 +545,11 @@ const MyCatalogue = () => {
                       }}
                       // dropdownPosition='top'
                       itemTextStyle={{ color: '#474747' }}
-                      itemContainerStyle={{ marginBottom: -20, }}
+                      itemContainerStyle={{ marginBottom: -15, }}
                       searchPlaceholder="search.."
 
                       maxHeight={200}
-                      //  search
+                        search
                       labelField="label"
                       valueField="value"
                       placeholder="Select state"
@@ -795,7 +808,7 @@ const MyCatalogue = () => {
   <Text style={{ color: '#565656', fontFamily: 'Acephimere' }}>{''}</Text>
 </View>:
         <View style={{height:18,width:30,bottom:-5,backgroundColor:'#e9056b',alignSelf:'flex-end',borderRadius:10}}>
-<Text style={{color:'#fff',textAlign:'center'}}>{`${networklist.length}`}</Text>
+<Text style={{color:'#fff',textAlign:'center'}}>{`${networklist?.length}`}</Text>
         </View>}
 
                       <View style={{ alignItems: 'center', justifyContent: 'center' }}>

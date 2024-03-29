@@ -155,6 +155,7 @@ console.log(',,,,s',JSON.stringify(data));
 
         })
         .catch((error) => {
+          setVisible(false);
           console.log(error);
         });
     }
