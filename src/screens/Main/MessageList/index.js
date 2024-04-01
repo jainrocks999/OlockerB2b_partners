@@ -58,8 +58,28 @@ const Apicall =async()=>{
         onPress2={() => navigation.navigate('FavDetails')}
       />
      {isFetching?<Loader/>:null}
+
+     {
+        selector?.length == 0 ?
+            <View style={{ alignItems: 'center', justifyContent: 'center', alignSelf: 'center', height: '90%',}}>
+              <Text style={{
+        fontFamily: 'Acephimere',
+        fontSize: 19,
+        color: 'grey', fontWeight: '700'
+    }}> {'No Notification'} </Text>
+
+            </View>
+            :
+
+
       <ScrollView style={{paddingHorizontal:0}}>
-      <Text  style={{color:'#000',marginLeft:10,marginTop:10}}>{`${selector.length}${'  Notification'}`}</Text>
+
+<View style={{}}>
+              <Text
+               style={{color:'#000',marginLeft:10,marginTop:10}}>
+                {selector?.length==1?    `${selector?.length}  Notification`:`${selector?.length}  Notifications`}
+              </Text>
+      {/* <Text  style={{color:'#000',marginLeft:10,marginTop:10}}>{`${selector.length}${'  Notification'}`}</Text> */}
         <View style={{marginBottom:20}}>
             <FlatList
               data={selector}
@@ -119,8 +139,12 @@ const Apicall =async()=>{
               )}
             />
         </View>
+        </View>
+        <View style={{height:'20%',width:'30%',alignSelf:'flex-end'}}>
+         <Text>Clear</Text>
+        </View>
       </ScrollView>
-    
+}
       <StatusBar />
     </View>
   );

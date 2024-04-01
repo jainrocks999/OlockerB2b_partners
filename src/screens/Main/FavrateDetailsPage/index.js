@@ -120,7 +120,6 @@ console.log('virendra,,,,,favlist  ,,,,',item);
               <Text style={styles.text}>{WishList?.wishlistitems?.length == 1 ? `${WishList?.wishlistitems?.length} Item` : `${WishList?.wishlistitems?.length} Items`}</Text>
             </View>
           </View>
-          {console.log('virendra,,,,,favlist  ,,,1212,',WishList?.wishlistitems)}
           <View style={styles.card}>
             <FlatList
               data={WishList?.wishlistitems}

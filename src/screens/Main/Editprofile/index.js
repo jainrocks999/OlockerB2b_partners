@@ -35,15 +35,56 @@ const EditSupplierProfile = ({route}) => {
   const selector = useSelector(state => state?.partnerprofile)
   const details = route.params?.selector?.partnerdetails
 const details2=route.params?.extractedImages
-console.log('datatddda3 .........................',selector?.partnerimagedetails[0].ProductName1);
   const [fetching, setFetching] = useState(false);
+  const [pincode,setPinCode]=useState(details?.PinCode)
+
+  useEffect(() => {
+    route.params?.selector?.partnerjewellerydetails.map(item => {
+      if (item.JewelleryType == 'Gold') {
+        if (goldSpecilization.length > 0) {
+          if (!goldSpecilization.includes(item)) {
+            goldSpecilization.push(item);
+          }
+        } else {
+          goldSpecilization.push(item);
+        }
+      } else if (item.metaltype == 'Diamond') {
+        if (diamondSpecilization.length > 0) {
+          if (!diamondSpecilization.includes(item)) {
+            diamondSpecilization.push(item);
+          }
+        } else {
+          diamondSpecilization.push(item);
+        }
+      } else if (item.metaltype == 'Platinum') {
+        if (platinumSpecilization.length > 0) {
+          if (!platinumSpecilization.includes(item)) {
+            platinumSpecilization.push(item);
+          }
+        } else {
+          platinumSpecilization.push(item);
+        }
+      } else if (item.metaltype == 'Silver') {
+        if (silverSpecilization.length > 0) {
+          if (!silverSpecilization.includes(item)) {
+            silverSpecilization.push(item);
+          }
+        } else {
+          silverSpecilization.push(item);
+        }
+      }
+    });
+  }, []);
+
+
+
   const [inputs, setInputs] = useState({
     SrNo:selector?.partnerlogins?.SrNo,
     CompanyName:details?.CompanyName,
     DisplayName:details?.DisplayName,
     txtOwnerName:details?.OwnersName,
     txtAddress:details?.HOaddress,
-    PinCode:details?.PinCode,
+    // PinCode:details?.PinCode,
     StateId:details?.StateId,
     CityId:details?.CityId,
     WebSiteUrl:details?.Website,
@@ -63,24 +104,26 @@ console.log('datatddda3 .........................',selector?.partnerimagedetails
     IsLaunchSavingScheme:'',
     Password:"123456",
     BranchSrNo:selector.partnerlogins.BranchSrNo,
+    District:'',
+    State:'',
     PartnerIntroduction:details?.PartnerIntroduction,
     JTypep:'',
-    JTyped:Diamond,
-    JTypeg:Gold,
-    JTypep:Platinum,
-    JTypes:Silver,
-    diamond_purity:[],
-    diamondcustom_purity:[],
-    diamond_specialisation:[],
-    gold_purity:[],
-    goldcustom_purity:[],
-    gold_specialisation:[],
-    platinum_purity:[],
-    platinumcustom_purity:[],
-    platinum_specialisation:[0],
-    silver_purity:[0],
-    silvercustom_purity:'',
-    silver_specialisation:[0],
+    JTyped: '',
+    JTypeg: '',
+    JTypes: '',
+    diamond_purity: [],
+    diamond_specialisation: [],
+    gold_purity: [],
+    gold_specialisation: [],
+    silver_purity: [],
+    silver_specialisation: [],
+    platinum_specialisation: [],
+    platinum_purity: [],
+    goldcustom_purity: '',
+    diamondcustom_purity: '',
+    platinumcustom_purity: '',
+    silvercustom_purity: '',
+    DiamondQuality: '',
  
 
 
@@ -250,7 +293,12 @@ const handleOnSumit =async()=>{
   const newData = {...inputs};
   let data = new FormData();
   await Object.keys(newData).map(async (item, index) => {
+    if(data[item]!=''){
     data.append(item, data[item]);
+    }else{
+      Toast.show('please fill all value')
+      return
+    }
 
   })
   console.log('called');
@@ -282,7 +330,66 @@ const handleOnSumit =async()=>{
 }
 
 
+const getSpecilization = data => {
+  console.log('daTATC GET ,,,',data);
+  let arr = [];
+  data?.map((item, index) => {
+    let obj = {id: index.toString(), name: item?.name};
+    arr.push(obj);
+  });
+  return arr;
+};
 
+
+
+
+useEffect(()=>{
+  console.log('dijfsdgpg',details?.PinCode);
+{details?.PinCode?handlePincode(details?.PinCode):null
+
+ }
+},[details?.PinCode])
+
+const handlePincode=async(val)=>{
+  console.log('this is working',val.length);
+  const Token = await AsyncStorage.getItem('loginToken');
+  if(val.length==6){
+    setPinCode(val)
+try{
+  console.log('this is working3333',val);
+    const response = await axios({
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json',
+         Olocker: `Bearer ${Token}`,
+      },
+      url: `https://olocker.co/api/partners//getCityByState?pincode=${val}`,
+    });
+
+    console.log('this is response data.....',response.data);
+    if (response.status==200) {
+      setPinCode(response.data.Pincode);
+      handleInputs('StateId',response.data.StateId);
+      handleImageUpload('CityId',response.data.CityId);
+      handleInputs('District',response.data.District);
+      handleInputs('State',response.data.State);
+      // setFetching(false);
+      // Toast.show(response.data.msg);
+    } else {
+      // setFetching(false);
+      // Toast.show(response.data.msg);
+    }
+  } catch (error) {
+    Toast.show('Something went wrong');
+    setFetching(false);
+    console.log('this is iresponae', error);
+  }
+
+  }
+  else{
+  //  setPinCode(val)
+  }
+}
 
 
 
@@ -378,8 +485,10 @@ const handleOnSumit =async()=>{
               paddingLeft: 10,color:'#000'
             }}
             placeholderTextColor={'grey'}
-            value={inputs.PinCode}
-            onChangeText={val => handleInputs('PinCode', val)}
+          defaultValue={pincode}
+            keyboardType='number-pad'
+            onChangeText={val => handlePincode(val)}
+            //  onChangeText={val =>setPinCode(val)}
           />
         </View>
         
@@ -388,7 +497,27 @@ const handleOnSumit =async()=>{
           <Text style={styles.text}>
             State<Text style={{color: 'red'}}>{' *'}</Text>
           </Text>
-          <View style={{}}>
+
+          <TextInput
+            placeholder="State"
+            style={{
+              borderWidth: 1,
+              marginTop: 4,
+              height: 40,
+              borderRadius: 6,
+              borderColor: 'grey',
+              paddingLeft: 10,color:'#000'
+            }}
+            placeholderTextColor={'grey'}
+            value={inputs.State}
+            editable={false}
+            onChangeText={val =>  handleInputs('State',val)}
+          />
+          
+          {/* <View style={{}}>
+
+
+
             <Dropdown
               style={[
                 styles.dropdown,
@@ -416,14 +545,30 @@ const handleOnSumit =async()=>{
                 handleInputs('StateId', item.value);
               }}
             />
-          </View>
+          </View> */}
         </View>
         <View style={{marginTop: 0}}>
           <Text style={styles.text}>
             City<Text style={{color: 'red'}}>{' *'}</Text>
           </Text>
-          <View>
-            <Dropdown
+          <TextInput
+            placeholder="City"
+            style={{
+              borderWidth: 1,
+              marginTop: 4,
+              height: 40,
+              borderRadius: 6,
+              borderColor: 'grey',
+              paddingLeft: 10,color:'#000'
+            }}
+            placeholderTextColor={'grey'}
+            value={inputs.District}
+            editable={false}
+            onChangeText={val =>  handleInputs('District', val)}
+          />
+
+          {/* <View>
+        <Dropdown
               style={[
                 styles.dropdown,
                 {borderWidth: 1, borderColor: '#979998'},
@@ -449,8 +594,8 @@ const handleOnSumit =async()=>{
                 color: '#474747',
                         backgroundColor: '#f0f0f0'
               }}
-            />
-          </View>
+            /> 
+          </View> */}
         </View>
         
         <View style={{marginTop: 10}}>
@@ -613,7 +758,7 @@ const handleOnSumit =async()=>{
               <CheckBox
                 disabled={false}
                  value={inputs.JTypeg}
-                 onValueChange={newValue => handleInputs('JTypeg', newValue)}
+               onValueChange={newValue => handleInputs('JTypeg', newValue)}
                 tintColors={{true: '#032e63', false: '#032e63'}}
                 onTintColor="#032e63"
                 onCheckColor="#032e63"
@@ -626,7 +771,7 @@ const handleOnSumit =async()=>{
               <CheckBox
                 disabled={false}
                  value={inputs.JTypep}
-                 onValueChange={newValue => handleInputs('JTypep', newValue)}
+                  onValueChange={newValue => handleInputs('JTypep', newValue)}
                 tintColors={{true: '#032e63', false: '#032e63'}}
                 onTintColor="#032e63"
                 onCheckColor="#032e63"
@@ -639,7 +784,7 @@ const handleOnSumit =async()=>{
               <CheckBox
                 disabled={false}
                  value={inputs.JTypes}
-                 onValueChange={newValue => handleInputs('JTypes', newValue)}
+                  onValueChange={newValue => handleInputs('JTypes', newValue)}
                 tintColors={{true: '#032e63', false: '#032e63'}}
                 onTintColor="#032e63"
                 onCheckColor="#032e63"
@@ -661,11 +806,11 @@ const handleOnSumit =async()=>{
                 uniqueKey="name"
                 onSelectedItemsChange={val => {
                   handleInputs('diamond_purity', val);
-                  if (val.includes('Custom Purity')) {
-                    setCustomPurityDia(true);
-                  } else {
-                    setCustomPurityDia(false);
-                  }
+                  // if (val.includes('Custom Purity')) {
+                  //   setCustomPurityDia(true);
+                  // } else {
+                  //   setCustomPurityDia(false);
+                  // }
                 }}
                 selectedItems={inputs.diamond_purity}
                 searchIcon={false}
@@ -776,7 +921,7 @@ const handleOnSumit =async()=>{
             </View>
           </View>
       ) : null} 
-        {/* {inputs.JTypeg == true ? (
+        {inputs.JTypeg == true ? (
           <View>
             <View style={{marginTop: 10}}>
               <Text style={styles.text}>
@@ -787,11 +932,11 @@ const handleOnSumit =async()=>{
                 uniqueKey="name"
                 onSelectedItemsChange={val => {
                   handleInputs('gold_purity', val);
-                  if (val.includes('Custom Purity')) {
-                    setCustomPurityGo(true);
-                  } else {
-                    setCustomPurityGo(false);
-                  }
+                  // if (val.includes('Custom Purity')) {
+                  //   setCustomPurityGo(true);
+                  // } else {
+                  //   setCustomPurityGo(false);
+                  // }
                 }}
                 selectedItems={inputs.gold_purity}
                 searchIcon={false}
@@ -831,7 +976,7 @@ const handleOnSumit =async()=>{
               />
             </View>
 
-            {customPurityGo == true ? (
+            {/* {customPurityGo == true ? (
               <View style={{marginTop: 10}}>
                 <TextInput
                   placeholder="Please specify custom purity"
@@ -848,7 +993,7 @@ const handleOnSumit =async()=>{
                   onChangeText={val => handleInputs('goldcustom_purity', val)}
                 />
               </View>
-            ) : null}
+            ) : null} */}
             <View style={{marginTop: 10}}>
               <Text style={styles.text}>
                 Choose Gold Specialisation
@@ -912,11 +1057,11 @@ const handleOnSumit =async()=>{
                 uniqueKey="name"
                 onSelectedItemsChange={val => {
                   handleInputs('platinum_purity', val);
-                  if (val.includes('Custom Purity')) {
-                    setCustomPurityPla(true);
-                  } else {
-                    setCustomPurityPla(false);
-                  }
+                  // if (val.includes('Custom Purity')) {
+                  //   setCustomPurityPla(true);
+                  // } else {
+                  //   setCustomPurityPla(false);
+                  // }
                 }}
                 selectedItems={inputs.platinum_purity}
                 searchIcon={false}
@@ -957,7 +1102,7 @@ const handleOnSumit =async()=>{
                 }}
               />
             </View>
-            {customPurityPla == true ? (
+            {/* {customPurityPla == true ? (
               <View style={{marginTop: 10}}>
                 <TextInput
                   placeholder="Please specify custom purity"
@@ -976,7 +1121,7 @@ const handleOnSumit =async()=>{
                   }
                 />
               </View>
-            ) : null}
+            ) : null} */}
             <View style={{marginTop: 10}}>
               <Text style={styles.text}>
                 Choose Platinum Specialisation
@@ -1039,11 +1184,11 @@ const handleOnSumit =async()=>{
                 uniqueKey="name"
                 onSelectedItemsChange={val => {
                   handleInputs('silver_purity', val);
-                  if (val.includes('Custom Purity')) {
-                    setCustomPuritySil(true);
-                  } else {
-                    setCustomPuritySil(false);
-                  }
+                  // if (val.includes('Custom Purity')) {
+                  //   setCustomPuritySil(true);
+                  // } else {
+                  //   setCustomPuritySil(false);
+                  // }
                 }}
                 selectedItems={inputs.silver_purity}
                 searchIcon={false}
@@ -1082,7 +1227,7 @@ const handleOnSumit =async()=>{
                 }}
               />
             </View>
-            {customPuritySil == true ? (
+            {/* {customPuritySil == true ? (
               <View style={{marginTop: 10}}>
                 <TextInput
                   placeholder="Please specify custom purity"
@@ -1099,7 +1244,7 @@ const handleOnSumit =async()=>{
                   onChangeText={val => handleInputs('silvercustom_purity', val)}
                 />
               </View>
-            ) : null}
+            ) : null} */}
             <View style={{marginTop: 10}}>
               <Text style={styles.text}>
                 Choose Silver Specialisation
@@ -1151,7 +1296,7 @@ const handleOnSumit =async()=>{
               />
             </View>
           </View>
-        ) : null} */}
+        ) : null} 
         {/* <View style={{marginTop: 10}}>
           <Text style={styles.text}>Diamond quality</Text>
           <TextInput
