@@ -44,26 +44,26 @@ const App = () => {
            },
 
       onNotification: function (notification) {
-        // if (notification.userInteraction) {
-        //   if (notification.data.toScreen) {
-        //   }
-        // } else {
+        if (notification.userInteraction) {
+          if (notification.data.toScreen) {
+          }
+        } else {
           PushNotification.localNotification({
             allowWhileIdle: true,
             ignoreInForeground: false,
-             title: notification.message,
-            message: notification.title,
+             title: notification.title,
+            message: notification.message,
             soundName: 'notification.mp3',
             visibility: 'public',
             channelId: 'default',
             playSound: true,
           });
-          GetMessageCommon(notification?.title,'supplier')
+          GetMessageCommon(notification?.data?.id,'supplier')
           console.log('notification ,android',notification);
 
 
         }
-      // },
+       },
     });
 
     if (Platform.OS === 'ios') {
@@ -85,7 +85,6 @@ const App = () => {
 
   
   useEffect(() => {
-
     initializeNotifications();
     crashlytics().log('Analytics page just mounted')
     getCrashlyticsDetail()
@@ -97,8 +96,7 @@ const App = () => {
    const getCrashlyticsDetail = async() => {
     const Id = await AsyncStorage.getItem('Partnersrno');
     const userid =await AsyncStorage.getItem('userEmail')
-    // const name=await AsyncStorage.getItem(Storage.name)
-console.log('jfjkffjdjfkfd',Id,userid);
+
     try {
       crashlytics().setUserId(Id)
       crashlytics().setAttribute('username',userid)

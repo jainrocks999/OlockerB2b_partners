@@ -118,7 +118,7 @@ const HomeScreen = () => {
         source={require('../../../assets/L.png')}
         source2={require('../../../assets/Image/dil.png')}
         source1={require('../../../assets/Fo.png')}
-        title={'Sent Requests '}
+        title={'Sent Request'}
         onPress={() => navigation.goBack()}
         onPress1={() => navigation.navigate('MessageBox')}
         onPress2={() => navigation.navigate('FavDetails')}
@@ -164,8 +164,8 @@ const HomeScreen = () => {
 
                       </View>
                       <View style={{ alignSelf: 'flex-end', marginBottom: 20, paddingHorizontal: 10, marginTop: '-10%' }}>
-                        <TouchableOpacity style={styles.BTouch}>
-                          <Text style={styles.BTouchtext}>Pending</Text>
+                        <TouchableOpacity style={[styles.BTouch,{ backgroundColor:item.Status=='Reject'?'red': '#032e63',}]}>
+                          <Text style={styles.BTouchtext}>{item.Status}</Text>
                         </TouchableOpacity>
                       </View>
                       <View

@@ -543,7 +543,7 @@ const networklist1 =async()=>{
                         color: '#474747',
                         backgroundColor: '#f0f0f0',
                       }}
-                      // dropdownPosition='top'
+                       dropdownPosition={lenght > 0?'top':null}
                       itemTextStyle={{ color: '#474747' }}
                       itemContainerStyle={{ marginBottom: -15, }}
                       searchPlaceholder="search.."
@@ -984,7 +984,7 @@ const networklist1 =async()=>{
         <View style={{ height: 185 }} />
       </ScrollView>
 
-      <PickerModel
+      {/* <PickerModel
         visi={visiable5}
         close={() => setVisible5(false)}
         data={filteredDataSource ? filteredDataSource : selector}
@@ -999,7 +999,7 @@ const networklist1 =async()=>{
 
 
         }}
-      />
+      /> */}
 
       {/* <View
         style={{

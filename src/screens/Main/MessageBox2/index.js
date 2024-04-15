@@ -253,7 +253,7 @@ axios.request(config)
                     style={{ fontSize: 18, fontWeight: '800', color: '#000' }}>
                     {item?.SupplierName}
                   </Text>
-                  <Text>{item?.created_at?.substring(0, 19)}</Text>
+                  <Text style={{color: 'grey'}}>{item?.created_at?.substring(0, 19)}</Text>
                 </View>
                 {/* <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                   <Text style={{ fontWeight: '800' }}>Now</Text>

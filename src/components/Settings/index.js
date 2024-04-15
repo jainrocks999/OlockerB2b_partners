@@ -12,24 +12,54 @@ const Settings =() => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const network_id = useSelector(state => state.network_id)
-  console.log(network_id);
   const selector = useSelector(state => state.SupplierDetail?.detail)
   const selector1 = useSelector(state => state.Status)
   const removenetwork = async (id) => {
     const Token = await AsyncStorage.getItem('loginToken');
+    const axios = require('axios');
+
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `https://olocker.co/api/partners/removeNetworkSupplier?supplier_id=${selector?.SrNo}`,
+      headers: { 
+        'Olocker': `Bearer ${Token}`
+      }
+    };
+    
+    axios.request(config)
+    .then((response) => {
+      if(response.data.status==true){
+      navigation.replace( 'PartnerProfile')
+      partnerDetaitl(selector?.SrNo)
+      Toast.show(response?.data?.msg)
+      }
+      else{
+        Toast.show(response?.data?.msg)
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
+  const partnerDetaitl = async (id) => {
+    const Token = await AsyncStorage.getItem('loginToken')
     const srno = await AsyncStorage.getItem('Partnersrno');
+    console.log('idd,,,,,,,,,,,,,,,,', id);
     dispatch({
-      type: 'User_removeNetworkSupplier_Request',
-      url: '/partners/removeNetworkSupplier',
-      supplierId: selector.SrNo,
+      type: 'User_supplierDetail_Request',
+      url: '/partners/supplierDetail',
+      supplierId: id,
       Token: Token,
-      network_id: id,
-      partnerId:srno,
-      navigation,
+      partnerId: srno,
+      supplier_id:id,
+      // navigation,
       Status: 1,
 
+
     })
-  }
+  };
   return (
     <View>
       {selector.isAdd == 0 ? null :

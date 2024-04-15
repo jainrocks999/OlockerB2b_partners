@@ -26,21 +26,28 @@ import {
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
 import {FlatList} from 'react-native';
-import { color } from 'react-native-elements/dist/helpers';
+import {color} from 'react-native-elements/dist/helpers';
 let goldSpecilization = [];
 let diamondSpecilization = [];
 let silverSpecilization = [];
 let platinumSpecilization = [];
 const EditSupplierProfile = ({route}) => {
-  const selector = useSelector(state => state?.partnerprofile)
-  const details = route.params?.selector?.partnerdetails
-const details2=route.params?.extractedImages
+  const navigation = useNavigation();
+  const selector = useSelector(state => state?.partnerprofile);
+  const details = route.params?.selector?.partnerdetails;
+  const details2 = route.params?.extractedImages;
   const [fetching, setFetching] = useState(false);
-  const [pincode,setPinCode]=useState(details?.PinCode)
+
+  const [customPurityDia, setCustomPurityDia] = useState(false);
+  const [customPurityGo, setCustomPurityGo] = useState(false);
+  const [customPurityPla, setCustomPurityPla] = useState(false);
+  const [customPuritySil, setCustomPuritySil] = useState(false);
+
+  const [pincode, setPinCode] = useState(details?.PinCode);
 
   useEffect(() => {
-    route.params?.selector?.partnerjewellerydetails.map(item => {
-      if (item.JewelleryType == 'Gold') {
+    route.params?.selector?.specialisation.map(item => {
+      if (item.metaltype == 'Gold') {
         if (goldSpecilization.length > 0) {
           if (!goldSpecilization.includes(item)) {
             goldSpecilization.push(item);
@@ -76,38 +83,35 @@ const details2=route.params?.extractedImages
     });
   }, []);
 
-
+  const [inputs1, setInputs1] = useState({
+    State: '',
+    District: '',
+  });
+  const handleInputs1 = (key, value) => {
+    setInputs1(prev => ({...prev, [key]: value}));
+  };
 
   const [inputs, setInputs] = useState({
-    SrNo:selector?.partnerlogins?.SrNo,
-    CompanyName:details?.CompanyName,
-    DisplayName:details?.DisplayName,
-    txtOwnerName:details?.OwnersName,
-    txtAddress:details?.HOaddress,
-    // PinCode:details?.PinCode,
-    StateId:details?.StateId,
-    CityId:details?.CityId,
-    WebSiteUrl:details?.Website,
-    Emailid:details?.Email,
-    Mobile:details?.Mobile,
-    billingcontactemail:details?.BillingContactEmail,
-    ProductName1:selector?.partnerimagedetails[0]?.ProductName1,
-    pimgname1:'',
-    ProductName2:selector?.partnerimagedetails[0]?.ProductName2,
-    pimgname2:"",
-    ProductName3:selector?.partnerimagedetails[0]?.ProductName3,
-    pimgname3:'',
-    NoofEmployee:details?.NoofEmployee,
-    Create_InvoiceDone:0,
-    AccessToMyJewellerApp:details?.AccessToMyJewellerApp,
-    IsOnlineSelling:details?.IsOnlineSelling,
-    IsLaunchSavingScheme:'',
-    Password:"123456",
-    BranchSrNo:selector.partnerlogins.BranchSrNo,
-    District:'',
-    State:'',
-    PartnerIntroduction:details?.PartnerIntroduction,
-    JTypep:'',
+    // SrNo: details?.SrNo,
+    CompanyName: details?.CompanyName,
+    DisplayName: details?.DisplayName,
+    txtOwnerName: details?.OwnersName,
+    txtAddress: details?.HOaddress,
+    StateId: details?.StateId,
+    CityId: details?.CityId,
+    WebSiteUrl: details?.Website,
+    EmailId: selector?.partnerlogins?.Email,
+    Mobile: selector?.partnerlogins?.Mobile,
+    BillingContactEmail: details?.BillingContactEmail,
+    NoofEmployee: details?.NoofEmployee,
+    Create_InvoiceDone: 0,
+    AccessToMyJewellerApp: details?.AccessToMyJewellerApp,
+    IsOnlineSelling: details?.IsOnlineSelling,
+    IsLaunchSavingScheme: details?.IsLaunchSavingScheme,
+  
+    BranchSrNo: selector?.partnerlogins?.BranchSrNo,
+    PartnerIntroduction: details?.PartnerIntroduction,
+    JTypep: '',
     JTyped: '',
     JTypeg: '',
     JTypes: '',
@@ -123,75 +127,491 @@ const details2=route.params?.extractedImages
     diamondcustom_purity: '',
     platinumcustom_purity: '',
     silvercustom_purity: '',
-    DiamondQuality: '',
- 
 
-
-    
-
-
-    ProductLogo:{
+    ProductLogo: {
       name: selector?.partnerdetails?.Logo,
       type: 'image/jpg',
       uri: `https://olocker.co/uploads/partner/${selector?.partnerdetails?.Logo}`,
     },
-    ProductImage1:{
+    pimgname1: '',
+    ProductName1: selector?.partnerimagedetails[0]?.ProductName1,
+
+    ProductName2: selector?.partnerimagedetails[0]?.ProductName2,
+    pimgname2: '',
+    ProductName3: selector?.partnerimagedetails[0]?.ProductName3,
+    pimgname3: '',
+
+    ProductImage1: {
       name: selector?.partnerimagedetails[0]?.ProductImage1,
       type: 'image/jpg',
       uri: `https://olocker.co/uploads/partner/${selector?.partnerimagedetails[0]?.ProductImage1}`,
     },
-    ProductImage2:{
+    ProductImage2: {
       name: selector?.partnerimagedetails[0]?.ProductImage2,
       type: 'image/jpg',
       uri: `https://olocker.co/uploads/partner/${selector?.partnerimagedetails[0]?.ProductImage2}`,
     },
-    ProductImage3:{
+    ProductImage3: {
       name: selector?.partnerimagedetails[0]?.ProductImage3,
       type: 'image/jpg',
       uri: `https://olocker.co/uploads/partner/${selector?.partnerimagedetails[0]?.ProductImage3}`,
     },
-    showroomimage1:{
+    showroomimage1: {
       name: selector?.partnerimagedetails[0]?.ShowRoomImageName1,
       type: 'image/jpg',
       uri: `https://olocker.co/uploads/partner/${selector?.partnerimagedetails[0]?.ShowRoomImageName1}`,
     },
-    showroomimage2:{
+    showroomimage2: {
       name: selector?.partnerimagedetails[0]?.ShowRoomImageName2,
       type: 'image/jpg',
       uri: `https://olocker.co/uploads/partner/${selector?.partnerimagedetails[0]?.ShowRoomImageName2}`,
     },
-    showroomimage3:{
+    showroomimage3: {
       name: selector?.partnerimagedetails[0]?.ShowRoomImageName3,
       type: 'image/jpg',
       uri: `https://olocker.co/uploads/partner/${selector?.partnerimagedetails[0]?.ShowRoomImageName3}`,
     },
-    Ownerimg1:{
+    Ownerimg1: {
       name: selector?.partnerimagedetails[0]?.OwnerImageName1,
       type: 'image/jpg',
       uri: `https://olocker.co/uploads/partner/${selector?.partnerimagedetails[0]?.OwnerImageName1}`,
     },
-    OwnerName1:selector?.partnerimagedetails[0]?.OwnerName1,
-    OwnerDescription1:selector?.partnerimagedetails[0]?.OwnerDescription1,
-    Ownerimg2:{
+    OwnerName1: selector?.partnerimagedetails[0]?.OwnerName1,
+    OwnerDescription1: selector?.partnerimagedetails[0]?.OwnerDescription1,
+    Ownerimg2: {
       name: selector?.partnerimagedetails[0]?.OwnerImageName2,
       type: 'image/jpg',
       uri: `https://olocker.co/uploads/partner/${selector?.partnerimagedetails[0]?.OwnerImageName2}`,
     },
-    OwnerName2:selector?.partnerimagedetails[0]?.OwnerName2,
-    OwnerDescription2:selector?.partnerimagedetails[0]?.OwnerDescription2,
-    Ownerimg3:{
+    OwnerName2: selector?.partnerimagedetails[0]?.OwnerName2,
+    OwnerDescription2: selector?.partnerimagedetails[0]?.OwnerDescription2,
+    Ownerimg3: {
       name: selector?.partnerimagedetails[0]?.OwnerImageName3,
       type: 'image/jpg',
       uri: `https://olocker.co/uploads/partner/${selector?.partnerimagedetails[0]?.OwnerImageName3}`,
     },
-    OwnerName3:selector?.partnerimagedetails[0]?.OwnerName3,
-    OwnerDescription3:selector?.partnerimagedetails[0]?.OwnerDescription3,
+    OwnerName3: selector?.partnerimagedetails[0]?.OwnerName3,
+    OwnerDescription3: selector?.partnerimagedetails[0]?.OwnerDescription3,
   });
+  const handleOnSumit = async () => {
+    const srno = await AsyncStorage.getItem('Partnersrno');
+
+    const newData = {...inputs, SrNo: srno};
+    let data = new FormData();
+    let valid = true;
+    if (pincode == '') {
+      Toast.show('please enter PinCode');
+      valid = false;
+      return;
+    }
+    data.append('PinCode', pincode);
+    Object.keys(newData).map(item => {
+      //  Object.keys(newData).map(async (item, index) => {
+      switch (item) {
+        case 'ProductLogo':
+          data.append(item, newData[item]);
+          break;
+
+        case 'CompanyName': {
+          if (newData[item] == '') {
+            Toast.show('Please enter CompanyName');
+            valid = false;
+            return;
+          }
+          data.append(item, newData[item]);
+          break;
+        }
+        case 'DisplayName':
+          if (newData[item] == '') {
+            Toast.show('please enter DisplayName');
+            valid = false;
+            return;
+          }
+          data.append(item, newData[item]);
+          break;
+        case 'txtOwnerName':
+          if (newData[item] == '') {
+            Toast.show('please enter OwnerName');
+            valid = false;
+            return;
+          }
+          data.append(item, newData[item]);
+          break;
+
+        case 'txtAddress':
+          if (newData[item] == '') {
+            Toast.show('please enter Address');
+            valid = false;
+            return;
+          }
+          data.append(item, newData[item]);
+          break;
+
+        case 'StateId':
+          if (newData[item] == '') {
+            Toast.show('please enter State');
+            valid = false;
+            return;
+          }
+          data.append(item, newData[item]);
+          break;
+
+        case 'CityId':
+          if (newData[item] == '') {
+            Toast.show('please enter CityId');
+            valid = false;
+            return;
+          }
+          data.append(item, newData[item]);
+          break;
+
+        case 'EmailId':
+          if (newData[item] == '') {
+            Toast.show('please enter EmailId');
+            valid = false;
+            return;
+          }
+          data.append(item, newData[item]);
+          break;
+
+        case 'Mobile':
+          if (newData[item] == '') {
+            Toast.show('please enter Mobile Number');
+            valid = false;
+            return;
+          }
+          data.append(item, newData[item]);
+          break;
+
+        case 'BillingContactEmail':
+          if (newData[item] == '') {
+            Toast.show('please enter BillingContactEmail');
+            valid = false;
+            return;
+          }
+          data.append(item, newData[item]);
+          break;
+
+        case 'platinum_specialisation':
+          newData[item].map((item, index) => {
+            data.append(`platinum_specialisation[${index}]`, item);
+          });
+          break;
+        case 'silver_specialisation':
+          newData[item].map((item, index) => {
+            data.append(`silver_specialisationp[${index}]`, item);
+          });
+          break;
+        case 'gold_specialisation':
+          newData[item].map((item, index) => {
+            data.append(`gold_specialisation[${index}]`, item);
+          });
+          break;
+        case 'diamond_specialisation':
+          newData[item].map((item, index) => {
+            data.append(`diamond_specialisation[${index}]`, item);
+          });
+          break;
+        case 'diamond_purity':
+          newData[item].map((item, index) => {
+            data.append(`diamond_purity[${index}]`, item);
+          });
+          break;
+        case 'gold_purity':
+          newData[item].map((item, index) => {
+            data.append(`gold_purity[${index}]`, item);
+          });
+          break;
+        case 'silver_purity':
+          newData[item].map((item, index) => {
+            data.append(`silver_purity[${index}]`, item);
+          });
+          break;
+        case 'platinum_purity':
+          newData[item].map((item, index) => {
+            data.append(`platinum_purity[${index}]`, item);
+          });
+          break;
+        case 'JTyped':
+          data.append(item, newData[item] ? 'Diamond' : '');
+          break;
+        case 'JTypep':
+          data.append(item, newData[item] ? 'Platinum' : '');
+          break;
+        case 'JTypeg':
+          data.append(item, newData[item] ? 'Gold' : '');
+          break;
+        case 'JTypes':
+          data.append(item, newData[item] ? 'Silver' : '');
+          break;
+
+        default:
+          data.append(item, newData[item]);
+      }
+    });
+    if (valid) {
+      validateUser(data);
+    } else {
+      Alert.alert('APLI NOT CALLED');
+    }
+  };
+  const validateUser = async () => {
+    
+    let valid =true;
+    const Token = await AsyncStorage.getItem('loginToken');
+    const srno = await AsyncStorage.getItem('Partnersrno');
+    if (!inputs || !inputs.CompanyName || inputs.CompanyName.trim() == '') {
+      Toast.show('Please enter CompanyName');
+      valid =false;
+      console.log('check  the data ,,',inputs.CompanyName);
+      return;
+  }else if(inputs.DisplayName==''){
+    Toast.show('please enter DisplayName');
+    valid = false;
+    return;
+  }else if(inputs.txtOwnerName==''){
+    Toast.show('please enter OnwerName');
+    valid = false;
+    return;
+  }else if(inputs.txtAddress==''){
+    Toast.show('please enter Ho Address');
+    valid = false;
+    return;
+  }
+  else if (pincode == '') {
+    Toast.show('please enter PinCode');
+    valid = false;
+    return;
+  }else if(inputs.StateId==''){
+    Toast.show('please enter State');
+    valid = false;
+    return;
+  }else if(inputs.CityId==''){
+    Toast.show('please enter City');
+    valid = false;
+    return;
+  }else if(inputs.EmailId==''){
+    Toast.show('please enter EmailId');
+    valid = false;
+    return;
+  }else if(inputs.Mobile==''){
+    Toast.show('please enter Moblie Number');
+    valid = false;
+    return;
+  }else if(inputs.BillingContactEmail==''){
+    Toast.show('please enter BillingContactEmail');
+    valid = false;
+    return;
+  }
+ if(valid){
+
+   setFetching(true);
+try{
+
+    const axios = require('axios');
+    let data = new FormData();
+    data.append('SrNo', srno);
+    if(inputs.ProductLogo.name==''|| inputs.ProductLogo.name==undefined){
+      console.log('data.append(',inputs.ProductLogo.name);
+      data.append('productlogo','');
+    }else{
+      console.log('product imanfger',inputs.ProductLogo.name);
+      data.append('productlogo', {
+      uri: inputs.ProductLogo.uri,
+      name: inputs.ProductLogo.name,
+      type: inputs.ProductLogo.type,
+    });}
+    data.append('CompanyName', inputs.CompanyName);
+    data.append('DisplayName', inputs.DisplayName);
+    data.append('txtOwnerName', inputs.txtOwnerName);
+    data.append('StateId', inputs.StateId);
+    data.append('CityId', inputs.CityId);
+    data.append('PinCode', pincode);
+    data.append('Mobile', inputs.Mobile);
+    data.append('txtAddress', inputs.txtAddress);
+    data.append('WebSiteUrl', inputs.WebSiteUrl);
+    data.append('EmailId', inputs.EmailId);
+    data.append('BillingContactEmail', inputs.BillingContactEmail);
+    // data.append('Password', inputs.Password);
+    data.append('JTyped', inputs.JTyped);
+    data.append('JTypeg', inputs.JTypeg);
+    data.append('JTypep', inputs.JTypep);
+    data.append('JTypes', inputs.JTypes);
+     inputs["diamond_purity"].map((item,index)=>{
+      data.append(`diamond_purity[${index}]`, item.toString());
+     })
+
+    data.append('diamondcustom_purity', inputs.diamondcustom_purity);
+    inputs["diamond_specialisation"].map((item,index)=>{
+      data.append(`diamond_specialisation[${index}]`, item.toString());
+     })
+   
+    inputs["gold_purity"].map((item,index)=>{
+      data.append(`gold_purity[${index}]`, item.toString());
+     })
+    
+    data.append('goldcustom_purity',inputs.goldcustom_purity);
+    inputs["gold_specialisation"].map((item,index)=>{
+      data.append(`gold_specialisation[${index}]`, item.toString());
+     })
+
+
+    data.append('platinum_purity',inputs.goldcustom_purity);
+    inputs["platinum_purity"].map((item,index)=>{
+      data.append(`platinum_purity[${index}]`, item.toString());
+     })
+    
+   data.append('platinumcustom_purity', inputs.platinumcustom_purity);
+
+   inputs["platinum_specialisation"].map((item,index)=>{
+    data.append(`platinum_specialisation[${index}]`, item.toString());
+   })
+      inputs["silver_purity"].map((item,index)=>{
+        data.append(`silver_purity[${index}]`, item.toString());
+       })
+    data.append('silvercustom_purity',inputs.silvercustom_purity);
+    inputs["silver_specialisation"].map((item,index)=>{
+      data.append(`silver_specialisation[${index}]`, item.toString());
+     })
+    data.append('ProductName1', inputs.ProductName1??'');
+  
+    data.append('ProductName2', inputs.ProductName2??'');
+   
+    data.append('ProductName3', inputs.ProductName3??'');
+ 
+    data.append('PartnerIntroduction', inputs.PartnerIntroduction??'');
+      data.append('NoofEmployee', inputs.NoofEmployee??'');
+    data.append('OwnerName1', inputs.OwnerName1??'');
+    data.append('OwnerDescription1', inputs.OwnerDescription1??'');
+    data.append('OwnerName2', inputs.OwnerName2??'');
+     data.append('OwnerDescription2', inputs.OwnerDescription2??'');
+     data.append('OwnerName3', inputs.OwnerName3??'');
+     data.append('OwnerDescription3', inputs.OwnerDescription3??'');
+    //  data.append('productlogo', '');
+     data.append('Create_InvoiceDone', inputs.Create_InvoiceDone);
+     data.append('AccessToMyJewellerApp', inputs.AccessToMyJewellerApp??'');
+     data.append('IsOnlineSelling', inputs.IsOnlineSelling??'');
+     data.append('IsLaunchSavingScheme', inputs.IsLaunchSavingScheme??'');
+    data.append('BranchSrNo', inputs.BranchSrNo);
+if(inputs.showroomimage1.name==''||inputs.showroomimage1.name==undefined){
+  data.append('showroomImg1','');
+}else
+   { data.append('showroomImg1', {
+      uri: inputs.showroomimage1.uri,
+      name: inputs.showroomimage1.name,
+      type: inputs.showroomimage1.type,
+    });}
+    if(inputs.showroomimage2.name==''||inputs.showroomimage2.name==undefined){
+      data.append('showroomImg2','');
+    }else{
+    data.append('showroomImg2', {
+      uri: inputs.showroomimage2.uri,
+      name: inputs.showroomimage2.name,
+      type: inputs.showroomimage3.type,
+    });}
+if(inputs.showroomimage3.name==''||inputs.showroomimage3.name==undefined){
+  data.append('showroomImg3','');
+}else{
+    data.append('showroomImg3',{
+      uri: inputs.showroomimage3.uri,
+      name: inputs.showroomimage3.name,
+      type: inputs.showroomimage3.type,
+    });}
+    if(inputs.Ownerimg1.name==''||inputs.Ownerimg1.name==undefined){
+      data.append('ownerImage1', '')
+    }else {
+      data.append('ownerImage1', {
+      uri: inputs.Ownerimg1.uri,
+      name: inputs.Ownerimg1.name,
+      type: inputs.Ownerimg1.type,
+    });}
+
+    if (inputs.Ownerimg2.name == '' || inputs.Ownerimg2.name == undefined)  {
+      data.append('ownerImage2', '');
+  }else{
+    data.append('ownerImage2', {
+        uri: inputs.Ownerimg2.uri,
+        name: inputs.Ownerimg2.name,
+        type: inputs.Ownerimg2.type,
+    });
+} 
+if(inputs.Ownerimg3.name==''||inputs.Ownerimg3.name==undefined){
+   data.append('ownerImage3','');
+}
+else{
+    data.append('ownerImage3', {
+      uri: inputs.Ownerimg3.uri,
+      name: inputs.Ownerimg3.name,
+      type: inputs.Ownerimg3.type,
+    });
+  }
+  if(inputs.ProductImage1.name==''||inputs.ProductImage1.name==undefined)
+  {
+    console.log('hihih');
+    data.append('productImage1','')
+  }
+  else { data.append('productImage1', { 
+      uri: inputs.ProductImage1.uri,
+      name: inputs.ProductImage1.name,
+      type: inputs.ProductImage1.type,
+    });}
+
+    if(inputs.ProductImage2.name==''||inputs.ProductImage2.name==undefined){
+      data.append('productImage2','')
+    }
+    else{
+    data.append('productImage2',  {
+      uri: inputs.ProductImage2.uri,
+      name: inputs.ProductImage2.name,
+      type: inputs.ProductImage2.type,
+    });}
+    if(inputs.ProductImage3.name==''||inputs.ProductImage3.name==undefined){
+      data.append('productImage3','')
+    }else{
+    data.append('productImage3',  {
+      uri: inputs.ProductImage3.uri,
+      name: inputs.ProductImage3.name,
+      type: inputs.ProductImage3.type,
+    });}
+    
+console.log('request sned on update data ',data);
+
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+
+      url: 'https://olocker.co/api/partners/updateProfile',
+      headers: {
+        Olocker: `Bearer ${Token}`,
+      },
+      data: data,
+    };
+
+    axios.request(config).then(response => {
+         if(response?.data?.success==true){
+          navigation.navigate('Customers')
+          Toast.show(response?.data?.msg);
+          setFetching(false);
+         
+         }
+         else{
+          setFetching(false);
+          Toast.show(response?.data?.msg)
+         }
+      })
+      .catch(error => {
+        setFetching(false);
+        console.log( 'error,,,,,,,,,,,',error);
+      });}catch {
+           console.log('catch block error',error);
+      }
+
+    }
+  };
 
   const handleInputs = (key, value) => {
     setInputs(prev => ({...prev, [key]: value}));
   };
-
 
   const handleImageUpload = type => {
     let options = {
@@ -226,44 +646,44 @@ const details2=route.params?.extractedImages
         case 'ProductLogo':
           handleInputs('ProductLogo', obj);
           break;
-         
-          case 'ProductImage1': {
-          handleInputs('ProductImage1',obj);
+
+        case 'ProductImage1': {
+          handleInputs('ProductImage1', obj);
           break;
         }
-       
-        case'ProductImage2':{
-          handleInputs('ProductImage2',obj);
+
+        case 'ProductImage2': {
+          handleInputs('ProductImage2', obj);
           break;
         }
-        case'ProductImage3':{
-          handleInputs('ProductImage3',obj);
+        case 'ProductImage3': {
+          handleInputs('ProductImage3', obj);
           break;
         }
-         case'showroomimage1':{
-          handleInputs('showroomimage1',obj);
+        case 'showroomimage1': {
+          handleInputs('showroomimage1', obj);
           break;
-         }
-         case'showroomimage2':{
-          handleInputs('showroomimage2',obj);
+        }
+        case 'showroomimage2': {
+          handleInputs('showroomimage2', obj);
           break;
-         }
-         case'showroomimage3':{
-          handleInputs('showroomimage3',obj);
+        }
+        case 'showroomimage3': {
+          handleInputs('showroomimage3', obj);
           break;
-         }
-         case 'Ownerimg1':{
-          handleInputs('Ownerimg1',obj);
+        }
+        case 'Ownerimg1': {
+          handleInputs('Ownerimg1', obj);
           break;
-         }
-         case 'Ownerimg2':{
-          handleInputs('Ownerimg2',obj);
+        }
+        case 'Ownerimg2': {
+          handleInputs('Ownerimg2', obj);
           break;
-         }
-         case 'Ownerimg3':{
-          handleInputs('Ownerimg3',obj);
+        }
+        case 'Ownerimg3': {
+          handleInputs('Ownerimg3', obj);
           break;
-         }
+        }
         // case 'showroom_image': {
         //   response.assets.map(item => {
         //     let obj2 = {
@@ -285,120 +705,63 @@ const details2=route.params?.extractedImages
     });
   };
 
-
-const handleOnSumit =async()=>{
-  const Token = await AsyncStorage.getItem('loginToken');
-  const partnerid = await AsyncStorage.getItem('Partnersrno');
- 
-  const newData = {...inputs};
-  let data = new FormData();
-  await Object.keys(newData).map(async (item, index) => {
-    if(data[item]!=''){
-    data.append(item, data[item]);
-    }else{
-      Toast.show('please fill all value')
-      return
-    }
-
-  })
-  console.log('called');
-  try {
-    const response = await axios({
-      method: 'POST',
-      data,
-      headers: {
-        'content-type': 'multipart/form-data',
-        Olocker: `Bearer ${Token}`,
-      },
-      url: 'https://olocker.co/api//partners/updateProfile',
+  const getSpecilization = data => {
+    let arr = [];
+    data?.map((item, index) => {
+      let obj = {id: index.toString(), name: item?.name};
+      arr.push(obj);
     });
+    return arr;
+  };
 
-    if (response.data.status) {
-      setFetching(false);
-      Toast.show(response.data.msg);
-    } else {
-      setFetching(false);
-      Toast.show(response.data.msg);
+  useEffect(() => {
+    {
+      details?.PinCode ? handlePincode(details?.PinCode) : null;
     }
-  } catch (error) {
-    Toast.show('Something went wrong');
-    setFetching(false);
-    console.log('this is iresponae', error);
-  }
+  }, [details?.PinCode]);
 
+  const handlePincode = async val => {
+    const Token = await AsyncStorage.getItem('loginToken');
+    if (val.length == 6) {
+      setPinCode(val);
+      try {
+        const response = await axios({
+          method: 'GET',
+          headers: {
+            'content-type': 'application/json',
+            Olocker: `Bearer ${Token}`,
+          },
+          url: `https://olocker.co/api/partners//getCityByState?pincode=${val}`,
+        });
 
-}
-
-
-const getSpecilization = data => {
-  console.log('daTATC GET ,,,',data);
-  let arr = [];
-  data?.map((item, index) => {
-    let obj = {id: index.toString(), name: item?.name};
-    arr.push(obj);
-  });
-  return arr;
-};
-
-
-
-
-useEffect(()=>{
-  console.log('dijfsdgpg',details?.PinCode);
-{details?.PinCode?handlePincode(details?.PinCode):null
-
- }
-},[details?.PinCode])
-
-const handlePincode=async(val)=>{
-  console.log('this is working',val.length);
-  const Token = await AsyncStorage.getItem('loginToken');
-  if(val.length==6){
-    setPinCode(val)
-try{
-  console.log('this is working3333',val);
-    const response = await axios({
-      method: 'GET',
-      headers: {
-        'content-type': 'application/json',
-         Olocker: `Bearer ${Token}`,
-      },
-      url: `https://olocker.co/api/partners//getCityByState?pincode=${val}`,
-    });
-
-    console.log('this is response data.....',response.data);
-    if (response.status==200) {
-      setPinCode(response.data.Pincode);
-      handleInputs('StateId',response.data.StateId);
-      handleImageUpload('CityId',response.data.CityId);
-      handleInputs('District',response.data.District);
-      handleInputs('State',response.data.State);
-      // setFetching(false);
-      // Toast.show(response.data.msg);
+        if (response.status == 200) {
+          setPinCode(response.data.Pincode);
+          handleInputs('StateId', response.data.StateId);
+          handleInputs('CityId', response.data.CityId);
+          handleInputs1('District', response.data.District);
+          handleInputs1('State', response.data.State);
+          // setFetching(false);
+          // Toast.show(response.data.msg);
+        } else {
+          // setFetching(false);
+          // Toast.show(response.data.msg);
+        }
+      } catch (error) {
+        Toast.show('Something went wrong');
+        setFetching(false);
+        console.log('this is iresponae', error);
+      }
     } else {
-      // setFetching(false);
-      // Toast.show(response.data.msg);
+      //  setPinCode(val)
     }
-  } catch (error) {
-    Toast.show('Something went wrong');
-    setFetching(false);
-    console.log('this is iresponae', error);
-  }
-
-  }
-  else{
-  //  setPinCode(val)
-  }
-}
-
-
+  };
 
   const renderScreen = () => {
     return (
       <ScrollView style={{paddingHorizontal: 10, paddingVertical: 10}}>
         <View>
           <Text style={styles.text}>
-          CompanyName<Text style={{color: 'red'}}>{' *'}</Text>
+            CompanyName<Text style={{color: 'red'}}>{' *'}</Text>
           </Text>
           <TextInput
             placeholder="CompanyName"
@@ -408,7 +771,8 @@ try{
               height: 40,
               borderRadius: 6,
               borderColor: 'grey',
-              paddingLeft: 10,color:'black'
+              paddingLeft: 10,
+              color: 'black',
             }}
             placeholderTextColor={'grey'}
             value={inputs.CompanyName}
@@ -417,7 +781,7 @@ try{
         </View>
         <View style={{marginTop: 10}}>
           <Text style={styles.text}>
-          DisplayName<Text style={{color: 'red'}}>{' *'}</Text>
+            DisplayName<Text style={{color: 'red'}}>{' *'}</Text>
           </Text>
           <TextInput
             placeholder="DisplayName"
@@ -427,7 +791,8 @@ try{
               height: 40,
               borderRadius: 6,
               borderColor: 'grey',
-              paddingLeft: 10,color:'#000'
+              paddingLeft: 10,
+              color: '#000',
             }}
             placeholderTextColor={'grey'}
             value={inputs.DisplayName}
@@ -436,7 +801,7 @@ try{
         </View>
         <View style={{marginTop: 10}}>
           <Text style={styles.text}>
-          OwnerName<Text style={{color: 'red'}}>{' *'}</Text>
+            OwnerName<Text style={{color: 'red'}}>{' *'}</Text>
           </Text>
           <TextInput
             placeholder="OwnerName"
@@ -446,7 +811,8 @@ try{
               height: 40,
               borderRadius: 6,
               borderColor: 'grey',
-              paddingLeft: 10,color:'#000'
+              paddingLeft: 10,
+              color: '#000',
             }}
             placeholderTextColor={'grey'}
             value={inputs.txtOwnerName}
@@ -455,7 +821,7 @@ try{
         </View>
         <View style={{marginTop: 10}}>
           <Text style={styles.text}>
-          HO Address*<Text style={{color: 'red'}}>{' *'}</Text>
+            HO Address*<Text style={{color: 'red'}}>{' *'}</Text>
           </Text>
           <TextInput
             placeholder="Address"
@@ -465,7 +831,8 @@ try{
               height: 40,
               borderRadius: 6,
               borderColor: 'grey',
-              paddingLeft: 10,color:'#000'
+              paddingLeft: 10,
+              color: '#000',
             }}
             placeholderTextColor={'grey'}
             value={inputs.txtAddress}
@@ -482,17 +849,17 @@ try{
               height: 40,
               borderRadius: 6,
               borderColor: 'grey',
-              paddingLeft: 10,color:'#000'
+              paddingLeft: 10,
+              color: '#000',
             }}
             placeholderTextColor={'grey'}
-          defaultValue={pincode}
-            keyboardType='number-pad'
+            defaultValue={pincode}
+            keyboardType="number-pad"
             onChangeText={val => handlePincode(val)}
             //  onChangeText={val =>setPinCode(val)}
           />
         </View>
-        
-      
+
         <View style={{marginTop: 10}}>
           <Text style={styles.text}>
             State<Text style={{color: 'red'}}>{' *'}</Text>
@@ -506,14 +873,15 @@ try{
               height: 40,
               borderRadius: 6,
               borderColor: 'grey',
-              paddingLeft: 10,color:'#000'
+              paddingLeft: 10,
+              color: '#000',
             }}
             placeholderTextColor={'grey'}
-            value={inputs.State}
+            value={inputs1.State}
             editable={false}
-            onChangeText={val =>  handleInputs('State',val)}
+            onChangeText={val => handleInputs1('State', val)}
           />
-          
+
           {/* <View style={{}}>
 
 
@@ -559,12 +927,13 @@ try{
               height: 40,
               borderRadius: 6,
               borderColor: 'grey',
-              paddingLeft: 10,color:'#000'
+              paddingLeft: 10,
+              color: '#000',
             }}
             placeholderTextColor={'grey'}
-            value={inputs.District}
+            value={inputs1.District}
             editable={false}
-            onChangeText={val =>  handleInputs('District', val)}
+            onChangeText={val => handleInputs1('District', val)}
           />
 
           {/* <View>
@@ -597,7 +966,7 @@ try{
             /> 
           </View> */}
         </View>
-        
+
         <View style={{marginTop: 10}}>
           <Text style={styles.text}>Website URL</Text>
           <TextInput
@@ -608,7 +977,8 @@ try{
               height: 40,
               borderRadius: 6,
               borderColor: 'grey',
-              paddingLeft: 10,color:'#000'
+              paddingLeft: 10,
+              color: '#000',
             }}
             placeholderTextColor={'grey'}
             value={inputs.WebSiteUrl}
@@ -616,7 +986,9 @@ try{
           />
         </View>
         <View style={{marginTop: 10}}>
-          <Text style={styles.text}>Email Address<Text style={{color: 'red'}}>{' *'}</Text></Text>
+          <Text style={styles.text}>
+            Email Address<Text style={{color: 'red'}}>{' *'}</Text>
+          </Text>
           <TextInput
             placeholder="emailid"
             style={{
@@ -625,16 +997,17 @@ try{
               height: 40,
               borderRadius: 6,
               borderColor: 'grey',
-              paddingLeft: 10,color:'#000'
+              paddingLeft: 10,
+              color: '#000',
             }}
             placeholderTextColor={'grey'}
-            value={inputs.emailid}
-            onChangeText={val => handleInputs('emailid', val)}
+            value={inputs.EmailId}
+            onChangeText={val => handleInputs('EmailId', val)}
           />
         </View>
         <View style={{marginTop: 10}}>
           <Text style={styles.text}>
-          Mobile number<Text style={{color: 'red'}}>{' *'}</Text>
+            Mobile number<Text style={{color: 'red'}}>{' *'}</Text>
           </Text>
           <TextInput
             placeholder="Mobile No."
@@ -644,7 +1017,8 @@ try{
               height: 40,
               borderRadius: 6,
               borderColor: 'grey',
-              paddingLeft: 10,color:'#000'
+              paddingLeft: 10,
+              color: '#000',
             }}
             placeholderTextColor={'grey'}
             value={inputs.Mobile}
@@ -653,7 +1027,7 @@ try{
         </View>
         <View style={{marginTop: 10}}>
           <Text style={styles.text}>
-          Billing Contact Email<Text style={{color: 'red'}}>{' *'}</Text>
+            Billing Contact Email<Text style={{color: 'red'}}>{' *'}</Text>
           </Text>
           <TextInput
             placeholder="billing contact email"
@@ -663,13 +1037,34 @@ try{
               height: 40,
               borderRadius: 6,
               borderColor: 'grey',
-              paddingLeft: 10,color:'#000'
+              paddingLeft: 10,
+              color: '#000',
             }}
             placeholderTextColor={'grey'}
-            value={inputs.billingcontactemail}
-            onChangeText={val => handleInputs('billingcontactemail', val)}
+            value={inputs.BillingContactEmail}
+            onChangeText={val => handleInputs('BillingContactEmail', val)}
           />
         </View>
+
+        {/* <View style={{marginTop: 10}}>
+          <Text style={styles.text}>Password</Text>
+          <TextInput
+            placeholder="Password"
+            style={{
+              borderWidth: 1,
+              marginTop: 4,
+              height: 40,
+              borderRadius: 6,
+              borderColor: 'grey',
+              paddingLeft: 10,
+              color: '#000',
+            }}
+            placeholderTextColor={'grey'}
+            value={inputs.Password}
+            onChangeText={val => handleInputs('Password', val)}
+          />
+        </View> */}
+
         {/* <View style={{marginTop: 10}}>
           <Text style={styles.text}>
             Tell us what are you<Text style={{color: 'red'}}>{' *'}</Text>
@@ -742,61 +1137,61 @@ try{
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <CheckBox
                 disabled={false}
-                 value={inputs.JTyped}
-                 onValueChange={newValue => {
-                   setInputs(prev => ({...prev, JTyped: newValue}));
-                 }}
+                value={inputs.JTyped}
+                onValueChange={newValue => {
+                  setInputs(prev => ({...prev, JTyped: newValue}));
+                }}
                 tintColors={{true: '#032e63', false: '#032e63'}}
                 onTintColor="#032e63"
                 onCheckColor="#032e63"
                 boxType="square"
                 style={{height: 16, width: 18}}
               />
-              <Text style={{marginLeft: 10,color:'#000'}}>Diamond</Text>
+              <Text style={{marginLeft: 10, color: '#000'}}>Diamond</Text>
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <CheckBox
                 disabled={false}
-                 value={inputs.JTypeg}
-               onValueChange={newValue => handleInputs('JTypeg', newValue)}
+                value={inputs.JTypeg}
+                onValueChange={newValue => handleInputs('JTypeg', newValue)}
                 tintColors={{true: '#032e63', false: '#032e63'}}
                 onTintColor="#032e63"
                 onCheckColor="#032e63"
                 boxType="square"
                 style={{height: 16, width: 18}}
               />
-              <Text style={{marginLeft: 10,color:'#000'}}>Gold</Text>
+              <Text style={{marginLeft: 10, color: '#000'}}>Gold</Text>
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <CheckBox
                 disabled={false}
-                 value={inputs.JTypep}
-                  onValueChange={newValue => handleInputs('JTypep', newValue)}
+                value={inputs.JTypep}
+                onValueChange={newValue => handleInputs('JTypep', newValue)}
                 tintColors={{true: '#032e63', false: '#032e63'}}
                 onTintColor="#032e63"
                 onCheckColor="#032e63"
                 boxType="square"
                 style={{height: 16, width: 18}}
               />
-              <Text style={{marginLeft: 10,color:'#000'}}>Platinum</Text>
+              <Text style={{marginLeft: 10, color: '#000'}}>Platinum</Text>
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <CheckBox
                 disabled={false}
-                 value={inputs.JTypes}
-                  onValueChange={newValue => handleInputs('JTypes', newValue)}
+                value={inputs.JTypes}
+                onValueChange={newValue => handleInputs('JTypes', newValue)}
                 tintColors={{true: '#032e63', false: '#032e63'}}
                 onTintColor="#032e63"
                 onCheckColor="#032e63"
                 boxType="square"
                 style={{height: 16, width: 18}}
               />
-              <Text style={{marginLeft: 10,color:'#000'}}>Silver</Text>
+              <Text style={{marginLeft: 10, color: '#000'}}>Silver</Text>
             </View>
           </View>
         </View>
         {inputs.JTyped == true ? (
-            <View>
+          <View>
             <View style={{marginTop: 10}}>
               <Text style={styles.text}>
                 Diamond purity<Text style={{color: 'red'}}>{' *'}</Text>
@@ -806,11 +1201,11 @@ try{
                 uniqueKey="name"
                 onSelectedItemsChange={val => {
                   handleInputs('diamond_purity', val);
-                  // if (val.includes('Custom Purity')) {
-                  //   setCustomPurityDia(true);
-                  // } else {
-                  //   setCustomPurityDia(false);
-                  // }
+                  if (val.includes('Custom Purity')) {
+                    setCustomPurityDia(true);
+                  } else {
+                    setCustomPurityDia(false);
+                  }
                 }}
                 selectedItems={inputs.diamond_purity}
                 searchIcon={false}
@@ -849,7 +1244,7 @@ try{
                 }}
               />
             </View>
-            {/* {customPurityDia == true ? (
+            {customPurityDia == true ? (
               <View style={{marginTop: 10}}>
                 <TextInput
                   placeholder="Please specify custom purity"
@@ -859,7 +1254,8 @@ try{
                     height: 40,
                     borderRadius: 6,
                     borderColor: 'grey',
-                    paddingLeft: 10,color:'#000'
+                    paddingLeft: 10,
+                    color: '#000',
                   }}
                   placeholderTextColor={'grey'}
                   value={inputs.diamondcustom_purity}
@@ -868,14 +1264,14 @@ try{
                   }
                 />
               </View>
-            ) : null} */}
+            ) : null}
             <View style={{marginTop: 10}}>
               <Text style={styles.text}>
                 Choose Diamond Specialisation
                 <Text style={{color: 'red'}}>{' *'}</Text>
               </Text>
               <MultiSelect
-                items={getSpecilization(goldSpecilization)}
+                items={getSpecilization(diamondSpecilization)}
                 uniqueKey="id"
                 onSelectedItemsChange={val =>
                   handleInputs('diamond_specialisation', val)
@@ -920,7 +1316,7 @@ try{
               />
             </View>
           </View>
-      ) : null} 
+        ) : null}
         {inputs.JTypeg == true ? (
           <View>
             <View style={{marginTop: 10}}>
@@ -932,11 +1328,11 @@ try{
                 uniqueKey="name"
                 onSelectedItemsChange={val => {
                   handleInputs('gold_purity', val);
-                  // if (val.includes('Custom Purity')) {
-                  //   setCustomPurityGo(true);
-                  // } else {
-                  //   setCustomPurityGo(false);
-                  // }
+                  if (val.includes('Custom Purity')) {
+                    setCustomPurityGo(true);
+                  } else {
+                    setCustomPurityGo(false);
+                  }
                 }}
                 selectedItems={inputs.gold_purity}
                 searchIcon={false}
@@ -976,7 +1372,7 @@ try{
               />
             </View>
 
-            {/* {customPurityGo == true ? (
+            {customPurityGo == true ? (
               <View style={{marginTop: 10}}>
                 <TextInput
                   placeholder="Please specify custom purity"
@@ -986,21 +1382,22 @@ try{
                     height: 40,
                     borderRadius: 6,
                     borderColor: 'grey',
-                    paddingLeft: 10,color:'#000'
+                    paddingLeft: 10,
+                    color: '#000',
                   }}
                   placeholderTextColor={'grey'}
                   value={inputs.goldcustom_purity}
                   onChangeText={val => handleInputs('goldcustom_purity', val)}
                 />
               </View>
-            ) : null} */}
+            ) : null}
             <View style={{marginTop: 10}}>
               <Text style={styles.text}>
                 Choose Gold Specialisation
                 <Text style={{color: 'red'}}>{' *'}</Text>
               </Text>
               <MultiSelect
-                items={getSpecilization(diamondSpecilization)}
+                items={getSpecilization(goldSpecilization)}
                 uniqueKey="id"
                 onSelectedItemsChange={val =>
                   handleInputs('gold_specialisation', val)
@@ -1057,11 +1454,11 @@ try{
                 uniqueKey="name"
                 onSelectedItemsChange={val => {
                   handleInputs('platinum_purity', val);
-                  // if (val.includes('Custom Purity')) {
-                  //   setCustomPurityPla(true);
-                  // } else {
-                  //   setCustomPurityPla(false);
-                  // }
+                  if (val.includes('Custom Purity')) {
+                    setCustomPurityPla(true);
+                  } else {
+                    setCustomPurityPla(false);
+                  }
                 }}
                 selectedItems={inputs.platinum_purity}
                 searchIcon={false}
@@ -1102,7 +1499,7 @@ try{
                 }}
               />
             </View>
-            {/* {customPurityPla == true ? (
+            {customPurityPla == true ? (
               <View style={{marginTop: 10}}>
                 <TextInput
                   placeholder="Please specify custom purity"
@@ -1112,7 +1509,8 @@ try{
                     height: 40,
                     borderRadius: 6,
                     borderColor: 'grey',
-                    paddingLeft: 10,color:'#000'
+                    paddingLeft: 10,
+                    color: '#000',
                   }}
                   placeholderTextColor={'grey'}
                   value={inputs.platinumcustom_purity}
@@ -1121,7 +1519,7 @@ try{
                   }
                 />
               </View>
-            ) : null} */}
+            ) : null}
             <View style={{marginTop: 10}}>
               <Text style={styles.text}>
                 Choose Platinum Specialisation
@@ -1184,11 +1582,11 @@ try{
                 uniqueKey="name"
                 onSelectedItemsChange={val => {
                   handleInputs('silver_purity', val);
-                  // if (val.includes('Custom Purity')) {
-                  //   setCustomPuritySil(true);
-                  // } else {
-                  //   setCustomPuritySil(false);
-                  // }
+                  if (val.includes('Custom Purity')) {
+                    setCustomPuritySil(true);
+                  } else {
+                    setCustomPuritySil(false);
+                  }
                 }}
                 selectedItems={inputs.silver_purity}
                 searchIcon={false}
@@ -1227,7 +1625,7 @@ try{
                 }}
               />
             </View>
-            {/* {customPuritySil == true ? (
+            {customPuritySil == true ? (
               <View style={{marginTop: 10}}>
                 <TextInput
                   placeholder="Please specify custom purity"
@@ -1237,14 +1635,15 @@ try{
                     height: 40,
                     borderRadius: 6,
                     borderColor: 'grey',
-                    paddingLeft: 10,color:'#000'
+                    paddingLeft: 10,
+                    color: '#000',
                   }}
                   placeholderTextColor={'grey'}
                   value={inputs.silvercustom_purity}
                   onChangeText={val => handleInputs('silvercustom_purity', val)}
                 />
               </View>
-            ) : null} */}
+            ) : null}
             <View style={{marginTop: 10}}>
               <Text style={styles.text}>
                 Choose Silver Specialisation
@@ -1296,7 +1695,7 @@ try{
               />
             </View>
           </View>
-        ) : null} 
+        ) : null}
         {/* <View style={{marginTop: 10}}>
           <Text style={styles.text}>Diamond quality</Text>
           <TextInput
@@ -1355,10 +1754,9 @@ try{
           </View>
         </View> */}
 
-       
         <View style={{marginTop: 10}}>
           <Text style={styles.text}>Upload image of your product:</Text>
-         
+
           <View
             style={{
               borderWidth: 1,
@@ -1391,24 +1789,27 @@ try{
               {inputs.ProductImage1?.name == '' ? (
                 <Text>No File Choosen</Text>
               ) : (
-                <Text style={{color:'grey'}}>{inputs.ProductImage1?.name}</Text>
+                <Text style={{color: 'grey'}}>
+                  {inputs.ProductImage1?.name}
+                </Text>
               )}
             </View>
           </View>
           <TextInput
-                  placeholder={'Product Name'}
-                  placeholderTextColor={  'grey'}
-                  style={{
-                    borderWidth: 1,
-                    marginTop: 4,
-                    height: 40,
-                    borderRadius: 6,
-                    borderColor: 'grey',
-                    paddingLeft: 10,color:'#000'
-                  }}
-                  value={inputs.ProductName1}
-                  onChangeText={val => handleProductImages('ProductName1', val)}
-                />
+            placeholder={'Product Name'}
+            placeholderTextColor={'grey'}
+            style={{
+              borderWidth: 1,
+              marginTop: 4,
+              height: 40,
+              borderRadius: 6,
+              borderColor: 'grey',
+              paddingLeft: 10,
+              color: '#000',
+            }}
+            value={inputs.ProductName1}
+            onChangeText={val => handleInputs('ProductName1', val)}
+          />
           {inputs.ProductImage1?.uri ? (
             <View
               style={{
@@ -1429,155 +1830,157 @@ try{
               />
             </View>
           ) : null}
-          
-         
-             <View style={{marginTop:10}}> 
-             <View
-            style={{
-              borderWidth: 1,
-              marginTop: 4,
-              height: 40,
-              borderRadius: 6,
-              borderColor: 'grey',
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <TouchableOpacity
-              onPress={() => handleImageUpload('ProductImage2')}
-              style={{
-                backgroundColor: 'grey',
-                height: 40,
-                width: '30%',
-                borderTopLeftRadius: 6,
-                borderBottomLeftRadius: 6,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text style={{color: '#fff'}}>Choose File</Text>
-            </TouchableOpacity>
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '70%',
-              }}>
-              {inputs.ProductImage2?.name == '' ? (
-                <Text>No File Choosen</Text>
-              ) : (
-                <Text style={{color:'grey'}}>{inputs.ProductImage2?.name}</Text>
-              )}
-            </View>
-          </View>
-          <TextInput
-                  placeholder={'Product Name'}
-                  placeholderTextColor={  'grey'}
-                  style={{
-                    borderWidth: 1,
-                    marginTop: 4,
-                    height: 40,
-                    borderRadius: 6,
-                    borderColor: 'grey',
-                    paddingLeft: 10,color:'#000'
-                  }}
-                  value={inputs.ProductName2}
-                  onChangeText={val => handleProductImages('ProductName2', val)}
-                />
-          {inputs.ProductImage2?.uri ? (
-            <View
-              style={{
-                elevation: 5,
-                shadowColor: 'black',
-                shadowOffset: {height: 4, width: 4},
-                shadowOpacity: 5,
-                shadowRadius: 4,
-              }}>
-              <Image
-                style={{
-                  height: widthPercentageToDP(30),
-                  width: widthPercentageToDP(30),
-                  alignSelf: 'center',
-                  marginTop: 10,
-                }}
-                source={{uri: inputs.ProductImage2?.uri}}
-              />
-            </View>
-          ) : null}
-         
-         
-             </View>
-             <View style={{marginTop:10}}> 
-             <View
-            style={{
-              borderWidth: 1,
-              marginTop: 4,
-              height: 40,
-              borderRadius: 6,
-              borderColor: 'grey',
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <TouchableOpacity
-              onPress={() => handleImageUpload('ProductImage3')}
-              style={{
-                backgroundColor: 'grey',
-                height: 40,
-                width: '30%',
-                borderTopLeftRadius: 6,
-                borderBottomLeftRadius: 6,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text style={{color: '#fff'}}>Choose File</Text>
-            </TouchableOpacity>
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '70%',
-              }}>
-              {inputs.ProductImage3?.name == '' ? (
-                <Text>No File Choosen</Text>
-              ) : (
-                <Text style={{color:'grey'}}>{inputs.ProductImage3?.name}</Text>
-              )}
-            </View>
-          </View>
-          <TextInput
-                  placeholder={'Product Name'}
-                  placeholderTextColor={  'grey'}
-                  style={{
-                    borderWidth: 1,
-                    marginTop: 4,
-                    height: 40,
-                    borderRadius: 6,
-                    borderColor: 'grey',
-                    paddingLeft: 10,color:'#000'
-                  }}
-                  value={inputs.ProductName3}
-                  onChangeText={val => handleProductImages('ProductName3', val)}
-                />
-          {inputs.ProductImage3?.uri ? (
-            <View
-              style={{
-                elevation: 5,
-                shadowColor: 'black',
-                shadowOffset: {height: 4, width: 4},
-                shadowOpacity: 5,
-                shadowRadius: 4,
-              }}>
-              <Image
-                style={{
-                  height: widthPercentageToDP(30),
-                  width: widthPercentageToDP(30),
-                  alignSelf: 'center',
-                  marginTop: 10,
-                }}
-                source={{uri: inputs.ProductImage3?.uri}}
-              />
-            </View>
-          ) : null} 
-             </View>
 
+          <View style={{marginTop: 10}}>
+            <View
+              style={{
+                borderWidth: 1,
+                marginTop: 4,
+                height: 40,
+                borderRadius: 6,
+                borderColor: 'grey',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <TouchableOpacity
+                onPress={() => handleImageUpload('ProductImage2')}
+                style={{
+                  backgroundColor: 'grey',
+                  height: 40,
+                  width: '30%',
+                  borderTopLeftRadius: 6,
+                  borderBottomLeftRadius: 6,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text style={{color: '#fff'}}>Choose File</Text>
+              </TouchableOpacity>
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '70%',
+                }}>
+                {inputs.ProductImage2?.name == '' ? (
+                  <Text>No File Choosen</Text>
+                ) : (
+                  <Text style={{color: 'grey'}}>
+                    {inputs.ProductImage2?.name}
+                  </Text>
+                )}
+              </View>
+            </View>
+            <TextInput
+              placeholder={'Product Name'}
+              placeholderTextColor={'grey'}
+              style={{
+                borderWidth: 1,
+                marginTop: 4,
+                height: 40,
+                borderRadius: 6,
+                borderColor: 'grey',
+                paddingLeft: 10,
+                color: '#000',
+              }}
+              value={inputs.ProductName2}
+              onChangeText={val => handleInputs('ProductName2', val)}
+            />
+            {inputs.ProductImage2?.uri ? (
+              <View
+                style={{
+                  elevation: 5,
+                  shadowColor: 'black',
+                  shadowOffset: {height: 4, width: 4},
+                  shadowOpacity: 5,
+                  shadowRadius: 4,
+                }}>
+                <Image
+                  style={{
+                    height: widthPercentageToDP(30),
+                    width: widthPercentageToDP(30),
+                    alignSelf: 'center',
+                    marginTop: 10,
+                  }}
+                  source={{uri: inputs.ProductImage2?.uri}}
+                />
+              </View>
+            ) : null}
+          </View>
+          <View style={{marginTop: 10}}>
+            <View
+              style={{
+                borderWidth: 1,
+                marginTop: 4,
+                height: 40,
+                borderRadius: 6,
+                borderColor: 'grey',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <TouchableOpacity
+                onPress={() => handleImageUpload('ProductImage3')}
+                style={{
+                  backgroundColor: 'grey',
+                  height: 40,
+                  width: '30%',
+                  borderTopLeftRadius: 6,
+                  borderBottomLeftRadius: 6,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text style={{color: '#fff'}}>Choose File</Text>
+              </TouchableOpacity>
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '70%',
+                }}>
+                {inputs.ProductImage3?.name == '' ? (
+                  <Text>No File Choosen</Text>
+                ) : (
+                  <Text style={{color: 'grey'}}>
+                    {inputs.ProductImage3?.name}
+                  </Text>
+                )}
+              </View>
+            </View>
+            <TextInput
+              placeholder={'Product Name'}
+              placeholderTextColor={'grey'}
+              style={{
+                borderWidth: 1,
+                marginTop: 4,
+                height: 40,
+                borderRadius: 6,
+                borderColor: 'grey',
+                paddingLeft: 10,
+                color: '#000',
+              }}
+              value={inputs.ProductName3}
+              onChangeText={val => handleProductImages('ProductName3', val)}
+            />
+            {inputs.ProductImage3?.uri ? (
+              <View
+                style={{
+                  elevation: 5,
+                  shadowColor: 'black',
+                  shadowOffset: {height: 4, width: 4},
+                  shadowOpacity: 5,
+                  shadowRadius: 4,
+                }}>
+                <Image
+                  style={{
+                    height: widthPercentageToDP(30),
+                    width: widthPercentageToDP(30),
+                    alignSelf: 'center',
+                    marginTop: 10,
+                  }}
+                  source={{uri: inputs.ProductImage3?.uri}}
+                />
+              </View>
+            ) : null}
+          </View>
 
           {/* <FlatList
             data={details2?.product}
@@ -1661,7 +2064,8 @@ try{
               placeholder="About "
               placeholderTextColor={'grey'}
               style={{
-                paddingLeft: 10,color:'#000',
+                paddingLeft: 10,
+                color: '#000',
                 fontSize: 12,
                 includeFontPadding: false,
                 padding: 0,
@@ -1685,50 +2089,50 @@ try{
                 uncheckedColor="#032e63"
                 color="#032e63"
               />
-              <Text style={{color:'#000'}}>Upto 10 employees</Text>
+              <Text style={{color: '#000'}}>Upto 10 employees</Text>
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <RadioButton
                 value="first"
                 status={inputs.NoofEmployee == 2 ? 'checked' : 'unchecked'}
-                 onPress={() => handleInputs('NoofEmployee', 2)}
+                onPress={() => handleInputs('NoofEmployee', 2)}
                 uncheckedColor="#032e63"
                 color="#032e63"
               />
-              <Text style={{color:'#000'}}>11-25 employees</Text>
+              <Text style={{color: '#000'}}>11-25 employees</Text>
             </View>
 
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <RadioButton
                 value="first"
                 status={inputs.NoofEmployee == 3 ? 'checked' : 'unchecked'}
-                 onPress={() => handleInputs('NoofEmployee', 3)}
+                onPress={() => handleInputs('NoofEmployee', 3)}
                 uncheckedColor="#032e63"
                 color="#032e63"
               />
-              <Text style={{color:'#000'}}>26-35 employees</Text>
+              <Text style={{color: '#000'}}>26-35 employees</Text>
             </View>
 
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <RadioButton
                 value="first"
                 status={inputs.NoofEmployee == 4 ? 'checked' : 'unchecked'}
-                 onPress={() => handleInputs('NoofEmployee', 4)}
+                onPress={() => handleInputs('NoofEmployee', 4)}
                 uncheckedColor="#032e63"
                 color="#032e63"
               />
-              <Text style={{color:'#000'}}>36-50 employees</Text>
+              <Text style={{color: '#000'}}>36-50 employees</Text>
             </View>
 
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <RadioButton
                 value="first"
                 status={inputs.NoofEmployee == 5 ? 'checked' : 'unchecked'}
-                 onPress={() => handleInputs('NoofEmployee', 5)}
+                onPress={() => handleInputs('NoofEmployee', 5)}
                 uncheckedColor="#032e63"
                 color="#032e63"
               />
-              <Text style={{color:'#000'}}>Above 50 employees</Text>
+              <Text style={{color: '#000'}}>Above 50 employees</Text>
             </View>
           </View>
         </View>
@@ -1736,176 +2140,182 @@ try{
         <View style={{marginTop: 10}}>
           <Text style={styles.text}>Upload Showroom Images (upto 3):</Text>
           <View>
-          <View
-            style={{
-              borderWidth: 1,
-              marginTop: 10,
-              height: 40,
-              borderRadius: 6,
-              borderColor: 'grey',
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <TouchableOpacity
-              onPress={() => handleImageUpload('showroomimage1')}
+            <View
               style={{
-                backgroundColor: 'grey',
+                borderWidth: 1,
+                marginTop: 10,
                 height: 40,
-                width: '30%',
-                borderTopLeftRadius: 6,
-                borderBottomLeftRadius: 6,
+                borderRadius: 6,
+                borderColor: 'grey',
+                flexDirection: 'row',
                 alignItems: 'center',
-                justifyContent: 'center',
               }}>
-              <Text style={{color: '#fff'}}>Choose File</Text>
-            </TouchableOpacity>
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '70%',
-              }}>
-              {inputs.showroomimage1?.name == '' ? (
-                <Text>No File Choosen</Text>
-              ) : (
-                <Text style={{color:'grey'}}>{inputs.showroomimage1?.name}</Text>
-              )}
-            </View>
-          </View>
-          {inputs.showroomimage1?.uri ? (
-            <View
-              style={{
-                elevation: 5,
-                shadowColor: 'black',
-                shadowOffset: {height: 4, width: 4},
-                shadowOpacity: 5,
-                shadowRadius: 4,
-              }}>
-              <Image
+              <TouchableOpacity
+                onPress={() => handleImageUpload('showroomimage1')}
                 style={{
-                  height: widthPercentageToDP(30),
-                  width: widthPercentageToDP(30),
-                  alignSelf: 'center',
-                  marginTop: 10,
-                }}
-                source={{uri: inputs.showroomimage1?.uri}}
-              />
+                  backgroundColor: 'grey',
+                  height: 40,
+                  width: '30%',
+                  borderTopLeftRadius: 6,
+                  borderBottomLeftRadius: 6,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text style={{color: '#fff'}}>Choose File</Text>
+              </TouchableOpacity>
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '70%',
+                }}>
+                {inputs.showroomimage1?.name == '' ? (
+                  <Text>No File Choosen</Text>
+                ) : (
+                  <Text style={{color: 'grey'}}>
+                    {inputs.showroomimage1?.name}
+                  </Text>
+                )}
+              </View>
             </View>
-          ) : null}
+            {inputs.showroomimage1?.uri ? (
+              <View
+                style={{
+                  elevation: 5,
+                  shadowColor: 'black',
+                  shadowOffset: {height: 4, width: 4},
+                  shadowOpacity: 5,
+                  shadowRadius: 4,
+                }}>
+                <Image
+                  style={{
+                    height: widthPercentageToDP(30),
+                    width: widthPercentageToDP(30),
+                    alignSelf: 'center',
+                    marginTop: 10,
+                  }}
+                  source={{uri: inputs.showroomimage1?.uri}}
+                />
+              </View>
+            ) : null}
 
-<View
-            style={{
-              borderWidth: 1,
-              marginTop: 4,
-              height: 40,
-              borderRadius: 6,
-              borderColor: 'grey',
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <TouchableOpacity
-              onPress={() => handleImageUpload('showroomimage2')}
+            <View
               style={{
-                backgroundColor: 'grey',
+                borderWidth: 1,
+                marginTop: 4,
                 height: 40,
-                width: '30%',
-                borderTopLeftRadius: 6,
-                borderBottomLeftRadius: 6,
+                borderRadius: 6,
+                borderColor: 'grey',
+                flexDirection: 'row',
                 alignItems: 'center',
-                justifyContent: 'center',
               }}>
-              <Text style={{color: '#fff'}}>Choose File</Text>
-            </TouchableOpacity>
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '70%',
-              }}>
-              {inputs.showroomimage2?.name == '' ? (
-                <Text>No File Choosen</Text>
-              ) : (
-                <Text style={{color:'grey'}}>{inputs.showroomimage2?.name}</Text>
-              )}
-            </View>
-          </View>
-          {inputs.showroomimage2?.uri ? (
-            <View
-              style={{
-                elevation: 5,
-                shadowColor: 'black',
-                shadowOffset: {height: 4, width: 4},
-                shadowOpacity: 5,
-                shadowRadius: 4,
-              }}>
-              <Image
+              <TouchableOpacity
+                onPress={() => handleImageUpload('showroomimage2')}
                 style={{
-                  height: widthPercentageToDP(30),
-                  width: widthPercentageToDP(30),
-                  alignSelf: 'center',
-                  marginTop: 10,
-                }}
-                source={{uri: inputs.showroomimage2?.uri}}
-              />
+                  backgroundColor: 'grey',
+                  height: 40,
+                  width: '30%',
+                  borderTopLeftRadius: 6,
+                  borderBottomLeftRadius: 6,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text style={{color: '#fff'}}>Choose File</Text>
+              </TouchableOpacity>
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '70%',
+                }}>
+                {inputs.showroomimage2?.name == '' ? (
+                  <Text>No File Choosen</Text>
+                ) : (
+                  <Text style={{color: 'grey'}}>
+                    {inputs.showroomimage2?.name}
+                  </Text>
+                )}
+              </View>
             </View>
-          ) : null}
+            {inputs.showroomimage2?.uri ? (
+              <View
+                style={{
+                  elevation: 5,
+                  shadowColor: 'black',
+                  shadowOffset: {height: 4, width: 4},
+                  shadowOpacity: 5,
+                  shadowRadius: 4,
+                }}>
+                <Image
+                  style={{
+                    height: widthPercentageToDP(30),
+                    width: widthPercentageToDP(30),
+                    alignSelf: 'center',
+                    marginTop: 10,
+                  }}
+                  source={{uri: inputs.showroomimage2?.uri}}
+                />
+              </View>
+            ) : null}
 
-<View
-            style={{
-              borderWidth: 1,
-              marginTop: 4,
-              height: 40,
-              borderRadius: 6,
-              borderColor: 'grey',
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <TouchableOpacity
-              onPress={() => handleImageUpload('showroomimage3')}
+            <View
               style={{
-                backgroundColor: 'grey',
+                borderWidth: 1,
+                marginTop: 4,
                 height: 40,
-                width: '30%',
-                borderTopLeftRadius: 6,
-                borderBottomLeftRadius: 6,
+                borderRadius: 6,
+                borderColor: 'grey',
+                flexDirection: 'row',
                 alignItems: 'center',
-                justifyContent: 'center',
               }}>
-              <Text style={{color: '#fff'}}>Choose File</Text>
-            </TouchableOpacity>
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '70%',
-              }}>
-              {inputs.showroomimage3?.name == '' ? (
-                <Text>No File Choosen</Text>
-              ) : (
-                <Text style={{color:'grey'}}>{inputs.showroomimage3?.name}</Text>
-              )}
-            </View>
-          </View>
-          {inputs.showroomimage3?.uri ? (
-            <View
-              style={{
-                elevation: 5,
-                shadowColor: 'black',
-                shadowOffset: {height: 4, width: 4},
-                shadowOpacity: 5,
-                shadowRadius: 4,
-              }}>
-              <Image
+              <TouchableOpacity
+                onPress={() => handleImageUpload('showroomimage3')}
                 style={{
-                  height: widthPercentageToDP(30),
-                  width: widthPercentageToDP(30),
-                  alignSelf: 'center',
-                  marginTop: 10,
-                }}
-                source={{uri: inputs.showroomimage3?.uri}}
-              />
+                  backgroundColor: 'grey',
+                  height: 40,
+                  width: '30%',
+                  borderTopLeftRadius: 6,
+                  borderBottomLeftRadius: 6,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text style={{color: '#fff'}}>Choose File</Text>
+              </TouchableOpacity>
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '70%',
+                }}>
+                {inputs.showroomimage3?.name == '' ? (
+                  <Text>No File Choosen</Text>
+                ) : (
+                  <Text style={{color: 'grey'}}>
+                    {inputs.showroomimage3?.name}
+                  </Text>
+                )}
+              </View>
             </View>
-          ) : null}
+            {inputs.showroomimage3?.uri ? (
+              <View
+                style={{
+                  elevation: 5,
+                  shadowColor: 'black',
+                  shadowOffset: {height: 4, width: 4},
+                  shadowOpacity: 5,
+                  shadowRadius: 4,
+                }}>
+                <Image
+                  style={{
+                    height: widthPercentageToDP(30),
+                    width: widthPercentageToDP(30),
+                    alignSelf: 'center',
+                    marginTop: 10,
+                  }}
+                  source={{uri: inputs.showroomimage3?.uri}}
+                />
+              </View>
+            ) : null}
 
             {/* <View style={styles.sView}>
               <TouchableOpacity
@@ -1960,34 +2370,35 @@ try{
           </View>
         </View>
 
-       <View style={{marginTop: 10}}>
+        <View style={{marginTop: 10}}>
           <Text style={styles.text}>Upload Owner images:</Text>
           <TextInput
-                  placeholder="Owner Name"
-                  style={{
-                    borderWidth: 1,
-                    marginTop: 5,
-                    height: 40,
-                    borderRadius: 6,
-                    borderColor: 'grey',
-                    paddingLeft: 10,color:'#000'
-                  }}
-                  placeholderTextColor={'grey'}
-                  value={inputs.OwnerName1}
-                  onChangeText={val => handleInputs('OwnerName1', val)}
-                />
-                <View style={styles.multiline}>
-                  <TextInput
-                  placeholderTextColor={'grey'}
-                    placeholder="Write about owner description"
-                    style={[styles.input,{color:'#000'}]}
-                    multiline
-                    value={inputs.OwnerDescription1}
-                    onChangeText={val => handleInputs('OwnerDescription1',val)}
-                  />
-                </View>
+            placeholder="Owner Name"
+            style={{
+              borderWidth: 1,
+              marginTop: 5,
+              height: 40,
+              borderRadius: 6,
+              borderColor: 'grey',
+              paddingLeft: 10,
+              color: '#000',
+            }}
+            placeholderTextColor={'grey'}
+            value={inputs.OwnerName1}
+            onChangeText={val => handleInputs('OwnerName1', val)}
+          />
+          <View style={styles.multiline}>
+            <TextInput
+              placeholderTextColor={'grey'}
+              placeholder="Write about owner description"
+              style={[styles.input, {color: '#000'}]}
+              multiline
+              value={inputs.OwnerDescription1}
+              onChangeText={val => handleInputs('OwnerDescription1', val)}
+            />
+          </View>
 
-                <View
+          <View
             style={{
               borderWidth: 1,
               marginTop: 4,
@@ -2019,7 +2430,7 @@ try{
               {inputs.Ownerimg1?.name == '' ? (
                 <Text>No File Choosen</Text>
               ) : (
-                <Text style={{color:'grey'}}>{inputs.Ownerimg1?.name}</Text>
+                <Text style={{color: 'grey'}}>{inputs.Ownerimg1?.name}</Text>
               )}
             </View>
           </View>
@@ -2044,35 +2455,33 @@ try{
             </View>
           ) : null}
 
+          <TextInput
+            placeholder="Owner Name"
+            style={{
+              borderWidth: 1,
+              marginTop: 5,
+              height: 40,
+              borderRadius: 6,
+              borderColor: 'grey',
+              paddingLeft: 10,
+              color: '#000',
+            }}
+            placeholderTextColor={'grey'}
+            value={inputs.OwnerName2}
+            onChangeText={val => handleInputs('OwnerName2', val)}
+          />
+          <View style={styles.multiline}>
+            <TextInput
+              placeholderTextColor={'grey'}
+              placeholder="Write about owner description"
+              style={[styles.input, {color: '#000'}]}
+              multiline
+              value={inputs.OwnerDescription2}
+              onChangeText={val => handleInputs('OwnerDescription2', val)}
+            />
+          </View>
 
-
-
-<TextInput
-                  placeholder="Owner Name"
-                  style={{
-                    borderWidth: 1,
-                    marginTop: 5,
-                    height: 40,
-                    borderRadius: 6,
-                    borderColor: 'grey',
-                    paddingLeft: 10,color:'#000'
-                  }}
-                  placeholderTextColor={'grey'}
-                  value={inputs.OwnerName2}
-                  onChangeText={val => handleInputs('OwnerName2', val)}
-                />
-                <View style={styles.multiline}>
-                  <TextInput
-                  placeholderTextColor={'grey'}
-                    placeholder="Write about owner description"
-                    style={[styles.input,{color:'#000'}]}
-                    multiline
-                    value={inputs.OwnerDescription2}
-                    onChangeText={val => handleInputs('OwnerDescription2',val)}
-                  />
-                </View>
-
-                <View
+          <View
             style={{
               borderWidth: 1,
               marginTop: 4,
@@ -2104,7 +2513,7 @@ try{
               {inputs.Ownerimg2?.name == '' ? (
                 <Text>No File Choosen</Text>
               ) : (
-                <Text style={{color:'grey'}}>{inputs.Ownerimg2?.name}</Text>
+                <Text style={{color: 'grey'}}>{inputs.Ownerimg2?.name}</Text>
               )}
             </View>
           </View>
@@ -2129,34 +2538,33 @@ try{
             </View>
           ) : null}
 
+          <TextInput
+            placeholder="Owner Name"
+            style={{
+              borderWidth: 1,
+              marginTop: 5,
+              height: 40,
+              borderRadius: 6,
+              borderColor: 'grey',
+              paddingLeft: 10,
+              color: '#000',
+            }}
+            placeholderTextColor={'grey'}
+            value={inputs.OwnerName3}
+            onChangeText={val => handleInputs('OwnerName3', val)}
+          />
+          <View style={styles.multiline}>
+            <TextInput
+              placeholderTextColor={'grey'}
+              placeholder="Write about owner description"
+              style={[styles.input, {color: '#000'}]}
+              multiline
+              value={inputs.OwnerDescription3}
+              onChangeText={val => handleInputs('OwnerDescription3', val)}
+            />
+          </View>
 
-
-<TextInput
-                  placeholder="Owner Name"
-                  style={{
-                    borderWidth: 1,
-                    marginTop: 5,
-                    height: 40,
-                    borderRadius: 6,
-                    borderColor: 'grey',
-                    paddingLeft: 10,color:'#000'
-                  }}
-                  placeholderTextColor={'grey'}
-                  value={inputs.OwnerName3}
-                  onChangeText={val => handleInputs('OwnerName3', val)}
-                />
-                <View style={styles.multiline}>
-                  <TextInput
-                  placeholderTextColor={'grey'}
-                    placeholder="Write about owner description"
-                    style={[styles.input,{color:'#000'}]}
-                    multiline
-                    value={inputs.OwnerDescription3}
-                    onChangeText={val => handleInputs('OwnerDescription3',val)}
-                  />
-                </View>
-
-                <View
+          <View
             style={{
               borderWidth: 1,
               marginTop: 4,
@@ -2188,7 +2596,7 @@ try{
               {inputs.Ownerimg3?.name == '' ? (
                 <Text>No File Choosen</Text>
               ) : (
-                <Text style={{color:'grey'}}>{inputs.Ownerimg3?.name}</Text>
+                <Text style={{color: 'grey'}}>{inputs.Ownerimg3?.name}</Text>
               )}
             </View>
           </View>
@@ -2212,10 +2620,6 @@ try{
               />
             </View>
           ) : null}
-
-
-
-
 
           {/* <FlatList
             data={ownerImages}
@@ -2293,8 +2697,8 @@ try{
               </View>
             )}
           /> */}
-        </View> 
- <View style={{marginTop: 10}}>
+        </View>
+        <View style={{marginTop: 10}}>
           <Text style={styles.text}>Logo Upload</Text>
           <View
             style={{
@@ -2328,7 +2732,7 @@ try{
               {inputs.ProductLogo?.name == '' ? (
                 <Text>No File Choosen</Text>
               ) : (
-                <Text style={{color:'grey'}}>{inputs.ProductLogo?.name}</Text>
+                <Text style={{color: 'grey'}}>{inputs.ProductLogo?.name}</Text>
               )}
             </View>
           </View>
@@ -2356,7 +2760,7 @@ try{
 
         <View>
           <TouchableOpacity
-            onPress={() => handleOnSumit()}
+            onPress={() => validateUser()}
             style={{
               height: 40,
               width: '100%',
@@ -2381,7 +2785,7 @@ try{
           title={'Edit Profile '}
           onPress={() => navigation.goBack()}
         />
-        {fetching ? <Loading /> : null}
+        {fetching  ? <Loading /> : null}
         {renderScreen()}
       </View>
     );
@@ -2447,10 +2851,6 @@ const items3 = [
   {id: '2', name: '92'},
 ];
 
-
-
-
-
 // import React, {useEffect, useState} from 'react';
 // import {
 //   View,
@@ -2503,7 +2903,7 @@ const items3 = [
 //               placeholderTextColor="black"
 //             />
 //           </View>
-          
+
 //           <Text style={styles.title}>Display Name <Text style={{color:'red'}}>*</Text></Text>
 //           <View style={styles.main1}>
 //             <TextInput
@@ -2535,11 +2935,11 @@ const items3 = [
 //             style={styles.button}>
 //             <Text style={styles.bttext}>{'Save'}</Text>
 //           </TouchableOpacity>
-         
+
 //         </View>
 //       </ScrollView>
 //       <StatusBar />
-   
+
 //     </View>
 //   );
 // };

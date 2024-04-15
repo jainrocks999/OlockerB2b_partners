@@ -14,8 +14,6 @@ const Catalogue = () => {
   const ProductList1 = async item => {
     const srno = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken');
-
-    console.log('vireememem e mmenmemnmemeeme',selector,item);
     dispatch({
       type: 'User_SupplierProductList_Request',
       url: 'partners/productTypeProducts',

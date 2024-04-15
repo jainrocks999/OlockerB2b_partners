@@ -135,6 +135,7 @@ function* doLogin(action) {
       password: action.password,
       fcm_token: action.fcm_token
     };
+    console.log('data....',data);
     const response = yield call(Api.fetchDataByGET, action.url, data);
     if (!response) {
       Toast.show('Please enter  Valid user id & password   ');
@@ -692,12 +693,13 @@ function* SupplierDetail(action) {
       data
 
     );
+    console.log('responsse afrete delete network ',response);
     if (response.status == true) {
       yield put({
         type: 'User_supplierDetail_Success',
         payload: response,
         Status: action.Status,
-        network_id: action.network_id
+        // network_id: action.network_id
       });
 
       action.navigation.navigate('MyNetwork1', { screen: 'PartnerProfile', });
@@ -1060,11 +1062,22 @@ function* AddToNetwork(action) {
       });
       yield put (
         {
-          type: 'Get_Sent_Request',
-          url: '/partners/requestedSupplierList',
+
+          type: 'User_supplierDetail_Request',
+          url: '/partners/supplierDetail',
+          supplierId: action.supplierId,
+          Token: action.Token,
           partnerId: action.partnerId,
-          Token:action.Token
-          // navigation,
+          supplier_id:action.supplierId,
+          navigation:action.navigation,
+          Status: 1,
+
+
+          // type: 'Get_Sent_Request',
+          // url: '/partners/requestedSupplierList',
+          // partnerId: action.partnerId,
+          // Token:action.Token
+          // // navigation,
         }
       )
       Toast.show(response.msg)
@@ -1101,6 +1114,7 @@ function* RemoveFromNetwork(action) {
         type: 'User_removeNetworkSupplier_Success',
         payload: response,
       });
+      console.log('remove from ntemowrk ',action);
       yield put({
         type: 'User_supplierDetail_Request',
         url: '/partners/supplierDetail',
@@ -1718,7 +1732,6 @@ function* partnerProfile(action){
     );
   
    if (response.status == true) {
-    console.log('partner kllklk,,,response ,,,12321321321',response.data);
     yield put({
       type: 'User_editProfile_Success',
       payload: response.data,
@@ -1745,7 +1758,7 @@ function* partnerProfile(action){
 
 function* Getcity(action){
   try {
-    console.log('city..... ......action',action);
+  
     const data = {
       stateId:action.stateId
     
@@ -1758,7 +1771,7 @@ function* Getcity(action){
     );
   
    if (response.status == true) {
-    console.log('partner cityusdjfjskkjs,,12321321321',response);
+    // console.log('partner cityusdjfjskkjs,,12321321321',response);
     yield put({
       type: 'Get_getCities_Success',
       payload: response,

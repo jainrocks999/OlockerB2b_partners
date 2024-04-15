@@ -12,19 +12,21 @@ export default StyleSheet.create({
       details:{ marginLeft: 10, width: '60%', marginTop: -4 },
       text1:{ color: '#fff',  fontFamily: 'Acephimere' },
       star:{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        // flexDirection: 'row',
+        // justifyContent: 'space-between',
         marginTop: 20,
-        alignItems: 'center',
-        width: '100%',
+        alignItems: 'center',alignSelf:'flex-end'
+        // width: '100%',
       },
 
 blankV:{ height: 20,marginTop:10,alignItems:'center' },
       phone:{ alignItems: 'center', justifyContent: 'center' },
       addButtonV:{
+        flexDirection:'row',
+        justifyContent:'space-between',
         alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 10,
+        // justifyContent: 'center',
+        marginTop: 10,paddingHorizontal:10
       },
       addButton:{
         backgroundColor: '#ea056c',

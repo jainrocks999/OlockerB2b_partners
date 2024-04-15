@@ -8,7 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Linking,
-  Share,
+  Share,Alert
 } from 'react-native';
 import Header from '../../../components/CustomHeader';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
@@ -83,7 +83,6 @@ if(isFocuse){
 const extractedImages = extractImages(selector);
 
 const manageoption =async()=>{
-  console.log('data ds ',selector.partnerdetails.StateId);
   const Token = await AsyncStorage.getItem('loginToken')
   dispatch({
     type:'Get_getCities_Request',
@@ -96,6 +95,33 @@ const manageoption =async()=>{
 
   })
 }
+
+
+const Logout = () => {
+  Alert.alert(
+    'Are you sure you want to log out?',
+    '',
+    [
+      {
+        text: 'Cancel',
+        onPress: () => {
+          cancelable: false;
+        },
+        style: 'cancel',
+      },
+      { text: 'ok', onPress: () => LogoutApp() },
+    ],
+    { cancelable: false },
+  );
+};
+
+const LogoutApp = async () => {
+  await AsyncStorage.setItem('loginToken', '');
+
+  navigation.navigate('Login');
+  const Token = await AsyncStorage.getItem('loginToken');
+ 
+};
 
 
   return (
@@ -129,36 +155,18 @@ const manageoption =async()=>{
               <View
                 style={styles.star}>
 
-                {/* <Stars
-                  half={true}
-                  default={0}
-                  // display={3}
-                  spacing={5}
-                  update={val => setRatting1(val)}
-                  count={5}
-                  starSize={16}
-                  fullStar={require('../../../assets/Image/star.png')}
-                  emptyStar={require('../../../assets/Image/star1.png')}
-                /> */}
-
-                <View style={{ flexDirection: 'row',}}>
-                  <TouchableOpacity
-                    onPress={() => Linking.openURL(`tel:${detail?.Mobile}`)}
-                    style={styles.phone}>
-                    <Image
-                      style={{ width: 30, height: 30 }}
-                      source={require('../../../assets/PartnerImage/16.png')}
-                    />
-                  </TouchableOpacity>
+               
+               
+                  
                   <TouchableOpacity
                     onPress={() => share()}
                     style={[styles.phone,{marginLeft: 10,alignSelf:'flex-end'}]}>
                     <Image
-                      style={{ width: 30, height: 30 }}
+                      style={{ width: 35, height: 35 }}
                       source={require('../../../assets/PartnerImage/15.png')}
                     />
                   </TouchableOpacity>
-                </View>
+               
               </View>
             </View>
           </View>
@@ -172,7 +180,22 @@ const manageoption =async()=>{
 
                 </Text>
               </TouchableOpacity>
-             
+              <TouchableOpacity 
+               onPress={()=>navigation.navigate('changepassword')}
+                style={[styles.addButton,{backgroundColor:'#ea056c'}]}>
+                <Text style={[styles.text1,{fontSize:12,color:'#FFF',fontWeight:'900'}]}>
+              {'Change Password'}
+
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+               onPress={()=>Logout()}
+                style={[styles.addButton,{backgroundColor:'#ea056c'}]}>
+                <Text style={[styles.text1,{fontSize:12,color:'#FFF',fontWeight:'900'}]}>
+              {'Logout'}
+
+                </Text>
+              </TouchableOpacity>
 
           </View>
 

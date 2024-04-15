@@ -323,7 +323,7 @@ const MyCatalogue = ({ route }) => {
                   styles.tcard,
                   { color: partner == true ? '#fff' : '#032e63' },
                 ]}>
-                Partner Categories
+                Supplier Categories
               </Text>
             </TouchableOpacity>
           </View>

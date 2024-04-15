@@ -34,6 +34,7 @@ import CategoryDetails from '../screens/Main/CategoryDetails';
 import MyProducts from '../screens/Main/MyProducts';
 import Filter from '../screens/Main/Filter';
 import Edit from '../screens/Main/Editprofile';
+import ChangePassword from '../screens/Main/ChangePassword';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ChatScreen from '../screens/Main/ChatScreen'
 import MessageBox2 from '../screens/Main/MessageBox2';
@@ -73,6 +74,7 @@ function Customer1() {
       <Stack3.Screen name="Messagebox" component={Messagebox} />
       <Stack3.Screen name="Purchase" component={Purchase} />
       <Stack3.Screen name="Editprofile" component={Edit} />
+      <Stack3.Screen name="changepassword" component={ChangePassword} />
       <Stack3.Screen name="Loyalty" component={Loyalty} />
       <Stack3.Screen name="Loyalty1" component={LoyaltyPage} />
       <Stack3.Screen name="Chat" component={Chat} />

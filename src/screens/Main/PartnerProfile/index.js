@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Linking,
   Share,
+  Alert,
 } from 'react-native';
 import Header from '../../../components/CustomHeader';
 import { useNavigation } from '@react-navigation/native';
@@ -29,10 +30,9 @@ const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [id1,setId]=useState();
+  const[visiable1,setVisible]=useState(false);
   const selector = useSelector(state => state.SupplierDetail?.detail)
-  const selector3 = useSelector(state => state.sentRequest);
-  // console.log('detailss,,,,,,',selector3.suppliers);
-   console.log('detailss,,,,,,ssssss',selector.isAdd);
+  
   const selector1 = useSelector(state => state.Status);
   const isFetching = useSelector(state => state.isFetching);
   const [profile, setProfile] = useState(true);
@@ -48,17 +48,6 @@ const HomeScreen = ({ route }) => {
       message: `Supplier Name : ${selector?.SupplierName}  Email Address :${selector?.EmailId}`,
     });
   };
-
-  useEffect(()=>{
-    selector3.suppliers?.map((item)=>{
-      // setId(item.supplierId);
-    if( selector?.SrNo===item.SupplierSrNo){
-      // console.log('ifdddd',item.SupplierSrNo);
-       setId(item.SupplierSrNo)
-    }
-    setClicked(false)
-    },[])
-  })
   const manageTab = () => {
     setProfile(true);
     setMessage(false);
@@ -83,27 +72,142 @@ const HomeScreen = ({ route }) => {
     setCatalogue(false);
     setSetting(true);
   };
-  const onPressHandler = () => {
-    console.log('Clicked!3333',selector?.SrNo==id1? true:false);
-    if (selector?.SrNo==id1) {
-      console.log('Clicked!22222',selector?.SrNo==id1? true:false);
-      addToNetwork(selector?.SrNo);
-      setClicked(true);
-      console.log('Clicked!',selector?.SrNo==id1? true:false);
-    }
+  const getStatus = () => {
+    const data = selector
+    console.log('IsPartnerSend', data.IsPartnerSend);
+    console.log('issuppliersend', data.IsSupplierSend)
+    return (
+     <View style={{ flexDirection: 'row', width: '80%', justifyContent: data?.IsSupplierSend == 1 ? 'space-evenly' : 'center' }}>
+      <TouchableOpacity
+        style={[styles.addButton, { backgroundColor:data.network_status=='Reject'?'red': data?.IsPartnerSend == 1 ? '#FFF' : data?.IsSupplierSend == 1 ? 'green' : '#ea056c' }]}
+        disabled={data?.IsPartnerSend == 1 ||data.network_status=='Reject'}
+        onPress={addToNetwork}
+      >
+        <Text style={[styles.text1, { color:data.network_status=='Reject'?'#fff': data?.IsPartnerSend == 1 ? '#032e63' : '#FFF', fontWeight: data?.IsPartnerSend == 1 ? '900' : '500' }]}>
+          {data.network_status=='Reject'?"Rejected":data?.IsPartnerSend == 1 ? "Requested" : data?.IsSupplierSend == 1 ? "Confirm" : "Add To Network"}
+        </Text>
+      </TouchableOpacity>
+      {data?.IsSupplierSend == 1 &&data.network_status!='Reject' ?
+        <TouchableOpacity style={[styles.addButton, { backgroundColor: 'red' }]} onPress={RejectMEthod}>
+          <Text style={styles.text1}>
+            {"Reject"}
+          </Text>
+        </TouchableOpacity>:null
+      }
+    </View>
+    )
+  }
+  const RejectMEthod = async (id, index) => {
+   
+    const srno = await AsyncStorage.getItem('Partnersrno');
+    const Token = await AsyncStorage.getItem('loginToken')
+setVisible(true)
+    const axios = require('axios');
+    let data = new FormData();
+    data.append('supplier_id', selector?.SrNo);
+    data.append('statusId', '2');
+    data.append('partnerId', srno);
+    data.append('rejectReason', '');
+
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'https://olocker.co/api//partners/updateSupplierRequest',
+      headers: {
+        'Olocker': `Bearer ${Token}`,
+        // ...data.getHeaders()
+      },
+      data: data
+    };
+
+    axios.request(config)
+      .then((response) => {
+       
+        if (response.data.status == true) {
+          setVisible(false);
+         partnerDetaitl(selector?.SrNo)
+         
+        }
+
+      })
+      .catch((error) => {
+        setVisible(false);
+        console.log(error);
+      });
+
+  }
+
+
+  const partnerDetaitl = async (id) => {
+    const Token = await AsyncStorage.getItem('loginToken')
+    const srno = await AsyncStorage.getItem('Partnersrno');
+    console.log('idd,,,,,,,,,,,,,,,,', id);
+    dispatch({
+      type: 'User_supplierDetail_Request',
+      url: '/partners/supplierDetail',
+      supplierId: id,
+      Token: Token,
+      partnerId: srno,
+      supplier_id:id,
+      navigation,
+      Status: 1,
+
+
+    })
   };
   const addToNetwork = async () => {
+    const data=selector;
+    console.log('data ....',data?.SrNo);
     const partnerid = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken');
+     if (data.IsPartnerSend == 0 && data.IsSupplierSend == 0) {
     dispatch({
       type: 'User_sendRequestToSupplier_Request',
       url: 'partners/sendRequestToSupplier',
       partnerId: partnerid,
-      supplierId: selector?.SrNo,
+      supplierId: data?.SrNo,
       Token: Token,
+      navigation,
 
     });
+  }
+  else if(data.IsSupplierSend==1){
+setVisible(true);
+    const axios = require('axios');
+    let data1 = new FormData();
+    data1.append('supplier_id', data?.SrNo);
+    data1.append('statusId', '1');
+    data1.append('partnerId', partnerid);
+    data1.append('rejectReason', '');
 
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'https://olocker.co/api//partners/updateSupplierRequest',
+      headers: {
+        'Olocker': `Bearer ${Token}`,
+        // ...data.getHeaders()
+      },
+      data: data1
+    };
+
+    axios.request(config)
+      .then((response) => {
+        if (response?.data?.status == true) {
+          setVisible(false);
+         partnerDetaitl(data?.SrNo)
+          // Toast.show(response?.data?.msg);
+
+        }
+
+      })
+      .catch((error) => {
+        setVisible(false);
+        console.log('erororo why sree',error);
+      });
+
+
+  }
   }
   return (
     <View style={styles.container}>
@@ -116,7 +220,7 @@ const HomeScreen = ({ route }) => {
         onPress2={() => navigation.navigate('FavDetails')}
         onPress1={() => navigation.navigate('MessageBox')}
       />
-      {isFetching ? <Loader /> : null}
+      {isFetching ||visiable1? <Loader /> : null}
       <ScrollView>
        
         <View style={{backgroundColor: '#032e63',}}>
@@ -136,7 +240,7 @@ const HomeScreen = ({ route }) => {
               <View
                 style={styles.star}>
 
-{selector.isAdd == 1 ?
+{selector?.isAdd == 1 ?
                 <Stars
                   half={true}
                   default={0}
@@ -147,6 +251,7 @@ const HomeScreen = ({ route }) => {
                   starSize={16}
                   fullStar={require('../../../assets/Image/star.png')}
                   emptyStar={require('../../../assets/Image/star1.png')}
+                  halfStar={require('../../../assets/Image/star2.png')}
                 />
 :null}
                 <View style={{ flexDirection: 'row' }}>
@@ -170,17 +275,21 @@ const HomeScreen = ({ route }) => {
               </View>
             </View>
           </View>
-          <View style={styles.addButtonV}>
-            {selector.isAdd == 0 ?
-              <TouchableOpacity 
-              disabled={selector?.SrNo==id1?true:false}
-              onPressIn={addToNetwork}
-                style={[styles.addButton,{backgroundColor:selector?.SrNo===id1?'#FFF':'#ea056c'}]}>
-                <Text style={[styles.text1,{fontSize:12,color:selector?.SrNo===id1?'#032e63':'#FFF',fontWeight:selector?.SrNo===id1?'900':''}]}>
-                 { selector?.SrNo===id1?'Requested':'Add To Network'}
+          <View style={[styles.addButtonV1,{ marginTop: 10,
+              alignSelf: 'flex-end',
+              flexDirection: 'row',
+              width: '70%',}]}>
+            {selector?.isAdd == 0 ?
+              getStatus()
+              // <TouchableOpacity 
+              // disabled={selector?.SrNo==id1?true:false}
+              // onPressIn={addToNetwork}
+              //   style={[styles.addButton,{backgroundColor:selector?.SrNo===id1?'#FFF':'#ea056c'}]}>
+              //   <Text style={[styles.text1,{fontSize:12,color:selector?.SrNo===id1?'#032e63':'#FFF',fontWeight:selector?.SrNo===id1?'900':''}]}>
+              //    { selector?.SrNo===id1?'Requested':'Add To Network'}
 
-                </Text>
-              </TouchableOpacity>
+              //   </Text>
+              // </TouchableOpacity>
               : <View style={styles.addButton}>
                 <Text style={[styles.text1,{fontSize:12}]}>
                   {'Added To Network'}
@@ -193,7 +302,7 @@ const HomeScreen = ({ route }) => {
           <View style={styles.blankV} />
         </View>
         <View>
-          {selector.isAdd == 0 ? null :
+          {selector?.isAdd == 0 ? null :
             <View style={styles.tabContainer}>
               <View style ={styles.card}>
                 <TouchableOpacity

@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const HomeScreen = () => {
   const navigation = useNavigation();
  const selector =useSelector(state=>state.Notification);
+ const [visiable,setVisible]=useState(false)
  const isFetching= useSelector(state=>state.isFetching)
  const dispatch =useDispatch();
   const isfocus=useIsFocused();
@@ -36,6 +37,41 @@ const Apicall =async()=>{
     Token:Token
    })
 }
+
+const clearnotification=async()=>{
+  const Token = await AsyncStorage.getItem('loginToken');
+  const Id = await AsyncStorage.getItem('Partnersrno');
+  const axios = require('axios');
+setVisible(true);
+let config = {
+  method: 'get',
+  maxBodyLength: Infinity,
+  url: `https://olocker.co/api/partners/pushNotificationRemove?partnerId=${Id}`,
+  headers: { 
+    'Olocker': `Bearer ${Token}`
+  }
+};
+
+axios.request(config)
+.then((response) => {
+  if(response.data.status==true){
+  console.log('resposeemmmm',JSON.stringify(response.data));
+ Apicall();
+  setVisible(false);
+  }
+  else{
+    setVisible(false);
+  }
+})
+.catch((error) => {
+  setVisible(false);
+  console.log(error);
+});
+
+ }
+
+
+
 
  const supplierprofile = async (id) => {
   const Token = await AsyncStorage.getItem('loginToken');
@@ -57,7 +93,7 @@ const Apicall =async()=>{
         onPress={() => navigation.goBack()}
         onPress2={() => navigation.navigate('FavDetails')}
       />
-     {isFetching?<Loader/>:null}
+     {isFetching||visiable?<Loader/>:null}
 
      {
         selector?.length == 0 ?
@@ -75,10 +111,18 @@ const Apicall =async()=>{
       <ScrollView style={{paddingHorizontal:0}}>
 
 <View style={{}}>
+
+<View style={{flexDirection:'row',justifyContent:'space-between',paddingHorizontal:10}}>
               <Text
-               style={{color:'#000',marginLeft:10,marginTop:10}}>
+               style={{color:'#000',marginLeft:0,marginTop:10}}>
                 {selector?.length==1?    `${selector?.length}  Notification`:`${selector?.length}  Notifications`}
               </Text>
+          <TouchableOpacity style={{marginTop:10,}}
+          onPress={()=>clearnotification()}
+          >   
+         <Text style={{color:'#000',textDecorationLine:'underline'}}>Clear Notification</Text>
+         </TouchableOpacity> 
+        </View>
       {/* <Text  style={{color:'#000',marginLeft:10,marginTop:10}}>{`${selector.length}${'  Notification'}`}</Text> */}
         <View style={{marginBottom:20}}>
             <FlatList
@@ -140,9 +184,7 @@ const Apicall =async()=>{
             />
         </View>
         </View>
-        <View style={{height:'20%',width:'30%',alignSelf:'flex-end'}}>
-         <Text>Clear</Text>
-        </View>
+        
       </ScrollView>
 }
       <StatusBar />

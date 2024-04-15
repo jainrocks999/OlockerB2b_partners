@@ -76,9 +76,10 @@ export default StyleSheet.create({
         color: '#656565'
     },
     BTouch: {
-        backgroundColor: 'grey',
-        paddingHorizontal: 5,
-        paddingVertical: 2,
+       
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius:10,
         alignItems: 'center',
         justifyContent: 'center'
     },

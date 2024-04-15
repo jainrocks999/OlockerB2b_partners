@@ -67,10 +67,10 @@ const Login = () => {
   const Demo = async values => {
    
     const token = await AsyncStorage.getItem('Tokenfcm');
-   
+   console.log('token,,,,,,,,,,',token);
     dispatch({
       type: 'User_Login_Request',
-      url: 'partners//login',
+      url: 'partners/login',
       email: values.email,
       password: values.password,
       fcm_token: token,

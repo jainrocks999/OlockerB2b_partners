@@ -6,8 +6,7 @@ const Profile = () => {
   const selector = useSelector(state => state.SupplierDetail?.detail)
   const isFetching = useSelector(state => state.isFetching);
   const ownerImagePath = useSelector(state => state.SupplierDetail?.ownerImagePath)
-
- console.log('frgegrwftgwer',selector);
+console.log('detail ,,,,',selector);
   return (
     <View style={{ flex: 1, backgroundColor: '#fff', paddingVertical: 20 }}>
       {/* {isFetching ? <Loader /> : null} */}

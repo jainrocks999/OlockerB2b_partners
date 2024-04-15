@@ -8,6 +8,7 @@ import {
   Image,
   Share,
   TextInput,
+  Dimensions,
 } from 'react-native';
 import Header from '../../../components/CustomHeader';
 import TabView from '../../../components/StoreButtomTab';
@@ -28,7 +29,7 @@ const SubCategory = ({ route }) => {
    const productId=route?.params?.productId;
   const Detail = route.params.Details;
   const isLiked = useSelector(state => state.mg)
-  
+  const BannerWidth = (Dimensions.get('window').width * 15) / 18;
   
   const Data = [];
 
@@ -218,8 +219,20 @@ const SubCategory = ({ route }) => {
             </TouchableOpacity>
           </View>
         </View>
+        {console.log('ghdghhdhdh',Data[0].image)}
         <View style={{ marginTop: 10 }}>
-          {lenght > 0 ?
+          {lenght ==1 ? 
+         <View style={{ justifyContent: 'center',
+         alignItems: 'center',
+         borderRadius:15,
+         height:200,
+         width:'100%'}}>
+         <Image
+           style={{height:190,width:BannerWidth,borderRadius:190}}
+           source={{uri:Data[0].image}}
+           resizeMode={Platform.OS=='android'?'contain':''}
+         />
+       </View>  :
             <FlatListSlider
               data={Data}
               height={200}
@@ -235,7 +248,7 @@ const SubCategory = ({ route }) => {
               autoscroll={false}
               loop={lenght >=1 ? true : false}
             />
-            : null}
+           }
           {/* })} */}
         </View>
 

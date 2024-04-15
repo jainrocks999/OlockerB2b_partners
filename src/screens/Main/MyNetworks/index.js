@@ -113,7 +113,7 @@ const HomeScreen = () => {
         fontFamily: 'Acephimere',
         fontSize: 19,
         color: 'grey', fontWeight: '700'
-    }}> {'No Partners found in your network'} </Text>
+    }}> {'No Suppliers found in your network'} </Text>
 <TouchableOpacity
               onPress={() => navigation.navigate('MyNetwork')}
               style={{
@@ -126,7 +126,7 @@ const HomeScreen = () => {
               }}>
               <Text
                 style={{ color: '#fff', fontFamily: 'Acephimere', fontSize: 15 }}>
-                Add Partners
+                Add Suppliers
               </Text>
               </TouchableOpacity>
             </View>
