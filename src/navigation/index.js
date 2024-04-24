@@ -4,6 +4,7 @@ import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from '../screens/Auth/SplashPage';
 import Login from '../screens/Auth/LoginPage';
+import ForgotPassword from "../screens/Auth/ForgotPassword";
 import Register from '../screens/Auth/RegisterPage';
 import HomeScreen from '../screens/Main/HomeScreen';
 import MyCatalogue from '../screens/Main/MyCatalogue';
@@ -38,6 +39,7 @@ import ChangePassword from '../screens/Main/ChangePassword';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ChatScreen from '../screens/Main/ChatScreen'
 import MessageBox2 from '../screens/Main/MessageBox2';
+
 const Stack1 = createNativeStackNavigator();
 function HomeScreen1() {
   return (
@@ -196,6 +198,7 @@ function Navigate() {
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Home" component={Bottom} />
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
         <Stack.Screen name="RegisterPage" component={Register} />
         <Stack1.Screen name='ChatScreen' component={ChatScreen} />
         <Stack1.Screen name='MessageBox' component={MessageBox2} />

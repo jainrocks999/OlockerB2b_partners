@@ -18,6 +18,8 @@ import styles from './styles';
 import Loader from '../../../components/Loader';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CheckBox from '@react-native-community/checkbox';
+
 const HomeScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -26,6 +28,7 @@ const HomeScreen = () => {
   const selector = useSelector(state => state.Pending);
   const data2 = useSelector(state => state.deletData1)
   const isFetching = useSelector(state => state?.isFetching)
+  const [viewProd,setViewProd]=useState(false)
  
   const demo = (ind, index2) => {
     const tempData = data2 ? data2 : selector?.list
@@ -51,6 +54,8 @@ setVisible1(true);
     data.append('statusId', '1');
     data.append('partnerId', srno);
     data.append('rejectReason', '');
+    data.append('IsShowInRetailerApp',viewProd==true?1:0)
+    data.append("ddlCategory","Category A")
 
     let config = {
       method: 'post',
@@ -91,6 +96,8 @@ setVisible2(true)
     data.append('statusId', '2');
     data.append('partnerId', srno);
     data.append('rejectReason', '');
+    data.append('IsShowInRetailerApp',viewProd==true?1:0)
+    data.append("ddlCategory","Category A")
 
     let config = {
       method: 'post',
@@ -172,9 +179,9 @@ setVisible2(true)
                 style={{
                   marginTop: 15,
                   paddingHorizontal: 20,
-                  flexDirection: 'row',
+                 
                 }}>
-                  {console.log(item)}
+                  <View style={{ flexDirection: 'row'}}>
                 <View
                   style={{
                     width: '38%',
@@ -263,6 +270,29 @@ setVisible2(true)
                       </Text>
                     </TouchableOpacity>
                   </View>
+                </View>
+                </View>
+                <View style={{marginTop:10,marginBottom:10}}>
+                  <View style={{flexDirection:'row',marginLeft:-5}}>
+                    <CheckBox
+                    disabled={false}
+                    value={viewProd}
+                    onValueChange={newValue => {
+                     setViewProd(newValue)
+                    }}
+                    tintColors={{true: '#032e63', false: '#032e63'}}
+                    onTintColor="#032e63"
+                    onCheckColor="#032e63"
+                    boxType="square"
+                    style={{height: 16, width: 18}}
+                  />
+                  <Text style={{marginLeft:16,color: '#000',
+                          fontSize: 12,
+                          fontFamily: 'Acephimere',textAlign:'center'}}>Let my jewellery seen by your customers</Text>
+                </View>
+                <View>
+
+                </View>
                 </View>
               </View>
             )}

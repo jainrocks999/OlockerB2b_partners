@@ -12,27 +12,28 @@ export default StyleSheet.create({
     marginHorizontal: wp(3),
     // borderWidth: 1
   },
-  modelText:{ fontSize: 15, fontWeight: '500', color: '#032e63' },
+  modelText:{ fontSize: 16, fontWeight: '700', color: '#000' },
+  // color: '#032e63'
   upload:{
     alignSelf: 'center',
     marginTop: 5,
-    borderWidth: 2,
+    borderWidth: 1, borderColor: '#979998' ,
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    borderColor: '#032e63',
+    
     flexDirection: 'row',
     height: hp(5.5),
     borderRadius: wp(3.5),
     width: '55%',
   },
-  TextMain:{ fontSize: 18, fontWeight: '800', color: '#000' },
-  textBreack:{ fontSize: wp(3.8), fontWeight: '600',color:'#474747' },
+  TextMain:{ fontSize: 16, fontWeight: '700', color: '#000' },
+  textBreack:{ fontSize: 14, fontWeight: '600',color:'#474747' },
   dropdown: {
     marginTop: wp(2),
     color:'#474747',
     height: hp(5.5),
     backgroundColor: 'white',
-    borderRadius: wp(2),
+    borderRadius: wp(3),
     padding: 12,
     shadowColor: '#000',
     shadowOffset: {
@@ -41,8 +42,8 @@ export default StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
-
-    elevation: 3,
+    marginLeft:5,
+    // elevation: 3,
   },
   icon: {
     marginRight: 5,
@@ -141,8 +142,9 @@ export default StyleSheet.create({
   },
   text: {
     color: '#000',
-    fontSize: wp(4),
+    fontSize: 16,
     fontWeight: '700',
+    marginLeft:4
   },
   headertouch: {
     flexDirection: 'row',
@@ -184,24 +186,19 @@ export default StyleSheet.create({
     fontWeight: '700'
   },
   mrt:
-    { marginHorizontal: wp(3), marginTop: wp(3.5) },
-  text: {
-    fontSize: wp(4),
-    marginLeft: wp(1),
-    fontWeight: '700',
-    color: '#000'
-  },
+    {
+       marginHorizontal: wp(3), 
+       marginTop: wp(3.5) },
+ 
   btn: {
-    borderWidth: wp(.5),
-    borderColor: '#032e63',
-
+    borderWidth: 1, borderColor: '#979998' ,
     width: '49%',
     height: hp(5.5),
     borderRadius: wp(3),
     alignItems: 'center',
     justifyContent: 'center',
   },
-  txt2: { fontSize: wp(4), fontWeight: '600', color: '#032e63' }
+  txt2: { fontSize: 14, fontWeight: '600', color: '#032e63' }
 
 });
 

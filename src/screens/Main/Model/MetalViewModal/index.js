@@ -24,7 +24,7 @@ const MetalViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
     const MetalList = useSelector(state => state.AddMetal)
     const GrossWt1 = useSelector(state => state.GrossWt1)
     const hProductSrNo = useSelector(state => state.HproductSrNo)
-   
+   console.log('this is metal list',MetalList);
     const [inputs, setInputs] = useState({
         purity: '',
         metaltype: '',
@@ -145,7 +145,7 @@ const MetalViewModal = ({ visi, close = () => { }, isBrekup, prodcutfile, ...pro
     }
 
 
-
+console.log('THIS IS MEYAL PURITY',productType?.Metal_Purity);
     return (
 
         <View style={styles.container}>

@@ -915,7 +915,7 @@ console.log('request sned on update data ',data);
             />
           </View> */}
         </View>
-        <View style={{marginTop: 0}}>
+        <View style={{marginTop: 10}}>
           <Text style={styles.text}>
             City<Text style={{color: 'red'}}>{' *'}</Text>
           </Text>

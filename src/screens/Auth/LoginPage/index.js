@@ -180,6 +180,20 @@ const Login = () => {
                       <Text style={styles.warn}>{errors.password}</Text>
                     )}
                   </View>
+                  <View style={{marginTop:5,alignItems:'flex-end', width: wp('60%'),marginLeft:20}}>
+                    <TouchableOpacity 
+                    onPress={()=>navigation.navigate('ForgotPassword')} 
+                    style={{borderBottomWidth:1}}>
+                      <Text style={{
+                        fontSize: 15,
+                        color: '#474747',
+                        // textDecorationLine: 'underline',
+                        textDecorationStyle: 'solid',
+                        textDecorationColor: '#000',
+                        textShadowOffset: {height: 1, width: 0},
+                        }}>Forgot Password?</Text>
+                    </TouchableOpacity>
+                  </View>
                   <View style={{ paddingHorizontal: 20 }}>
                     <TouchableOpacity
                       style={styles.button}

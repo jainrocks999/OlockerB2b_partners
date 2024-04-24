@@ -29,10 +29,10 @@ import { useSelector, useDispatch } from 'react-redux';
 const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const [id1,setId]=useState();
-  const[visiable1,setVisible]=useState(false);
+  const [id1, setId] = useState();
+  const [visiable1, setVisible] = useState(false);
   const selector = useSelector(state => state.SupplierDetail?.detail)
-  
+
   const selector1 = useSelector(state => state.Status);
   const isFetching = useSelector(state => state.isFetching);
   const [profile, setProfile] = useState(true);
@@ -43,6 +43,8 @@ const HomeScreen = ({ route }) => {
   const [clicked, setClicked] = useState(false);
   const BannerWidth = (Dimensions.get('window').width * 15) / 16;
   const BannerHeight = 140;
+  const [loader,setLoader]=useState(false)
+
   const share = async () => {
     await Share.share({
       message: `Supplier Name : ${selector?.SupplierName}  Email Address :${selector?.EmailId}`,
@@ -77,31 +79,31 @@ const HomeScreen = ({ route }) => {
     console.log('IsPartnerSend', data.IsPartnerSend);
     console.log('issuppliersend', data.IsSupplierSend)
     return (
-     <View style={{ flexDirection: 'row', width: '80%', justifyContent: data?.IsSupplierSend == 1 ? 'space-evenly' : 'center' }}>
-      <TouchableOpacity
-        style={[styles.addButton, { backgroundColor:data.network_status=='Reject'?'red': data?.IsPartnerSend == 1 ? '#FFF' : data?.IsSupplierSend == 1 ? 'green' : '#ea056c' }]}
-        disabled={data?.IsPartnerSend == 1 ||data.network_status=='Reject'}
-        onPress={addToNetwork}
-      >
-        <Text style={[styles.text1, { color:data.network_status=='Reject'?'#fff': data?.IsPartnerSend == 1 ? '#032e63' : '#FFF', fontWeight: data?.IsPartnerSend == 1 ? '900' : '500' }]}>
-          {data.network_status=='Reject'?"Rejected":data?.IsPartnerSend == 1 ? "Requested" : data?.IsSupplierSend == 1 ? "Confirm" : "Add To Network"}
-        </Text>
-      </TouchableOpacity>
-      {data?.IsSupplierSend == 1 &&data.network_status!='Reject' ?
-        <TouchableOpacity style={[styles.addButton, { backgroundColor: 'red' }]} onPress={RejectMEthod}>
-          <Text style={styles.text1}>
-            {"Reject"}
+      <View style={{ flexDirection: 'row', width: '80%', justifyContent: data?.IsSupplierSend == 1 ? 'space-evenly' : 'center' }}>
+        <TouchableOpacity
+          style={[styles.addButton, { backgroundColor: data.network_status == 'Reject' ? 'red' : data?.IsPartnerSend == 1 ? '#FFF' : data?.IsSupplierSend == 1 ? 'green' : '#ea056c' }]}
+          disabled={data?.IsPartnerSend == 1 || data.network_status == 'Reject'}
+          onPress={addToNetwork}
+        >
+          <Text style={[styles.text1, { color: data.network_status == 'Reject' ? '#fff' : data?.IsPartnerSend == 1 ? '#032e63' : '#FFF', fontWeight: data?.IsPartnerSend == 1 ? '900' : '500' }]}>
+            {data.network_status == 'Reject' ? "Rejected" : data?.IsPartnerSend == 1 ? "Requested" : data?.IsSupplierSend == 1 ? "Confirm" : "Add To Network"}
           </Text>
-        </TouchableOpacity>:null
-      }
-    </View>
+        </TouchableOpacity>
+        {data?.IsSupplierSend == 1 && data.network_status != 'Reject' ?
+          <TouchableOpacity style={[styles.addButton, { backgroundColor: 'red' }]} onPress={RejectMEthod}>
+            <Text style={styles.text1}>
+              {"Reject"}
+            </Text>
+          </TouchableOpacity> : null
+        }
+      </View>
     )
   }
   const RejectMEthod = async (id, index) => {
-   
+
     const srno = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken')
-setVisible(true)
+    setVisible(true)
     const axios = require('axios');
     let data = new FormData();
     data.append('supplier_id', selector?.SrNo);
@@ -122,11 +124,11 @@ setVisible(true)
 
     axios.request(config)
       .then((response) => {
-       
+
         if (response.data.status == true) {
           setVisible(false);
-         partnerDetaitl(selector?.SrNo)
-         
+          partnerDetaitl(selector?.SrNo)
+
         }
 
       })
@@ -148,7 +150,7 @@ setVisible(true)
       supplierId: id,
       Token: Token,
       partnerId: srno,
-      supplier_id:id,
+      supplier_id: id,
       navigation,
       Status: 1,
 
@@ -156,58 +158,88 @@ setVisible(true)
     })
   };
   const addToNetwork = async () => {
-    const data=selector;
-    console.log('data ....',data?.SrNo);
+    const data = selector;
+    console.log('data ....', data?.SrNo);
     const partnerid = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken');
-     if (data.IsPartnerSend == 0 && data.IsSupplierSend == 0) {
-    dispatch({
-      type: 'User_sendRequestToSupplier_Request',
-      url: 'partners/sendRequestToSupplier',
-      partnerId: partnerid,
-      supplierId: data?.SrNo,
-      Token: Token,
-      navigation,
+    if (data.IsPartnerSend == 0 && data.IsSupplierSend == 0) {
+      dispatch({
+        type: 'User_sendRequestToSupplier_Request',
+        url: 'partners/sendRequestToSupplier',
+        partnerId: partnerid,
+        supplierId: data?.SrNo,
+        Token: Token,
+        navigation,
 
-    });
+      });
+    }
+    else if (data.IsSupplierSend == 1) {
+      setVisible(true);
+      const axios = require('axios');
+      let data1 = new FormData();
+      data1.append('supplier_id', data?.SrNo);
+      data1.append('statusId', '1');
+      data1.append('partnerId', partnerid);
+      data1.append('rejectReason', '');
+
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'https://olocker.co/api//partners/updateSupplierRequest',
+        headers: {
+          'Olocker': `Bearer ${Token}`,
+          // ...data.getHeaders()
+        },
+        data: data1
+      };
+
+      axios.request(config)
+        .then((response) => {
+          if (response?.data?.status == true) {
+            setVisible(false);
+            partnerDetaitl(data?.SrNo)
+            // Toast.show(response?.data?.msg);
+
+          }
+
+        })
+        .catch((error) => {
+          setVisible(false);
+          console.log('erororo why sree', error);
+        });
+    }
   }
-  else if(data.IsSupplierSend==1){
-setVisible(true);
-    const axios = require('axios');
-    let data1 = new FormData();
-    data1.append('supplier_id', data?.SrNo);
-    data1.append('statusId', '1');
-    data1.append('partnerId', partnerid);
-    data1.append('rejectReason', '');
 
+  const handleRating=async(value)=>{
+    const srno = await AsyncStorage.getItem('Partnersrno');
+    const Token = await AsyncStorage.getItem('loginToken')
+    setRatting1(value)
+    setLoader(true)
+    const axios = require('axios');
     let config = {
-      method: 'post',
+      method: 'GET',
       maxBodyLength: Infinity,
-      url: 'https://olocker.co/api//partners/updateSupplierRequest',
+      url: `https://olocker.co/api/partners/supplierRating?partnerId=${srno}&supplierId=${selector?.SrNo}&rating=${value}`,
       headers: {
         'Olocker': `Bearer ${Token}`,
-        // ...data.getHeaders()
       },
-      data: data1
     };
 
     axios.request(config)
       .then((response) => {
-        if (response?.data?.status == true) {
-          setVisible(false);
-         partnerDetaitl(data?.SrNo)
-          // Toast.show(response?.data?.msg);
-
+        console.log('this is response',response.data);
+        if (response.data.status == true) {
+          setLoader(false)
+          Toast.show(response.data.msg)
         }
-
+        else{
+          setLoader(false)
+        }
       })
       .catch((error) => {
-        setVisible(false);
-        console.log('erororo why sree',error);
+        setLoader(false)
+        console.log(error);
       });
-
-
-  }
   }
   return (
     <View style={styles.container}>
@@ -220,40 +252,40 @@ setVisible(true);
         onPress2={() => navigation.navigate('FavDetails')}
         onPress1={() => navigation.navigate('MessageBox')}
       />
-      {isFetching ||visiable1? <Loader /> : null}
+      {isFetching || visiable1 ||loader ? <Loader /> : null}
       <ScrollView>
-       
-        <View style={{backgroundColor: '#032e63',}}>
+
+        <View style={{ backgroundColor: '#032e63', }}>
           <View style={styles.main}>
             <View
               style={styles.main1}>
-              <Image   style={{ width: '100%', height: '100%', borderRadius: 10 }}
+              <Image style={{ width: '100%', height: '100%', borderRadius: 10 }}
                 source={selector?.logoImage ? { uri: selector.logoImage } : require('../../../assets/logo.png')}
               />
             </View>
             <View style={styles.details}>
-              <Text style={[styles.text1,{fontSize: 19,}]}> {selector?.SupplierName}
+              <Text style={[styles.text1, { fontSize: 19, }]}> {selector?.SupplierName}
               </Text>
               <Text
-                style={[styles.text1,{fontSize:12}]}> {selector?.cityName} </Text>
-             
+                style={[styles.text1, { fontSize: 12, marginLeft: 2 }]}> {selector?.cityName} </Text>
+
               <View
                 style={styles.star}>
 
-{selector?.isAdd == 1 ?
-                <Stars
-                  half={true}
-                  default={0}
-                  // display={3}
-                  spacing={5}
-                  update={val => setRatting1(val)}
-                  count={5}
-                  starSize={16}
-                  fullStar={require('../../../assets/Image/star.png')}
-                  emptyStar={require('../../../assets/Image/star1.png')}
-                  halfStar={require('../../../assets/Image/star2.png')}
-                />
-:null}
+                {selector?.isAdd == 1 ?
+                  <Stars
+                    half={true}
+                    default={selector?.rating?parseFloat(selector?.rating):rating1}
+                    // display={selector?.rating?parseFloat(selector?.rating):rating1}
+                    spacing={5}
+                    update={val => handleRating(val)}
+                    count={5}
+                    starSize={16}
+                    fullStar={require('../../../assets/Image/star.png')}
+                    emptyStar={require('../../../assets/Image/star1.png')}
+                    halfStar={require('../../../assets/Image/star2.png')}
+                  />
+                  : null}
                 <View style={{ flexDirection: 'row' }}>
                   <TouchableOpacity
                     onPress={() => Linking.openURL(`tel:${selector.MobileNo}`)}
@@ -265,7 +297,7 @@ setVisible(true);
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => share()}
-                    style={[styles.phone,{marginLeft: 10,}]}>
+                    style={[styles.phone, { marginLeft: 10, }]}>
                     <Image
                       style={{ width: 30, height: 30 }}
                       source={require('../../../assets/PartnerImage/15.png')}
@@ -275,10 +307,12 @@ setVisible(true);
               </View>
             </View>
           </View>
-          <View style={[styles.addButtonV1,{ marginTop: 10,
-              alignSelf: 'flex-end',
-              flexDirection: 'row',
-              width: '70%',}]}>
+          <View style={[styles.addButtonV1, {
+            marginTop: 10,
+            alignSelf: 'flex-end',
+            flexDirection: 'row',
+            width: '70%',
+          }]}>
             {selector?.isAdd == 0 ?
               getStatus()
               // <TouchableOpacity 
@@ -291,7 +325,7 @@ setVisible(true);
               //   </Text>
               // </TouchableOpacity>
               : <View style={styles.addButton}>
-                <Text style={[styles.text1,{fontSize:12}]}>
+                <Text style={[styles.text1, { fontSize: 12 }]}>
                   {'Added To Network'}
                 </Text>
               </View>
@@ -304,7 +338,7 @@ setVisible(true);
         <View>
           {selector?.isAdd == 0 ? null :
             <View style={styles.tabContainer}>
-              <View style ={styles.card}>
+              <View style={styles.card}>
                 <TouchableOpacity
                   onPress={() => manageTab()}
                   style={styles.tabStyle}>
@@ -322,14 +356,14 @@ setVisible(true);
                   Profile
                 </Text>
               </View>
-              <View  style ={styles.card}>
+              <View style={styles.card}>
                 <TouchableOpacity
-                   onPress={() => navigation.navigate('ChatScreen',{ item: selector,Id:true })
+                  onPress={() => navigation.navigate('ChatScreen', { item: selector, Id: true })
                     //  navigation.navigate('Customer1',{screen:'Messagebox'})
                   }
                   style={styles.tabStyle}>
                   {message ? (
-                     <Image style={styles.img1}
+                    <Image style={styles.img1}
                       source={require('../../../assets/PartnerImage/msg_active.png')}
                     />
                   ) : (
@@ -342,12 +376,12 @@ setVisible(true);
                   Message
                 </Text>
               </View>
-              <View style ={styles.card}>
+              <View style={styles.card}>
                 <TouchableOpacity
                   onPress={() => manageTab2()}
                   style={styles.tabStyle}>
                   {catalogue ? (
-                     <Image style={styles.img1}
+                    <Image style={styles.img1}
                       source={require('../../../assets/PartnerImage/nackactive.png')}
                     />
                   ) : (
@@ -360,16 +394,16 @@ setVisible(true);
                   Catalogue
                 </Text>
               </View>
-              <View  style ={styles.card}>
+              <View style={styles.card}>
                 <TouchableOpacity
                   onPress={() => manageTab3()}
                   style={styles.tabStyle}>
                   {setting ? (
-                     <Image style={styles.img1}
+                    <Image style={styles.img1}
                       source={require('../../../assets/PartnerImage/setting_active.png')}
                     />
                   ) : (
-                    <Image style={[styles.img1,{alignSelf:'center'}]}
+                    <Image style={[styles.img1, { alignSelf: 'center' }]}
                       source={require('../../../assets/PartnerImage/7.png')}
                     />
                   )}
@@ -388,9 +422,9 @@ setVisible(true);
           {catalogue == true ? <Catalogue /> : null}
           {setting == true ? <Setting /> : null}
         </View>
-      
+
       </ScrollView>
-     
+
       <StatusBar />
     </View>
   );

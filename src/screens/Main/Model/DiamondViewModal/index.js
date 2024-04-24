@@ -128,13 +128,15 @@ const closeFunction =()=>{
                }else if(inputs.DiamondName==''){
                 Toast.show('Please select the diamond details');   
                 return;
-               }else if(inputs.DiamondShape==''){
-                Toast.show('Please select the diamond shape');   
-                return;
-               }else if(inputs.DiamondQuality==''){
-                Toast.show('Please select the diamond quality');   
-                return;
                }
+            //    else if(inputs.DiamondShape==''){
+            //     Toast.show('Please select the diamond shape');   
+            //     return;
+            //    }
+            //    else if(inputs.DiamondQuality==''){
+            //     Toast.show('Please select the diamond quality');   
+            //     return;
+            //    }
             const Token = await AsyncStorage.getItem('loginToken');
             const Id = await AsyncStorage.getItem('Partnersrno');
 
@@ -416,7 +418,9 @@ const closeFunction =()=>{
                                 }}
                             />
                         </View>
-                        <Text style={[styles.buttonClose, { marginLeft: wp(2) }]}>Diamond Shape <Text style={{ color: 'red' }}>*</Text></Text>
+                        <Text style={[styles.buttonClose, { marginLeft: wp(2) }]}>Diamond Shape 
+                        {/* <Text style={{ color: 'red' }}>*</Text> */}
+                        </Text>
                         <View style={[styles.inputFiled, { paddingHorizontal: 10, marginHorizontal: wp(1) }]}>
                             <Dropdown
                                 style={{
@@ -460,7 +464,9 @@ const closeFunction =()=>{
                                 }}
                             />
                         </View>
-                        <Text style={[styles.buttonClose, { marginLeft: wp(2) }]}>Diamond Quality <Text style={{ color: 'red' }}>*</Text></Text>
+                        <Text style={[styles.buttonClose, { marginLeft: wp(2) }]}>Diamond Quality 
+                        {/* <Text style={{ color: 'red' }}>*</Text> */}
+                        </Text>
                         <View style={[styles.inputFiled, { paddingHorizontal: 10, marginHorizontal: wp(1) }]}>
                             <Dropdown
                                 style={{

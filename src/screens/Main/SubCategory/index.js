@@ -245,8 +245,8 @@ const SubCategory = ({ route }) => {
               component={<Preview />}
               separatorWidth={15}
               width={310}
-              autoscroll={false}
-              loop={lenght >=1 ? true : false}
+              autoscroll={true}
+              loop={lenght >=1 ? false : false}
             />
            }
           {/* })} */}

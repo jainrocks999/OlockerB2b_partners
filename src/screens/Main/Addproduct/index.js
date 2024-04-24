@@ -33,6 +33,7 @@ import Constants from '../../../Redux/Constants';
 import axios from 'axios';
 import Toast from 'react-native-simple-toast'
 const AddProducts = ({ route }) => {
+
   const prodcutfile = route.params.productEdit1
   const [ViewMetalModal, setViewMetalModal] = useState(false);
   const [ViewStoneModal, setViewStoneModal] = useState(false);
@@ -954,7 +955,7 @@ const AddProducts = ({ route }) => {
               //justifyContent: 'space-between',
 
               flexDirection: 'row',
-              marginHorizontal: wp(3),
+              // marginHorizontal: wp(3),
               // borderWidth: 1
             }}>
             <RadioButton
@@ -993,7 +994,7 @@ const AddProducts = ({ route }) => {
               alignItems: 'center',
               //justifyContent: 'space-between',
               flexDirection: 'row',
-              marginHorizontal: wp(3),
+              // marginHorizontal: wp(3),
               // borderWidth: 1
             }}>
             <RadioButton
@@ -1046,7 +1047,7 @@ const AddProducts = ({ route }) => {
           <View
             style={{
               flexDirection: 'row',
-              marginHorizontal: wp(3),
+              // marginHorizontal: wp(3),
               marginTop: wp(4),
               justifyContent: 'space-between',
             }}>
@@ -1245,7 +1246,7 @@ const AddProducts = ({ route }) => {
         <View
           style={{
             flexDirection: 'row',
-            marginHorizontal: 12,
+            marginHorizontal: wp(4.5),
             marginTop: 15,
             justifyContent: 'space-between',
           }}>
@@ -1272,8 +1273,8 @@ const AddProducts = ({ route }) => {
         <View
           style={{
             flexDirection: 'row',
-            marginHorizontal:12,
-            marginTop: wp(2),
+            marginHorizontal: wp(4.5),
+            marginTop: 15,
             justifyContent: 'space-between',
           }}>
           <TouchableOpacity
@@ -1299,15 +1300,15 @@ const AddProducts = ({ route }) => {
         <View style={{ marginHorizontal: 20, marginTop: 15 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View style={{ width: '48%' }}>
-              <View style={{ marginHorizontal: 10, marginVertical: 10 }}>
+              <View style={{ marginHorizontal: 0, marginVertical: 8 }}>
                 <Text style={styles.modelText}>
                   Decorative Wt.
                 </Text>
               </View>
               <View
                 style={{
-                  borderWidth: 1,
-                  borderRadius: wp(2),
+                  borderWidth: 1, borderColor: '#979998' ,
+                  borderRadius: wp(3),
                   height: hp(5.5),
                   alignItems: 'center',
                   justifyContent: 'center'
@@ -1323,20 +1324,20 @@ const AddProducts = ({ route }) => {
 
                   placeholderTextColor='#474747'
                   editable={false}
-                  style={{ fontSize:13, fontWeight: '500' }}
+                  style={{ fontSize: 14, fontWeight: '600', color: '#032e63'}}
                 />
               </View>
             </View>
             <View style={{ width: '48%' }}>
-              <View style={{ marginHorizontal: 10, marginVertical: 10 }}>
+              <View style={{ marginHorizontal: 0, marginVertical: 8 }}>
               <Text style={styles.modelText}>
                   Gross Wt.
                 </Text>
               </View>
               <View
                 style={{
-                  borderWidth: 1,
-                  borderRadius: wp(2),
+                  borderWidth: 1, borderColor: '#979998' ,
+                  borderRadius: wp(3),
                   height: hp(5.5),
                   alignItems: 'center',
                   justifyContent: 'center'
@@ -1345,22 +1346,22 @@ const AddProducts = ({ route }) => {
                   placeholder={GrossWt1 ? GrossWt1 : inputs.GrossWt ? inputs.GrossWt : 'Gross Wt.'}
                   placeholderTextColor='#474747'
                   editable={false}
-                  style={{ fontSize:13, fontWeight: '500' }}
+                  style={{ fontSize: 14, fontWeight: '600', color: '#032e63'}}
                 />
               </View>
             </View>
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View style={{ width: '48%' }}>
-              <View style={{ marginHorizontal: 10, marginVertical: 10 }}>
+              <View style={{ marginHorizontal: 0, marginVertical: 8 }}>
               <Text style={styles.modelText}>
                   Metal Wt.
                 </Text>
               </View>
               <View
                 style={{
-                  borderWidth: 1,
-                  borderRadius: wp(2),
+                  borderWidth: 1, borderColor: '#979998' ,
+                  borderRadius: wp(3),
                   height: hp(5.5),
                   alignItems: 'center',
                   justifyContent: 'center'
@@ -1376,20 +1377,20 @@ const AddProducts = ({ route }) => {
                   placeholderTextColor='#474747'
                   // value={inputs.hMetalWt}
                   editable={false}
-                  style={{ fontSize:13, fontWeight: '500' }}
+                  style={{ fontSize: 14, fontWeight: '600', color: '#032e63', }}
                 />
               </View>
             </View>
             <View style={{ width: '48%' }}>
-              <View style={{ marginHorizontal: 10, marginVertical: 10 }}>
+              <View style={{ marginHorizontal: 0, marginVertical: 8 }}>
               <Text style={styles.modelText}>
                   Diamond Wt.
                 </Text>
               </View>
               <View
                 style={{
-                  borderWidth: 1,
-                  borderRadius: wp(2),
+                  borderWidth: 1, borderColor: '#979998' ,
+                  borderRadius: wp(3),
                   height: hp(5.5),
                   alignItems: 'center',
                   justifyContent: 'center'
@@ -1404,7 +1405,7 @@ const AddProducts = ({ route }) => {
                   placeholderTextColor='#474747'
                   // value={inputs.DiamondGrandTotal}
                   editable={false}
-                  style={{ fontSize:13, fontWeight: '500' }}
+                  style={{ fontSize: 14, fontWeight: '600', color: '#032e63', }}
                   // style={{ fontSize: wp(4), fontWeight: '700' }}
                 />
               </View>
@@ -1412,15 +1413,15 @@ const AddProducts = ({ route }) => {
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <View style={{ width: '48%' }}>
-              <View style={{ marginHorizontal: 10, marginVertical: 10 }}>
+              <View style={{ marginHorizontal: 0, marginVertical: 8 }}>
               <Text style={styles.modelText}>
                   Stone Wt.
                 </Text>
               </View>
               <View
                 style={{
-                  borderWidth: 1,
-                  borderRadius: wp(2),
+                  borderWidth: 1, borderColor: '#979998' ,
+                  borderRadius: wp(3),
                   height: hp(5.5),
                   alignItems: 'center',
                   justifyContent: 'center'
@@ -1433,21 +1434,21 @@ const AddProducts = ({ route }) => {
                   }
                   placeholderTextColor='#474747'
                   editable={false}
-                  style={{ fontSize:13, fontWeight: '500' }}
+                  style={{ fontSize: 14, fontWeight: '600', color: '#032e63'}}
                   // style={{ fontSize: wp(4), fontWeight: '700' }}
                 />
               </View>
             </View>
             <View style={{ width: '48%' }}>
-              <View style={{ marginHorizontal: 10, marginVertical: 10 }}>
+              <View style={{ marginHorizontal: 0, marginVertical: 8 }}>
               <Text style={styles.modelText}>
                   Verify Wt.
                 </Text>
               </View>
               <TouchableOpacity
                 style={{
-                  borderWidth: 1,
-                  borderRadius: wp(2),
+                  borderWidth: 1, borderColor: '#979998' ,
+                  borderRadius: wp(3),
                   height: hp(5.5),
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -1460,7 +1461,7 @@ const AddProducts = ({ route }) => {
                   style={{ fontSize: wp(4), fontWeight: '700' }}
                 /> */}
                 <Text
-                  style={{ fontSize: 15, fontWeight: '500', color: 'white' }}>
+                  style={{ fontSize: 14, fontWeight: '600', color: 'white' }}>
                   Verify Wt.
                 </Text>
               </TouchableOpacity>
@@ -1482,7 +1483,7 @@ const AddProducts = ({ route }) => {
           {inputs.radioPriceCalculator == 0 ? (
             <>
               <View style={styles.mrt}>
-              <Text style={styles.TextMain}>
+              <Text style={styles.text}>
                   {' '}
                   Chargeable amount for Labour
                 </Text>
@@ -1491,7 +1492,7 @@ const AddProducts = ({ route }) => {
                 style={{
                   alignItems: 'center',
                   flexDirection: 'row',
-                  marginHorizontal: wp(1),
+                  marginHorizontal: wp(3),
                 }}>
                 <RadioButton
                   value={inputs.radioIsWastage}
@@ -1530,7 +1531,7 @@ const AddProducts = ({ route }) => {
         <View style={styles.mrt}>
           {inputs.radioPriceCalculator == 0 ? (
             <>
-             <Text style={styles.TextMain}>
+             <Text style={[styles.text]}>
                 {' '}
                 {inputs.radioIsWastage == 1
                   ? 'Wastage % between 0-100'
@@ -1539,12 +1540,13 @@ const AddProducts = ({ route }) => {
 
               <View
                 style={{
-                  borderWidth: 1,
+                  borderWidth: 1, borderColor: '#979998' ,
                   height: hp(5.5),
-                  borderRadius: wp(2),
+                  borderRadius: wp(3),
                   marginTop: wp(2),
                   paddingHorizontal: 5,
-                  marginHorizontal: wp(3),marginBottom:3
+                  marginHorizontal: 8,
+                  marginBottom:3
                 }}>
                   <TextInput style={{color:'#474747'}}
                   value={inputs.txtLabourCharges}
@@ -1565,7 +1567,7 @@ const AddProducts = ({ route }) => {
           {
             //Chargeable amount for Product RS
           }
-          <View style={{ marginTop: 0 }}>
+          <View style={{ marginTop: 10 }}>
           <Text style={styles.text}>
               {' '}
               {inputs.radioPriceCalculator == 0
@@ -1574,12 +1576,12 @@ const AddProducts = ({ route }) => {
             </Text>
             <View
               style={{
-                borderWidth: 1,
+                borderWidth: 1, borderColor: '#979998' ,
                 height: hp(5.5),
-                borderRadius: wp(2),
+                borderRadius: wp(3),
                 marginTop: wp(2),
                 paddingHorizontal: 5,
-                marginHorizontal: wp(3)
+                marginHorizontal: 8
               }}>
               <TextInput style={{color:'#474747'}}
                 editable={inputs.radioPriceCalculator == 1 ? true : false}
@@ -1622,9 +1624,9 @@ const AddProducts = ({ route }) => {
               }}>
               Certified
             </Text>
-            <View style={{ marginHorizontal: wp(3) }}>
+            <View style={{ marginHorizontal: 4 }}>
               <Dropdown
-                style={[styles.dropdown, { borderWidth: 1 }]}
+                style={[styles.dropdown, { borderWidth: 1, borderColor: '#979998' , }]}
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={styles.selectedTextStyle}
                 iconStyle={styles.iconStyle}
@@ -1648,12 +1650,12 @@ const AddProducts = ({ route }) => {
                 </Text>
                 <View
                   style={{
-                    borderWidth: 1,
+                    borderWidth: 1, borderColor: '#979998' ,
                     height: hp(5.5),
-                    borderRadius: wp(2),
+                    borderRadius: wp(3),
                     marginTop: wp(2),
                     paddingHorizontal: 5,
-                    marginHorizontal: wp(3),
+                    marginHorizontal: 8
                   }}>
                    <TextInput style={{color:'#474747'}}
                      autoCapitalize = {"characters"}
@@ -1670,7 +1672,7 @@ const AddProducts = ({ route }) => {
           </View>
 
 <View style={[styles.mrt,{marginBottom:10}]}>
-            <Text style={[styles.text,{marginLeft:-6}]}>
+            <Text style={[styles.text,{marginLeft:0}]}>
              Upload Max. 6 Images
             </Text>
             </View>
@@ -1730,18 +1732,18 @@ const AddProducts = ({ route }) => {
             onPress={() => uploadImage()}
             style={styles.upload}>
             <Entypo name="upload" size={20} color={'#032e63'} />
-            <Text style={{ color: '#032e63', fontWeight: '700', fontSize: wp(4) }}>
+            <Text style={{ color: '#000', fontWeight: '700', fontSize: 15 }}>
               Upload Image
               
             </Text>
           </TouchableOpacity>
         </View>
 
-        <View style={{ marginHorizontal: wp(3),  marginTop: 15 }}>
+        <View style={{ marginHorizontal: 19,  marginTop: 15 }}>
         <Text style={styles.TextMain}>
             Choose Categories To Product
           </Text>
-          <Text style={{ fontSize: wp(4), fontWeight: '800', color: 'grey' }}>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: 'grey' }}>
             (Define Tabs:- Ticks Mark All The Tabs Where You Want This Jewellery
             To Appear In Clint Search)
           </Text>
@@ -1763,7 +1765,8 @@ const AddProducts = ({ route }) => {
                   backgroundColor: '#032E63',justifyContent:'center'
                 }}>
                   <Text style={{
-                    fontSize: 15, fontWeight: '700',
+                    fontSize: 15,
+                    fontWeight: '700',
                     marginLeft: 10,
                     color: '#fff'
                   }}>{item.Name}</Text>
@@ -1771,16 +1774,16 @@ const AddProducts = ({ route }) => {
                 <View
                   style={{
                     marginHorizontal: 20,
-                    borderWidth: 2,
+                    borderWidth: 1, borderColor: '#979998' ,
                     borderBottomWidth: 0,
 
 
                   }}>
                   <Dropdown
-                    style={{ borderBottomWidth: 2, height: 40 }}
+                    style={{ borderBottomWidth:  1, borderColor: '#979998' , height: 40 }}
                     placeholderStyle={[
                       styles.placeholderStyle,
-                      { fontWeight: '800', fontSize: 15, marginLeft: 10, color: '#000' },
+                      { fontWeight: '600', fontSize: 14, marginLeft: 10, color: '#000' },
                     ]}
                     selectedTextStyle={[
                       styles.selectedTextStyle,
@@ -1802,18 +1805,18 @@ const AddProducts = ({ route }) => {
             )}
           />
         </View>
-        <View style={{ marginHorizontal: 10, marginTop: 10,marginBottom:10 }}>
+        <View style={{ marginHorizontal: 18, marginTop: 10,marginBottom:10 }}>
         <Text style={styles.TextMain}>
             Choose Collection To Product
           </Text>
-          <Text style={{ fontSize: wp(4), fontWeight: '800', color: 'grey', }}>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: 'grey', }}>
             (Define Tabs:- Ticks Mark All The Tabs Where You Want This Jewellery
             To Appear In Clint Search)
           </Text>
         </View>
         <View>
           {productType?.collection &&
-          <View style={{borderWidth:2,marginHorizontal:15,height:hp(35),zIndex:2}}>
+          <View style={{borderWidth: 1, borderColor: '#979998' ,marginHorizontal:19,height:hp(35),zIndex:2}}>
             <ScrollView nestedScrollEnabled>
             <FlatList
               data={productType?.collection}
@@ -1851,9 +1854,9 @@ const AddProducts = ({ route }) => {
                     />
                     <Text
                       style={{
-                        fontSize: 15,
+                        fontSize: 14,
                         marginLeft: 5,
-                        fontWeight: '700',
+                        fontWeight: '600',
                         color: '#000',
                       }}>
                       {item.Name}
@@ -1876,11 +1879,12 @@ const AddProducts = ({ route }) => {
               justifyContent: 'center',
               backgroundColor: '#032e63',
             }}>
-            <Text style={{ fontSize: 18, color: 'white', fontWeight: '600',textAlign:'center',marginBottom:5 }}>
+            <Text style={{ fontSize: 18, color: 'white', fontWeight: '600',textAlign:'center',marginBottom:2 }}>
               {prodcutfile ? 'Update Product' : 'Add Product'}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
+           onPress={()=>navigation.navigate('MyCatalogue')}
             style={{
               height: 40,
               borderRadius: 30,

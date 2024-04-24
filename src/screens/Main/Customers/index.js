@@ -34,9 +34,10 @@ const HomeScreen = ({ route }) => {
   const [clicked, setClicked] = useState(false);
   const BannerWidth = (Dimensions.get('window').width * 15) / 16;
   const BannerHeight = 140;
+  console.log('this ',selector);
   const share = async () => {
     await Share.share({
-      message: `Supplier Name : ${detail?.CompanyName}  Email Address :${selector?.EmailId}`,
+      message: `Supplier Name : ${detail?.CompanyName}\nEmail Address :${detail?.BillingContactEmail}`,
     });
   };
 useEffect(()=>{

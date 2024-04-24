@@ -156,7 +156,7 @@ console.log('detail ,,,,',selector);
             </Text>
           </TouchableOpacity>
           <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row',alignItems:'center' }}>
               <Image
                 style={{ height: 28, width: 28 }}
                 source={require('../../assets/PartnerImage/16.png')}
@@ -173,7 +173,7 @@ console.log('detail ,,,,',selector);
                      <Text style={{marginLeft:30,fontSize:14,fontFamily:'Acephimere',color:'#424242'}}>{'Ph:9876567898 '}</Text> */}
               </View>
             </View>
-            <View style={{ flexDirection: 'row', marginTop: 20 }}>
+            <View style={{ flexDirection: 'row', marginTop: 20 ,alignItems:'center'}}>
               <Image
                 style={{ height: 28, width: 28 }}
                 source={require('../../assets/PartnerImage/msg.png')}
