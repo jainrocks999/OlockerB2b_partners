@@ -37,23 +37,25 @@ export default StyleSheet.create({
   },
   linerview: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center',alignSelf:'center',
     justifyContent: 'center',
   },
   linert: {
     color: '#fff',
-    marginLeft: 8,
+    marginLeft: 2,
     fontFamily: 'Roboto-Medium',
-    fontWeight: '700',
+    fontWeight: '700',marginBottom:2,
     fontSize: 16,
   },
   img: {
     height: 100,
-    width: 100,marginTop:-31
+    width: 100,
+   marginTop: -32.5,
   },
   img1: {
     height: 100,
-    width: 95,marginTop:-31
+    width: 100,
+      marginTop: -32
   },
   tt: {
     color: '#fff',
@@ -90,7 +92,7 @@ export default StyleSheet.create({
     height: 175,
     backgroundColor: '#fff',
     borderWidth: 0.5,
-    borderColor:'#807f82'
+    borderColor: '#807f82', overflow:'hidden'
   },
 
   card1img: {
@@ -117,7 +119,7 @@ export default StyleSheet.create({
     margin: 5,
     borderRadius: 10,
     height: 137,
- backgroundColor:'#fff'
+    backgroundColor: '#fff',
   },
   card2v: {
     height: 90,
@@ -136,7 +138,8 @@ export default StyleSheet.create({
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     // padding: 10,
-    justifyContent: 'center',alignItems:'center'
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   card2v1t: {
     color: '#032e63',
@@ -147,6 +150,7 @@ export default StyleSheet.create({
   card3: {
     alignItems: 'center',
     paddingVertical: 20,
+    marginTop: 10,
   },
   card3t: {
     fontSize: 20,
@@ -164,6 +168,7 @@ export default StyleSheet.create({
   card3vt: {
     fontWeight: '700',
     fontSize: 15,
+    color: '#032e63',
     alignSelf: 'center',
   },
   card3vimg: {

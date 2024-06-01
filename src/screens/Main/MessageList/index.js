@@ -13,79 +13,72 @@ import {useIsFocused, useNavigation} from '@react-navigation/native';
 import StatusBar from '../../../components/StatusBar';
 import BottomTab from '../../../components/StoreButtomTab';
 import Loader from '../../../components/Loader';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const HomeScreen = () => {
   const navigation = useNavigation();
- const selector =useSelector(state=>state.Notification);
- const [visiable,setVisible]=useState(false)
- const isFetching= useSelector(state=>state.isFetching)
- const dispatch =useDispatch();
-  const isfocus=useIsFocused();
-useEffect(()=>{
-if(isfocus){
-  Apicall();
-}
-},[isfocus])
-const Apicall =async()=>{
-  const Token = await AsyncStorage.getItem('loginToken');
+  const selector = useSelector(state => state.Notification);
+  const [visiable, setVisible] = useState(false);
+  const isFetching = useSelector(state => state.isFetching);
+  const dispatch = useDispatch();
+  const isfocus = useIsFocused();
+  useEffect(() => {
+    if (isfocus) {
+      Apicall();
+    }
+  }, [isfocus]);
+  const Apicall = async () => {
+    const Token = await AsyncStorage.getItem('loginToken');
     const Id = await AsyncStorage.getItem('Partnersrno');
-  dispatch({
-    type:'Get_pushNotificationList_Request',
-    url:'/partners/pushNotificationList',
-    partnerId:Id,
-    Token:Token
-   })
-}
+    dispatch({
+      type: 'Get_pushNotificationList_Request',
+      url: '/partners/pushNotificationList',
+      partnerId: Id,
+      Token: Token,
+    });
+  };
 
-const clearnotification=async()=>{
-  const Token = await AsyncStorage.getItem('loginToken');
-  const Id = await AsyncStorage.getItem('Partnersrno');
-  const axios = require('axios');
-setVisible(true);
-let config = {
-  method: 'get',
-  maxBodyLength: Infinity,
-  url: `https://olocker.co/api/partners/pushNotificationRemove?partnerId=${Id}`,
-  headers: { 
-    'Olocker': `Bearer ${Token}`
-  }
-};
+  const clearnotification = async () => {
+    const Token = await AsyncStorage.getItem('loginToken');
+    const Id = await AsyncStorage.getItem('Partnersrno');
+    const axios = require('axios');
+    setVisible(true);
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `https://olocker.co/api/partners/pushNotificationRemove?partnerId=${Id}`,
+      headers: {
+        Olocker: `Bearer ${Token}`,
+      },
+    };
 
-axios.request(config)
-.then((response) => {
-  if(response.data.status==true){
-  console.log('resposeemmmm',JSON.stringify(response.data));
- Apicall();
-  setVisible(false);
-  }
-  else{
-    setVisible(false);
-  }
-})
-.catch((error) => {
-  setVisible(false);
-  console.log(error);
-});
+    axios
+      .request(config)
+      .then(response => {
+        if (response.data.status == true) {
+          Apicall();
+          setVisible(false);
+        } else {
+          setVisible(false);
+        }
+      })
+      .catch(error => {
+        setVisible(false);
+        console.log(error);
+      });
+  };
 
- }
-
-
-
-
- const supplierprofile = async (id) => {
-  const Token = await AsyncStorage.getItem('loginToken');
-  const Id = await AsyncStorage.getItem('Partnersrno');
- console.log('data...get,,,,,',id);
- if(id.title=='New Invitation Request'){
-  navigation.navigate('MyNetwork1',{screen:'PendingRequest'})
- }else if(id.title=='Request Accepted')
- navigation.navigate('MyNetwork1',{screen:'MyNetworks'})
-}
+  const supplierprofile = async id => {
+    const Token = await AsyncStorage.getItem('loginToken');
+    const Id = await AsyncStorage.getItem('Partnersrno');
+    if (id.message == 'New Invitation Request') {
+      navigation.navigate('MyNetwork1', {screen: 'PendingRequest'});
+    } else if (id.message == 'Request Accepted')
+      navigation.navigate('MyNetwork1', {screen: 'MyNetworks'});
+  };
 
   return (
     <View style={{flex: 1, backgroundColor: '#f0eeef'}}>
- 
       <Header
         source={require('../../../assets/L.png')}
         source2={require('../../../assets/Image/dil.png')}
@@ -93,100 +86,135 @@ axios.request(config)
         onPress={() => navigation.goBack()}
         onPress2={() => navigation.navigate('FavDetails')}
       />
-     {isFetching||visiable?<Loader/>:null}
+      {isFetching || visiable ? <Loader /> : null}
 
-     {
-        selector?.length == 0 ?
-            <View style={{ alignItems: 'center', justifyContent: 'center', alignSelf: 'center', height: '90%',}}>
-              <Text style={{
-        fontFamily: 'Acephimere',
-        fontSize: 19,
-        color: 'grey', fontWeight: '700'
-    }}> {'No Notification'} </Text>
-
-            </View>
-            :
-
-
-      <ScrollView style={{paddingHorizontal:0}}>
-
-<View style={{}}>
-
-<View style={{flexDirection:'row',justifyContent:'space-between',paddingHorizontal:10}}>
-              <Text
-               style={{color:'#000',marginLeft:0,marginTop:10}}>
-                {selector?.length==1?    `${selector?.length}  Notification`:`${selector?.length}  Notifications`}
-              </Text>
-          <TouchableOpacity style={{marginTop:10,}}
-          onPress={()=>clearnotification()}
-          >   
-         <Text style={{color:'#000',textDecorationLine:'underline'}}>Clear Notification</Text>
-         </TouchableOpacity> 
+      {selector?.length == 0 ? (
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: 'center',
+            height: '90%',
+          }}>
+          <Text
+            style={{
+              fontFamily: 'Acephimere',
+              fontSize: 19,
+              color: 'grey',
+              fontWeight: '700',
+            }}>
+            {' '}
+            {'No Notification'}{' '}
+          </Text>
         </View>
-      {/* <Text  style={{color:'#000',marginLeft:10,marginTop:10}}>{`${selector.length}${'  Notification'}`}</Text> */}
-        <View style={{marginBottom:20}}>
-            <FlatList
-              data={selector}
-              renderItem={({item}) => (
-                <View
-                  style={{
-                    backgroundColor: '#f0f0f0',
-                    // marginTop: 10,
-                     paddingHorizontal: 10,
-                    paddingVertical: 10,
-                    // paddingLeft: 20,
-                    shadowColor: 'black',
-    shadowOffset: {width: 3, height: 12},
-    shadowOpacity: 0.8,
-     shadowRadius: 0,
-    elevation: 8,}}>
-
-      <TouchableOpacity onPress={()=>supplierprofile(item)}>
+      ) : (
+        <ScrollView style={{paddingHorizontal: 0}}>
+          <View style={{}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingHorizontal: 10,
+              }}>
+              <Text style={{color: '#000', marginLeft: 0, marginTop: 10}}>
+                {selector?.length == 1
+                  ? `${selector?.length}  Notification`
+                  : `${selector?.length}  Notifications`}
+              </Text>
+              <TouchableOpacity
+                style={{marginTop: 10}}
+                onPress={() => clearnotification()}>
+                <Text style={{color: '#000', textDecorationLine: 'underline'}}>
+                  Clear Notification
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{marginBottom: 20}}>
+              <FlatList
+                data={selector}
+                renderItem={({item}) => (
                   <View
                     style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
+                      backgroundColor: '#f0f0f0',
+                      // marginTop: 10,
+                      paddingHorizontal: 10,
+                      paddingVertical: 10,
+                      // paddingLeft: 20,
+                      shadowColor: 'black',
+                      shadowOffset: {width: 3, height: 12},
+                      shadowOpacity: 0.8,
+                      shadowRadius: 0,
+                      elevation: 8,
                     }}>
-                    <Text style={{fontSize: 17,color:'#000',fontWeight:'700'}}>{item.senderName}</Text>
+                    <TouchableOpacity onPress={() => supplierprofile(item)}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 17,
+                            color: '#000',
+                            fontWeight: '700',
+                          }}>
+                          {item.senderName}
+                        </Text>
+                        <View
+                          style={{
+                            backgroundColor: '#24a31e',
+                            paddingHorizontal: 6,
+                            paddingVertical: 2,
+                            borderRadius: 5,
+                          }}>
+                          <Text style={{color: '#fff', fontSize: 13}}>
+                            {item.title}
+                          </Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
                     <View
                       style={{
-                        backgroundColor: '#24a31e',
-                        paddingHorizontal: 6,
-                        paddingVertical: 2,borderRadius:5
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginTop: 5,
                       }}>
-                        
-                      <Text style={{color: '#fff', fontSize: 13,}}>
-                        {item.title}
+                      <Image
+                        style={{tintColor: 'grey', height: 13, width: 17}}
+                        source={require('../../../assets/Fo.png')}
+                      />
+
+                      <Text
+                        style={{
+                          marginLeft: 6,
+                          fontSize: 14,
+                          color: '#000',
+                          fontWeight: '500',
+                        }}>
+                        {item.message}
                       </Text>
                     </View>
-                  </View>
-                  </TouchableOpacity>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginTop: 5,
-                    }}>
-                    <Image
-                      style={{tintColor: 'grey', height: 13, width: 17}}
-                      source={require('../../../assets/Fo.png')}
-                    />
-
-                    <Text style={{marginLeft: 6, fontSize: 14, color: '#000',fontWeight:'500'}}>
-                    {item.message}
+                    <Text
+                      style={{
+                        color: '#000',
+                        marginTop: 5,
+                        fontSize: 13,
+                        fontWeight: '600',
+                      }}>
+                      Last seen:{' '}
+                      <Text style={{color: '#000', fontWeight: '500'}}>
+                        {item?.created_at}
+                      </Text>
                     </Text>
+                    <View style={{borderWidth: 0.5, marginTop: 5}} />
                   </View>
-                  <Text style={{color:'#000',marginTop:5,fontSize:13,fontWeight:'600'}}>Last seen: <Text style={{color:'#000',fontWeight:'500'}}>{item?.created_at}</Text></Text>
-                  <View style={{borderWidth:0.5,marginTop:5}}/>
-                </View>
-              )}
-            />
-        </View>
-        </View>
-        
-      </ScrollView>
-}
+                )}
+              />
+            </View>
+          </View>
+        </ScrollView>
+      )}
       <StatusBar />
     </View>
   );
@@ -209,40 +237,6 @@ const data = [
     time: 'Last replied on 03 Sep,2020',
   },
 ];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import React, {useState} from 'react';
 // import {

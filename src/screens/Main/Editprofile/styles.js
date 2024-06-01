@@ -3,6 +3,8 @@ export default StyleSheet.create({
   text: {
     color: '#000',
     fontFamily: 'Acephimere',
+    fontSize:15,
+    fontWeight:'700'
   },
   dropdown: {
     marginVertical: 10,
@@ -25,7 +27,7 @@ export default StyleSheet.create({
     color: 'grey',
   },
   selectedTextStyle: {
-    fontSize:15,
+    fontSize: 15,
     color: 'black',
   },
 
@@ -80,10 +82,6 @@ export default StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-
-
-
 
 // import {StyleSheet} from 'react-native';
 // export default StyleSheet.create({

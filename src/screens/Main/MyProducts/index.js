@@ -9,10 +9,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import Header from '../../../components/CustomHeader';
-import TabView from '../../../components/StoreButtomTab';
 import {useNavigation} from '@react-navigation/native';
-import Loader from '../../../components/Loader';
-import ImagePath from '../../../components/ImagePath';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './styles';
 import {useSelector} from 'react-redux';
@@ -26,16 +23,32 @@ const MyProducts = ({route}) => {
         source1={require('../../../assets/Fo.png')}
         source2={require('../../../assets/Image/dil.png')}
         title={'Gold Price'}
-        // onPress={() => navigation.goBack()}
         onPress1={() => navigation.navigate('Message')}
         onPress2={() => navigation.navigate('FavDetails')}
       />
-
+{selector?.length == 0 ? (
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: 'center',
+            height: '90%',
+          }}>
+          <Text
+            style={{
+              color: 'grey',
+              fontFamily: 'Acephimere',
+              fontSize: 19,
+              fontWeight: '700',
+            }}>
+            {' '}
+            {'No Gold Price List'}{' '}
+          </Text>
+        </View>
+      ) : (
       <ScrollView>
         <View style={styles.bottomv}>
           <FlatList
-            // showsHorizontalScrollIndicator={false}
-            //horizontal={true}
             numColumns={3}
             data={selector}
             renderItem={({item}) => (
@@ -67,17 +80,8 @@ const MyProducts = ({route}) => {
         </View>
         <View style={{height: 70}} />
       </ScrollView>
+      )}
     </View>
   );
 };
 export default MyProducts;
-const data = [
-  {title: require('../../../assets/Image/myjewlery.png')},
-  {title: require('../../../assets/Image/myjewlery.png')},
-  {title: require('../../../assets/Image/myjewlery.png')},
-  {title: require('../../../assets/Image/myjewlery.png')},
-  {title: require('../../../assets/Image/myjewlery.png')},
-  {title: require('../../../assets/Image/myjewlery.png')},
-  {title: require('../../../assets/Image/myjewlery.png')},
-  {title: require('../../../assets/Image/myjewlery.png'), type: 'add'},
-];

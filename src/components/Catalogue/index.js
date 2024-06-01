@@ -1,35 +1,44 @@
 import React from 'react';
-import { View, FlatList, TouchableOpacity, Text, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {View, FlatList, TouchableOpacity, Text, Image} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import ImagePath from '../../components/ImagePath';
 import Loader from '../../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useSelector, useDispatch } from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 const Catalogue = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const categiroes = useSelector(state => state.SupplierCategories.list);
-  const isFetching = useSelector(state => state.isFetching);
+  const isFetching1 = useSelector(state => state.isFetching1);
   const selector = useSelector(state => state.SupplierDetail?.detail);
   const ProductList1 = async item => {
     const srno = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken');
-    dispatch({
-      type: 'User_SupplierProductList_Request',
-      url: 'partners/productTypeProducts',
-      userId: selector.SrNo,
-      typeId: item.Id,
-      userType: 'supplier',
-      login_user_id: srno,
-      login_user_type: 'partner',
-      Token: Token,
-      name: item.Value,
-      navigation,
+     
+
+    
+    navigation.navigate('MyProductDetails', {
+      item, ProductL: false, 
     });
+    // dispatch({
+    //   type: 'User_ProductList_Request',
+    //   url: 'partners/productTypeProducts',
+    //   userId: selector.SrNo,
+    //   typeId: item.Id,
+    //   userType: 'supplier',
+    //   login_user_id: srno,
+    //   login_user_type: 'partner',
+    //   Token: Token,
+    //   start:0,
+    //   limit:20,
+    //   // name: item.Value,
+    //   navigation,
+    // });
   };
   return (
-    <View>
-
+    <View style={{}}>
+    
+       {/* {isFetching1 ? <Loader /> : categiroes?.length > 0 ? null : <Loader />} */}
       <View
         style={{
           backgroundColor: '#fff',
@@ -47,15 +56,13 @@ const Catalogue = () => {
           Categories{' '}
         </Text>
       </View>
-      {/* {isFetching ? <Loader /> : null} */}
+      {/* {isFetching1?<Loader/>:null} */}
       <FlatList
-        data={categiroes}
+        data={categiroes ?? []}
         numColumns={3}
-        renderItem={({ item }) => (
+        renderItem={({item}) => (
           <TouchableOpacity
-            // onPress={() => navigation.navigate('MyProductDetails', { id: item.Id })}
             onPress={() => ProductList1(item)}
-            // onPress={() => navigation.navigate('MyProductDetails')}
             style={{
               width: '33.3%',
               alignItems: 'center',
@@ -63,20 +70,24 @@ const Catalogue = () => {
               height: 175,
               backgroundColor: '#fff',
               borderWidth: 0.5,
-    borderColor:'#807f82'
+              borderColor: '#807f82',
             }}>
-
-
+             
             <Image
-              style={{ height: '71%', width: '100%' }}
+              style={{height: '71%', width: '100%'}}
               // resizeMode={'stretch'}
               // source={require('../../assets/Not.png')}
-              source={item.ImageName != null ? {
-                uri: `${ImagePath.path2}${'uploads/product_type/'}${item.ImageName
-                  }`,
-              } : require('../../assets/Image/Not.jpeg')}
+              source={
+                item.ImageName != null
+                  ? {
+                      uri: `${ImagePath.path2}${'uploads/product_type/'}${
+                        item.ImageName
+                      }`,
+                    }
+                  : require('../../assets/logo.png')
+              }
             />
-            <View style={{ marginTop: 5, alignItems: 'center' }}>
+            <View style={{marginTop: 5, alignItems: 'center'}}>
               <Text
                 style={{
                   fontFamily: 'Acephimere',
@@ -90,10 +101,14 @@ const Catalogue = () => {
                 style={{
                   fontFamily: 'Acephimere',
                   fontSize: 14,
-                  color: '#0d0d0d',fontWeight:'700'
-                }}> {item.pTotal <= 0
+                  color: '#0d0d0d',
+                  fontWeight: '700',
+                }}>
+                {' '}
+                {item.pTotal <= 0
                   ? `${item.pTotal} Item`
-                  : `${item.pTotal} Items`}</Text>
+                  : `${item.pTotal} Items`}
+              </Text>
             </View>
           </TouchableOpacity>
         )}
@@ -117,14 +132,14 @@ const Catalogue = () => {
 };
 export default Catalogue;
 const data1 = [
-  { title: require('../../assets/Image/myjewlery.png') },
-  { title: require('../../assets/Image/myjewlery.png') },
-  { title: require('../../assets/Image/myjewlery.png') },
-  { title: require('../../assets/Image/myjewlery.png') },
-  { title: require('../../assets/Image/myjewlery.png') },
-  { title: require('../../assets/Image/myjewlery.png') },
-  { title: require('../../assets/Image/myjewlery.png') },
-  { title: require('../../assets/Image/myjewlery.png'), type: 'add' },
+  {title: require('../../assets/Image/myjewlery.png')},
+  {title: require('../../assets/Image/myjewlery.png')},
+  {title: require('../../assets/Image/myjewlery.png')},
+  {title: require('../../assets/Image/myjewlery.png')},
+  {title: require('../../assets/Image/myjewlery.png')},
+  {title: require('../../assets/Image/myjewlery.png')},
+  {title: require('../../assets/Image/myjewlery.png')},
+  {title: require('../../assets/Image/myjewlery.png'), type: 'add'},
 ];
 
 const data = [

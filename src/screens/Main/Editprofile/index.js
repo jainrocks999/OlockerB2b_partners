@@ -22,11 +22,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Dropdown} from 'react-native-element-dropdown';
 import {Image} from 'react-native';
 import {
-  heightPercentageToDP,
-  widthPercentageToDP,
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {FlatList} from 'react-native';
-import {color} from 'react-native-elements/dist/helpers';
 let goldSpecilization = [];
 let diamondSpecilization = [];
 let silverSpecilization = [];
@@ -37,7 +36,6 @@ const EditSupplierProfile = ({route}) => {
   const details = route.params?.selector?.partnerdetails;
   const details2 = route.params?.extractedImages;
   const [fetching, setFetching] = useState(false);
-
   const [customPurityDia, setCustomPurityDia] = useState(false);
   const [customPurityGo, setCustomPurityGo] = useState(false);
   const [customPurityPla, setCustomPurityPla] = useState(false);
@@ -83,12 +81,35 @@ const EditSupplierProfile = ({route}) => {
     });
   }, []);
 
+  function convertArrayToItems(array) {
+    const items = true ? [{id: 'Custom purity', name: 'Custom purity'}] : [];
+
+    array.forEach((item, index) => {
+      items.push({id: item.value, name: item.name});
+    });
+
+    return items;
+  }
+
   const [inputs1, setInputs1] = useState({
     State: '',
     District: '',
   });
   const handleInputs1 = (key, value) => {
     setInputs1(prev => ({...prev, [key]: value}));
+  };
+  const getSelected = array => {
+    return array.map(item => item.value);
+  };
+
+  const getSelected2 = array => {
+    return array.map(item => {
+      if (isNaN(item.value)) {
+        return item.value;
+      } else {
+        return parseInt(item.value);
+      }
+    });
   };
 
   const [inputs, setInputs] = useState({
@@ -108,25 +129,57 @@ const EditSupplierProfile = ({route}) => {
     AccessToMyJewellerApp: details?.AccessToMyJewellerApp,
     IsOnlineSelling: details?.IsOnlineSelling,
     IsLaunchSavingScheme: details?.IsLaunchSavingScheme,
-  
+
     BranchSrNo: selector?.partnerlogins?.BranchSrNo,
     PartnerIntroduction: details?.PartnerIntroduction,
-    JTypep: '',
-    JTyped: '',
-    JTypeg: '',
-    JTypes: '',
-    diamond_purity: [],
-    diamond_specialisation: [],
-    gold_purity: [],
-    gold_specialisation: [],
-    silver_purity: [],
-    silver_specialisation: [],
-    platinum_specialisation: [],
-    platinum_purity: [],
-    goldcustom_purity: '',
-    diamondcustom_purity: '',
-    platinumcustom_purity: '',
-    silvercustom_purity: '',
+    JTypep: selector?.typeOfjewellery?.isPlatinumChecked == 'Platinum',
+    JTyped: selector?.typeOfjewellery?.isDaimondChecked == 'Diamond',
+    JTypeg: selector?.typeOfjewellery?.isGoldChecked == 'Gold',
+    JTypes: selector?.typeOfjewellery?.isSilverChecked == 'Silver',
+    diamond_purity:
+      // selector?.typeOfjewellery?.isDiamondCp != 'Custom purity'
+      //   ?
+      getSelected2(selector?.typeOfjewellery?.isDiamond),
+    // : [
+    //     'Custom purity',
+    //     ...getSelected(selector?.typeOfjewellery?.isDiamond),
+    //   ],
+    diamond_specialisation: getSelected(
+      selector?.typeOfjewellery?.isDiamondSpecialization,
+    ),
+    gold_purity:
+      // selector?.typeOfjewellery?.isGoldCp != 'Custom purity'  ?
+      getSelected2(selector?.typeOfjewellery?.isGold),
+    // : ['Custom purity', ...getSelected2(selector?.typeOfjewellery?.isGold)],
+    gold_specialisation: getSelected(
+      selector?.typeOfjewellery?.isGoldSpecialization,
+    ),
+    silver_purity:
+      // selector?.typeOfjewellery?.isSilverCp != 'Custom purity'
+      //   ?
+      getSelected2(selector?.typeOfjewellery?.isSilver),
+    // : [
+    //     'Custom purity',
+    //     ...getSelected2(selector?.typeOfjewellery?.isSilver),
+    //   ],
+    silver_specialisation: getSelected(
+      selector?.typeOfjewellery?.isSilverSpecialization,
+    ),
+    platinum_specialisation: getSelected(
+      selector?.typeOfjewellery?.isPlatinumSpecialization,
+    ),
+    platinum_purity:
+      // selector?.typeOfjewellery?.isPlatinumCp != 'Custom purity'
+      //   ?
+      getSelected2(selector?.typeOfjewellery?.isPlatinum),
+    // : [
+    //     'Custom purity',
+    //     ...getSelected2(selector?.typeOfjewellery?.isPlatinum),
+    //   ],
+    goldcustom_purity: selector?.typeOfjewellery?.isGoldCpVal,
+    diamondcustom_purity: selector?.typeOfjewellery?.isDiamondCpVal,
+    platinumcustom_purity: selector?.typeOfjewellery?.isPlatinumCpVal,
+    silvercustom_purity: selector?.typeOfjewellery?.isSilverCpVal,
 
     ProductLogo: {
       name: selector?.partnerdetails?.Logo,
@@ -193,419 +246,356 @@ const EditSupplierProfile = ({route}) => {
     OwnerName3: selector?.partnerimagedetails[0]?.OwnerName3,
     OwnerDescription3: selector?.partnerimagedetails[0]?.OwnerDescription3,
   });
-  const handleOnSumit = async () => {
-    const srno = await AsyncStorage.getItem('Partnersrno');
-
-    const newData = {...inputs, SrNo: srno};
-    let data = new FormData();
-    let valid = true;
-    if (pincode == '') {
-      Toast.show('please enter PinCode');
-      valid = false;
-      return;
-    }
-    data.append('PinCode', pincode);
-    Object.keys(newData).map(item => {
-      //  Object.keys(newData).map(async (item, index) => {
-      switch (item) {
-        case 'ProductLogo':
-          data.append(item, newData[item]);
-          break;
-
-        case 'CompanyName': {
-          if (newData[item] == '') {
-            Toast.show('Please enter CompanyName');
-            valid = false;
-            return;
-          }
-          data.append(item, newData[item]);
-          break;
-        }
-        case 'DisplayName':
-          if (newData[item] == '') {
-            Toast.show('please enter DisplayName');
-            valid = false;
-            return;
-          }
-          data.append(item, newData[item]);
-          break;
-        case 'txtOwnerName':
-          if (newData[item] == '') {
-            Toast.show('please enter OwnerName');
-            valid = false;
-            return;
-          }
-          data.append(item, newData[item]);
-          break;
-
-        case 'txtAddress':
-          if (newData[item] == '') {
-            Toast.show('please enter Address');
-            valid = false;
-            return;
-          }
-          data.append(item, newData[item]);
-          break;
-
-        case 'StateId':
-          if (newData[item] == '') {
-            Toast.show('please enter State');
-            valid = false;
-            return;
-          }
-          data.append(item, newData[item]);
-          break;
-
-        case 'CityId':
-          if (newData[item] == '') {
-            Toast.show('please enter CityId');
-            valid = false;
-            return;
-          }
-          data.append(item, newData[item]);
-          break;
-
-        case 'EmailId':
-          if (newData[item] == '') {
-            Toast.show('please enter EmailId');
-            valid = false;
-            return;
-          }
-          data.append(item, newData[item]);
-          break;
-
-        case 'Mobile':
-          if (newData[item] == '') {
-            Toast.show('please enter Mobile Number');
-            valid = false;
-            return;
-          }
-          data.append(item, newData[item]);
-          break;
-
-        case 'BillingContactEmail':
-          if (newData[item] == '') {
-            Toast.show('please enter BillingContactEmail');
-            valid = false;
-            return;
-          }
-          data.append(item, newData[item]);
-          break;
-
-        case 'platinum_specialisation':
-          newData[item].map((item, index) => {
-            data.append(`platinum_specialisation[${index}]`, item);
-          });
-          break;
-        case 'silver_specialisation':
-          newData[item].map((item, index) => {
-            data.append(`silver_specialisationp[${index}]`, item);
-          });
-          break;
-        case 'gold_specialisation':
-          newData[item].map((item, index) => {
-            data.append(`gold_specialisation[${index}]`, item);
-          });
-          break;
-        case 'diamond_specialisation':
-          newData[item].map((item, index) => {
-            data.append(`diamond_specialisation[${index}]`, item);
-          });
-          break;
-        case 'diamond_purity':
-          newData[item].map((item, index) => {
-            data.append(`diamond_purity[${index}]`, item);
-          });
-          break;
-        case 'gold_purity':
-          newData[item].map((item, index) => {
-            data.append(`gold_purity[${index}]`, item);
-          });
-          break;
-        case 'silver_purity':
-          newData[item].map((item, index) => {
-            data.append(`silver_purity[${index}]`, item);
-          });
-          break;
-        case 'platinum_purity':
-          newData[item].map((item, index) => {
-            data.append(`platinum_purity[${index}]`, item);
-          });
-          break;
-        case 'JTyped':
-          data.append(item, newData[item] ? 'Diamond' : '');
-          break;
-        case 'JTypep':
-          data.append(item, newData[item] ? 'Platinum' : '');
-          break;
-        case 'JTypeg':
-          data.append(item, newData[item] ? 'Gold' : '');
-          break;
-        case 'JTypes':
-          data.append(item, newData[item] ? 'Silver' : '');
-          break;
-
-        default:
-          data.append(item, newData[item]);
-      }
-    });
-    if (valid) {
-      validateUser(data);
-    } else {
-      Alert.alert('APLI NOT CALLED');
-    }
-  };
   const validateUser = async () => {
-    
-    let valid =true;
+    let valid = true;
     const Token = await AsyncStorage.getItem('loginToken');
     const srno = await AsyncStorage.getItem('Partnersrno');
     if (!inputs || !inputs.CompanyName || inputs.CompanyName.trim() == '') {
       Toast.show('Please enter CompanyName');
-      valid =false;
-      console.log('check  the data ,,',inputs.CompanyName);
+      valid = false;
       return;
-  }else if(inputs.DisplayName==''){
-    Toast.show('please enter DisplayName');
-    valid = false;
-    return;
-  }else if(inputs.txtOwnerName==''){
-    Toast.show('please enter OnwerName');
-    valid = false;
-    return;
-  }else if(inputs.txtAddress==''){
-    Toast.show('please enter Ho Address');
-    valid = false;
-    return;
-  }
-  else if (pincode == '') {
-    Toast.show('please enter PinCode');
-    valid = false;
-    return;
-  }else if(inputs.StateId==''){
-    Toast.show('please enter State');
-    valid = false;
-    return;
-  }else if(inputs.CityId==''){
-    Toast.show('please enter City');
-    valid = false;
-    return;
-  }else if(inputs.EmailId==''){
-    Toast.show('please enter EmailId');
-    valid = false;
-    return;
-  }else if(inputs.Mobile==''){
-    Toast.show('please enter Moblie Number');
-    valid = false;
-    return;
-  }else if(inputs.BillingContactEmail==''){
-    Toast.show('please enter BillingContactEmail');
-    valid = false;
-    return;
-  }
- if(valid){
-
-   setFetching(true);
-try{
-
-    const axios = require('axios');
-    let data = new FormData();
-    data.append('SrNo', srno);
-    if(inputs.ProductLogo.name==''|| inputs.ProductLogo.name==undefined){
-      console.log('data.append(',inputs.ProductLogo.name);
-      data.append('productlogo','');
-    }else{
-      console.log('product imanfger',inputs.ProductLogo.name);
-      data.append('productlogo', {
-      uri: inputs.ProductLogo.uri,
-      name: inputs.ProductLogo.name,
-      type: inputs.ProductLogo.type,
-    });}
-    data.append('CompanyName', inputs.CompanyName);
-    data.append('DisplayName', inputs.DisplayName);
-    data.append('txtOwnerName', inputs.txtOwnerName);
-    data.append('StateId', inputs.StateId);
-    data.append('CityId', inputs.CityId);
-    data.append('PinCode', pincode);
-    data.append('Mobile', inputs.Mobile);
-    data.append('txtAddress', inputs.txtAddress);
-    data.append('WebSiteUrl', inputs.WebSiteUrl);
-    data.append('EmailId', inputs.EmailId);
-    data.append('BillingContactEmail', inputs.BillingContactEmail);
-    // data.append('Password', inputs.Password);
-    data.append('JTyped', inputs.JTyped);
-    data.append('JTypeg', inputs.JTypeg);
-    data.append('JTypep', inputs.JTypep);
-    data.append('JTypes', inputs.JTypes);
-     inputs["diamond_purity"].map((item,index)=>{
-      data.append(`diamond_purity[${index}]`, item.toString());
-     })
-
-    data.append('diamondcustom_purity', inputs.diamondcustom_purity);
-    inputs["diamond_specialisation"].map((item,index)=>{
-      data.append(`diamond_specialisation[${index}]`, item.toString());
-     })
-   
-    inputs["gold_purity"].map((item,index)=>{
-      data.append(`gold_purity[${index}]`, item.toString());
-     })
-    
-    data.append('goldcustom_purity',inputs.goldcustom_purity);
-    inputs["gold_specialisation"].map((item,index)=>{
-      data.append(`gold_specialisation[${index}]`, item.toString());
-     })
-
-
-    data.append('platinum_purity',inputs.goldcustom_purity);
-    inputs["platinum_purity"].map((item,index)=>{
-      data.append(`platinum_purity[${index}]`, item.toString());
-     })
-    
-   data.append('platinumcustom_purity', inputs.platinumcustom_purity);
-
-   inputs["platinum_specialisation"].map((item,index)=>{
-    data.append(`platinum_specialisation[${index}]`, item.toString());
-   })
-      inputs["silver_purity"].map((item,index)=>{
-        data.append(`silver_purity[${index}]`, item.toString());
-       })
-    data.append('silvercustom_purity',inputs.silvercustom_purity);
-    inputs["silver_specialisation"].map((item,index)=>{
-      data.append(`silver_specialisation[${index}]`, item.toString());
-     })
-    data.append('ProductName1', inputs.ProductName1??'');
-  
-    data.append('ProductName2', inputs.ProductName2??'');
-   
-    data.append('ProductName3', inputs.ProductName3??'');
- 
-    data.append('PartnerIntroduction', inputs.PartnerIntroduction??'');
-      data.append('NoofEmployee', inputs.NoofEmployee??'');
-    data.append('OwnerName1', inputs.OwnerName1??'');
-    data.append('OwnerDescription1', inputs.OwnerDescription1??'');
-    data.append('OwnerName2', inputs.OwnerName2??'');
-     data.append('OwnerDescription2', inputs.OwnerDescription2??'');
-     data.append('OwnerName3', inputs.OwnerName3??'');
-     data.append('OwnerDescription3', inputs.OwnerDescription3??'');
-    //  data.append('productlogo', '');
-     data.append('Create_InvoiceDone', inputs.Create_InvoiceDone);
-     data.append('AccessToMyJewellerApp', inputs.AccessToMyJewellerApp??'');
-     data.append('IsOnlineSelling', inputs.IsOnlineSelling??'');
-     data.append('IsLaunchSavingScheme', inputs.IsLaunchSavingScheme??'');
-    data.append('BranchSrNo', inputs.BranchSrNo);
-if(inputs.showroomimage1.name==''||inputs.showroomimage1.name==undefined){
-  data.append('showroomImg1','');
-}else
-   { data.append('showroomImg1', {
-      uri: inputs.showroomimage1.uri,
-      name: inputs.showroomimage1.name,
-      type: inputs.showroomimage1.type,
-    });}
-    if(inputs.showroomimage2.name==''||inputs.showroomimage2.name==undefined){
-      data.append('showroomImg2','');
-    }else{
-    data.append('showroomImg2', {
-      uri: inputs.showroomimage2.uri,
-      name: inputs.showroomimage2.name,
-      type: inputs.showroomimage3.type,
-    });}
-if(inputs.showroomimage3.name==''||inputs.showroomimage3.name==undefined){
-  data.append('showroomImg3','');
-}else{
-    data.append('showroomImg3',{
-      uri: inputs.showroomimage3.uri,
-      name: inputs.showroomimage3.name,
-      type: inputs.showroomimage3.type,
-    });}
-    if(inputs.Ownerimg1.name==''||inputs.Ownerimg1.name==undefined){
-      data.append('ownerImage1', '')
-    }else {
-      data.append('ownerImage1', {
-      uri: inputs.Ownerimg1.uri,
-      name: inputs.Ownerimg1.name,
-      type: inputs.Ownerimg1.type,
-    });}
-
-    if (inputs.Ownerimg2.name == '' || inputs.Ownerimg2.name == undefined)  {
-      data.append('ownerImage2', '');
-  }else{
-    data.append('ownerImage2', {
-        uri: inputs.Ownerimg2.uri,
-        name: inputs.Ownerimg2.name,
-        type: inputs.Ownerimg2.type,
-    });
-} 
-if(inputs.Ownerimg3.name==''||inputs.Ownerimg3.name==undefined){
-   data.append('ownerImage3','');
-}
-else{
-    data.append('ownerImage3', {
-      uri: inputs.Ownerimg3.uri,
-      name: inputs.Ownerimg3.name,
-      type: inputs.Ownerimg3.type,
-    });
-  }
-  if(inputs.ProductImage1.name==''||inputs.ProductImage1.name==undefined)
-  {
-    console.log('hihih');
-    data.append('productImage1','')
-  }
-  else { data.append('productImage1', { 
-      uri: inputs.ProductImage1.uri,
-      name: inputs.ProductImage1.name,
-      type: inputs.ProductImage1.type,
-    });}
-
-    if(inputs.ProductImage2.name==''||inputs.ProductImage2.name==undefined){
-      data.append('productImage2','')
+    } else if (inputs.DisplayName == '') {
+      Toast.show('Please enter DisplayName');
+      valid = false;
+      return;
+    } else if (inputs.txtOwnerName == '') {
+      Toast.show('Please enter OnwerName');
+      valid = false;
+      return;
+    } else if (inputs.txtAddress == '') {
+      Toast.show('Please enter Ho Address');
+      valid = false;
+      return;
+    } else if (pincode == '') {
+      Toast.show('Please enter PinCode');
+      valid = false;
+      return;
+    } else if (inputs.StateId == '') {
+      Toast.show('Please enter State');
+      valid = false;
+      return;
+    } else if (inputs.CityId == '') {
+      Toast.show('Please enter City');
+      valid = false;
+      return;
+    } else if (inputs.EmailId == '') {
+      Toast.show('Please enter EmailId');
+      valid = false;
+      return;
+    } else if (inputs.Mobile == '') {
+      Toast.show('Please enter Moblie Number');
+      valid = false;
+      return;
+    } else if (inputs.BillingContactEmail == '') {
+      Toast.show('Please enter BillingContactEmail');
+      valid = false;
+      return;
     }
-    else{
-    data.append('productImage2',  {
-      uri: inputs.ProductImage2.uri,
-      name: inputs.ProductImage2.name,
-      type: inputs.ProductImage2.type,
-    });}
-    if(inputs.ProductImage3.name==''||inputs.ProductImage3.name==undefined){
-      data.append('productImage3','')
-    }else{
-    data.append('productImage3',  {
-      uri: inputs.ProductImage3.uri,
-      name: inputs.ProductImage3.name,
-      type: inputs.ProductImage3.type,
-    });}
-    
-console.log('request sned on update data ',data);
-
-    let config = {
-      method: 'post',
-      maxBodyLength: Infinity,
-
-      url: 'https://olocker.co/api/partners/updateProfile',
-      headers: {
-        Olocker: `Bearer ${Token}`,
-      },
-      data: data,
-    };
-
-    axios.request(config).then(response => {
-         if(response?.data?.success==true){
-          navigation.navigate('Customers')
-          Toast.show(response?.data?.msg);
-          setFetching(false);
-         
-         }
-         else{
-          setFetching(false);
-          Toast.show(response?.data?.msg)
-         }
-      })
-      .catch(error => {
-        setFetching(false);
-        console.log( 'error,,,,,,,,,,,',error);
-      });}catch {
-           console.log('catch block error',error);
+    if (inputs.JTyped) {
+      if (inputs.diamond_purity.length <= 0) {
+        Toast.show('Please enter diamond purity');
+        valid = false;
+        return;
       }
+      if (inputs.diamond_specialisation.length <= 0) {
+        Toast.show('Please enter diamond specialisation');
+        valid = false;
+        return;
+      }
+      if (
+        inputs.diamond_purity.includes('Custom purity') &&
+        inputs.diamondcustom_purity === ''
+      ) {
+        Toast.show('Please enter diamond Custom purity');
+        valid = false;
+        return;
+      }
+    }
+    if (inputs.JTypeg) {
+      if (inputs.gold_purity.length <= 0) {
+        Toast.show('Please enter gold purity');
+        valid = false;
+        return;
+      }
+      if (inputs.gold_specialisation.length <= 0) {
+        Toast.show('Please enter gold specialisation');
+        valid = false;
+        return;
+      }
+      if (
+        inputs.gold_purity.includes('Custom purity') &&
+        inputs.goldcustom_purity === ''
+      ) {
+        Toast.show('Please enter gold Custom purity');
+        valid = false;
+        return;
+      }
+    }
+    if (inputs.JTypep) {
+      if (inputs.platinum_purity.length <= 0) {
+        Toast.show('Please enter platinum purity');
+        valid = false;
+        return;
+      }
+      if (inputs.platinum_specialisation.length <= 0) {
+        Toast.show('Please  enter platinum specialisation');
+        valid = false;
+        return;
+      }
+      if (
+        inputs.platinum_purity.includes('Custom purity') &&
+        inputs.platinumcustom_purity === ''
+      ) {
+        Toast.show('Please enter platinum Custom purity');
+        valid = false;
+        return;
+      }
+    }
+    if (inputs.JTypes) {
+      if (inputs.silver_purity.length <= 0) {
+        Toast.show('Please enter silver purity');
+        valid = false;
+        return;
+      }
+      if (inputs.silver_specialisation.length <= 0) {
+        Toast.show('Please enter silver specialisation');
+        valid = false;
+        return;
+      }
+      if (
+        inputs.silver_purity.includes('Custom purity') &&
+        inputs.silvercustom_purity === ''
+      ) {
+        Toast.show('Please enter silver Custom purity');
+        valid = false;
+        return;
+      }
+    }
 
+    if (valid) {
+      setFetching(true);
+      try {
+        const axios = require('axios');
+        let data = new FormData();
+        data.append('SrNo', srno);
+        if (
+          inputs.ProductLogo.name == '' ||
+          inputs.ProductLogo.name == undefined
+        ) {
+          data.append('productlogo', '');
+        } else {
+          data.append('productlogo', {
+            uri: inputs.ProductLogo.uri,
+            name: inputs.ProductLogo.name,
+            type: inputs.ProductLogo.type,
+          });
+        }
+        data.append('CompanyName', inputs.CompanyName);
+        data.append('DisplayName', inputs.DisplayName);
+        data.append('txtOwnerName', inputs.txtOwnerName);
+        data.append('StateId', inputs.StateId);
+        data.append('CityId', inputs.CityId);
+        data.append('PinCode', pincode);
+        data.append('Mobile', inputs.Mobile);
+        data.append('txtAddress', inputs.txtAddress);
+        data.append('WebSiteUrl', inputs.WebSiteUrl);
+        data.append('EmailId', inputs.EmailId);
+        data.append('BillingContactEmail', inputs.BillingContactEmail);
+        data.append('JTyped', inputs.JTyped ? 'Diamond' : '');
+        data.append('JTypeg', inputs.JTypeg ? 'Gold' : '');
+        data.append('JTypep', inputs.JTypep ? 'Platinum' : '');
+        data.append('JTypes', inputs.JTypes ? 'Silver' : '');
+
+        inputs['diamond_purity'].map((item, index) => {
+          data.append(`diamond_purity[${index}]`, item.toString());
+        });
+
+        data.append('diamondcustom_purity', inputs.diamondcustom_purity);
+        inputs['diamond_specialisation'].map((item, index) => {
+          data.append(`diamond_specialisation[${index}]`, item.toString());
+        });
+
+        inputs['gold_purity'].map((item, index) => {
+          data.append(`gold_purity[${index}]`, item.toString());
+        });
+
+        data.append('goldcustom_purity', inputs.goldcustom_purity);
+        inputs['gold_specialisation'].map((item, index) => {
+          data.append(`gold_specialisation[${index}]`, item.toString());
+        });
+
+        data.append('platinum_purity', inputs.platinum_purity);
+        inputs['platinum_purity'].map((item, index) => {
+          data.append(`platinum_purity[${index}]`, item.toString());
+        });
+
+        data.append('platinumcustom_purity', inputs.platinumcustom_purity);
+
+        inputs['platinum_specialisation'].map((item, index) => {
+          data.append(`platinum_specialisation[${index}]`, item.toString());
+        });
+        inputs['silver_purity'].map((item, index) => {
+          data.append(`silver_purity[${index}]`, item.toString());
+        });
+        data.append('silvercustom_purity', inputs.silvercustom_purity);
+        inputs['silver_specialisation'].map((item, index) => {
+          data.append(`silver_specialisation[${index}]`, item.toString());
+        });
+        data.append('ProductName1', inputs.ProductName1 ?? '');
+        data.append('ProductName2', inputs.ProductName2 ?? '');
+        data.append('ProductName3', inputs.ProductName3 ?? '');
+        data.append('PartnerIntroduction', inputs.PartnerIntroduction ?? '');
+        data.append('NoofEmployee', inputs.NoofEmployee ?? '');
+        data.append('OwnerName1', inputs.OwnerName1 ?? '');
+        data.append('OwnerDescription1', inputs.OwnerDescription1 ?? '');
+        data.append('OwnerName2', inputs.OwnerName2 ?? '');
+        data.append('OwnerDescription2', inputs.OwnerDescription2 ?? '');
+        data.append('OwnerName3', inputs.OwnerName3 ?? '');
+        data.append('OwnerDescription3', inputs.OwnerDescription3 ?? '');
+        //  data.append('productlogo', '');
+        data.append('Create_InvoiceDone', inputs.Create_InvoiceDone);
+        data.append(
+          'AccessToMyJewellerApp',
+          inputs.AccessToMyJewellerApp ?? '',
+        );
+        data.append('IsOnlineSelling', inputs.IsOnlineSelling ?? '');
+        data.append('IsLaunchSavingScheme', inputs.IsLaunchSavingScheme ?? '');
+        data.append('BranchSrNo', inputs.BranchSrNo);
+        if (
+          inputs.showroomimage1.name == '' ||
+          inputs.showroomimage1.name == undefined
+        ) {
+          data.append('showroomImg1', '');
+        } else {
+          data.append('showroomImg1', {
+            uri: inputs.showroomimage1.uri,
+            name: inputs.showroomimage1.name,
+            type: inputs.showroomimage1.type,
+          });
+        }
+        if (
+          inputs.showroomimage2.name == '' ||
+          inputs.showroomimage2.name == undefined
+        ) {
+          data.append('showroomImg2', '');
+        } else {
+          data.append('showroomImg2', {
+            uri: inputs.showroomimage2.uri,
+            name: inputs.showroomimage2.name,
+            type: inputs.showroomimage3.type,
+          });
+        }
+        if (
+          inputs.showroomimage3.name == '' ||
+          inputs.showroomimage3.name == undefined
+        ) {
+          data.append('showroomImg3', '');
+        } else {
+          data.append('showroomImg3', {
+            uri: inputs.showroomimage3.uri,
+            name: inputs.showroomimage3.name,
+            type: inputs.showroomimage3.type,
+          });
+        }
+        if (inputs.Ownerimg1.name == '' || inputs.Ownerimg1.name == undefined) {
+          data.append('ownerImage1', '');
+        } else {
+          data.append('ownerImage1', {
+            uri: inputs.Ownerimg1.uri,
+            name: inputs.Ownerimg1.name,
+            type: inputs.Ownerimg1.type,
+          });
+        }
+
+        if (inputs.Ownerimg2.name == '' || inputs.Ownerimg2.name == undefined) {
+          data.append('ownerImage2', '');
+        } else {
+          data.append('ownerImage2', {
+            uri: inputs.Ownerimg2.uri,
+            name: inputs.Ownerimg2.name,
+            type: inputs.Ownerimg2.type,
+          });
+        }
+        if (inputs.Ownerimg3.name == '' || inputs.Ownerimg3.name == undefined) {
+          data.append('ownerImage3', '');
+        } else {
+          data.append('ownerImage3', {
+            uri: inputs.Ownerimg3.uri,
+            name: inputs.Ownerimg3.name,
+            type: inputs.Ownerimg3.type,
+          });
+        }
+        if (
+          inputs.ProductImage1.name == '' ||
+          inputs.ProductImage1.name == undefined
+        ) {
+          data.append('productImage1', '');
+        } else {
+          data.append('productImage1', {
+            uri: inputs.ProductImage1.uri,
+            name: inputs.ProductImage1.name,
+            type: inputs.ProductImage1.type,
+          });
+        }
+
+        if (
+          inputs.ProductImage2.name == '' ||
+          inputs.ProductImage2.name == undefined
+        ) {
+          data.append('productImage2', '');
+        } else {
+          data.append('productImage2', {
+            uri: inputs.ProductImage2.uri,
+            name: inputs.ProductImage2.name,
+            type: inputs.ProductImage2.type,
+          });
+        }
+        if (
+          inputs.ProductImage3.name == '' ||
+          inputs.ProductImage3.name == undefined
+        ) {
+          data.append('productImage3', '');
+        } else {
+          data.append('productImage3', {
+            uri: inputs.ProductImage3.uri,
+            name: inputs.ProductImage3.name,
+            type: inputs.ProductImage3.type,
+          });
+        }
+
+        console.log('request sned on update data ', data);
+
+        let config = {
+          method: 'post',
+          maxBodyLength: Infinity,
+
+          url: 'https://olocker.co/api/partners/updateProfile',
+          headers: {
+            Olocker: `Bearer ${Token}`,
+          },
+          data: data,
+        };
+
+        axios
+          .request(config)
+          .then(response => {
+            console.log('response data ....', response.data);
+            if (response?.data?.success == true) {
+              navigation.navigate('Customers');
+              Toast.show(response?.data?.msg);
+              setFetching(false);
+            } else {
+              setFetching(false);
+              Toast.show(response?.data?.msg);
+            }
+          })
+          .catch(error => {
+            setFetching(false);
+            console.log('error,,,,,,,,,,,', error);
+          });
+      } catch {
+        console.log('catch block error', error);
+      }
     }
   };
 
@@ -684,20 +674,6 @@ console.log('request sned on update data ',data);
           handleInputs('Ownerimg3', obj);
           break;
         }
-        // case 'showroom_image': {
-        //   response.assets.map(item => {
-        //     let obj2 = {
-        //       name: item.fileName?.replace(/^rn_image_picker_lib_temp_/, ''),
-        //       type: item.type,
-        //       uri: item.uri,
-        //     };
-
-        //     arr.push(obj2);
-        //     console.log(item);
-        //   });
-        //   handleInputs('showroom_image', arr);
-        //   break;
-        // }
 
         default:
           return;
@@ -708,7 +684,7 @@ console.log('request sned on update data ',data);
   const getSpecilization = data => {
     let arr = [];
     data?.map((item, index) => {
-      let obj = {id: index.toString(), name: item?.name};
+      let obj = {id: item?.SrNo, name: item?.name};
       arr.push(obj);
     });
     return arr;
@@ -749,19 +725,57 @@ console.log('request sned on update data ',data);
       } catch (error) {
         Toast.show('Something went wrong');
         setFetching(false);
-        console.log('this is iresponae', error);
       }
     } else {
       //  setPinCode(val)
     }
   };
+  useEffect(() => {
+    if (inputs.gold_purity.includes('Custom purity')) {
+      handleInputs('goldcustom_purity', selector?.typeOfjewellery?.isGoldCpVal);
+      setCustomPurityGo(true);
+    } else {
+      setCustomPurityGo(false);
+      handleInputs('goldcustom_purity', '');
+    }
+  }, [inputs.gold_purity]);
+  useEffect(() => {
+    if (inputs.diamond_purity.includes('Custom purity')) {
+      handleInputs('diamondcustom_purity', selector?.typeOfjewellery?.isDiamondCpVal);
+      setCustomPurityDia(true);
+    } else {
+      setCustomPurityDia(false);
+      handleInputs('diamondcustom_purity', '');
+    }
+  }, [inputs.diamond_purity]);
+
+  useEffect(() => {
+    if (inputs.platinum_purity.includes('Custom purity')) {
+      handleInputs('platinumcustom_purity', selector?.typeOfjewellery?.isPlatinumCpVal);
+      setCustomPurityPla(true);
+    } else {
+      setCustomPurityPla(false);
+      handleInputs('platinumcustom_purity', '');
+    }
+  }, [inputs.platinum_purity]);
+  useEffect(() => {
+    
+    if (inputs.silver_purity.includes('Custom purity')) {
+      handleInputs('silvercustom_purity', selector?.typeOfjewellery?.isSilverCpVal);
+      setCustomPuritySil(true);
+    } else {
+      setCustomPuritySil(false);
+      handleInputs('silvercustom_purity', '');
+    }
+  }, [inputs.silver_purity]);
+  
 
   const renderScreen = () => {
     return (
       <ScrollView style={{paddingHorizontal: 10, paddingVertical: 10}}>
         <View>
           <Text style={styles.text}>
-            CompanyName<Text style={{color: 'red'}}>{' *'}</Text>
+            Company Name<Text style={{color: 'red'}}>{' *'}</Text>
           </Text>
           <TextInput
             placeholder="CompanyName"
@@ -781,7 +795,7 @@ console.log('request sned on update data ',data);
         </View>
         <View style={{marginTop: 10}}>
           <Text style={styles.text}>
-            DisplayName<Text style={{color: 'red'}}>{' *'}</Text>
+            Display Name<Text style={{color: 'red'}}>{' *'}</Text>
           </Text>
           <TextInput
             placeholder="DisplayName"
@@ -801,7 +815,7 @@ console.log('request sned on update data ',data);
         </View>
         <View style={{marginTop: 10}}>
           <Text style={styles.text}>
-            OwnerName<Text style={{color: 'red'}}>{' *'}</Text>
+            Owner Name<Text style={{color: 'red'}}>{' *'}</Text>
           </Text>
           <TextInput
             placeholder="OwnerName"
@@ -821,7 +835,7 @@ console.log('request sned on update data ',data);
         </View>
         <View style={{marginTop: 10}}>
           <Text style={styles.text}>
-            HO Address*<Text style={{color: 'red'}}>{' *'}</Text>
+            HO Address<Text style={{color: 'red'}}>{' *'}</Text>
           </Text>
           <TextInput
             placeholder="Address"
@@ -881,39 +895,6 @@ console.log('request sned on update data ',data);
             editable={false}
             onChangeText={val => handleInputs1('State', val)}
           />
-
-          {/* <View style={{}}>
-
-
-
-            <Dropdown
-              style={[
-                styles.dropdown,
-                {borderWidth: 1, borderColor: '#979998'},
-              ]}
-              placeholderStyle={styles.placeholderStyle}
-              selectedTextStyle={styles.selectedTextStyle}
-              iconStyle={styles.iconStyle}         
-              data={items1}
-              itemTextStyle={{color: '#000'}}
-              inputSearchStyle={{
-                borderRadius: 10,
-                color: '#474747',
-                        backgroundColor: '#f0f0f0'
-              }}
-              searchPlaceholder="search.."
-              maxHeight={250}
-              search
-              labelField="label"
-              valueField="value"
-              placeholder="state"
-              value={inputs.StateId}
-              onChange={item => {
-                // manageCity(item.value);
-                handleInputs('StateId', item.value);
-              }}
-            />
-          </View> */}
         </View>
         <View style={{marginTop: 10}}>
           <Text style={styles.text}>
@@ -935,36 +916,6 @@ console.log('request sned on update data ',data);
             editable={false}
             onChangeText={val => handleInputs1('District', val)}
           />
-
-          {/* <View>
-        <Dropdown
-              style={[
-                styles.dropdown,
-                {borderWidth: 1, borderColor: '#979998'},
-              ]}
-              search
-              searchPlaceholder="search.."
-              placeholderStyle={styles.placeholderStyle}
-              selectedTextStyle={styles.selectedTextStyle}
-              iconStyle={styles.iconStyle}
-              data={items1}
-              // data={cityList2 ? cityList2 : cityList ? cityList : []}
-              maxHeight={250}
-              labelField="label"
-              valueField="value"
-              placeholder="City"
-              value={inputs.CityId}
-              onChange={item => {
-                handleInputs('CityId', item.value);
-              }}
-              itemTextStyle={{color: '#000'}}
-              inputSearchStyle={{
-                borderRadius: 10,
-                color: '#474747',
-                        backgroundColor: '#f0f0f0'
-              }}
-            /> 
-          </View> */}
         </View>
 
         <View style={{marginTop: 10}}>
@@ -1045,86 +996,6 @@ console.log('request sned on update data ',data);
             onChangeText={val => handleInputs('BillingContactEmail', val)}
           />
         </View>
-
-        {/* <View style={{marginTop: 10}}>
-          <Text style={styles.text}>Password</Text>
-          <TextInput
-            placeholder="Password"
-            style={{
-              borderWidth: 1,
-              marginTop: 4,
-              height: 40,
-              borderRadius: 6,
-              borderColor: 'grey',
-              paddingLeft: 10,
-              color: '#000',
-            }}
-            placeholderTextColor={'grey'}
-            value={inputs.Password}
-            onChangeText={val => handleInputs('Password', val)}
-          />
-        </View> */}
-
-        {/* <View style={{marginTop: 10}}>
-          <Text style={styles.text}>
-            Tell us what are you<Text style={{color: 'red'}}>{' *'}</Text>
-          </Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <RadioButton
-                value="first"
-                // status={inputs.SupplierType == 1 ? 'checked' : 'unchecked'}
-                // onPress={() => handleInputs('SupplierType', 1)}
-                uncheckedColor="#032e63"
-                color="#032e63"
-              />
-              <Text style={{color:'#000'}}>Manufacturer</Text>
-            </View>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <RadioButton
-                value="first"
-                // status={inputs.SupplierType == 2 ? 'checked' : 'unchecked'}
-                // onPress={() => handleInputs('SupplierType', 2)}
-                uncheckedColor="#032e63"
-                color="#032e63"
-              />
-              <Text style={{color:'#000'}} >Wholesaler</Text>
-            </View>
-
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <RadioButton
-                value="first"
-                // status={inputs.SupplierType == 3 ? 'checked' : 'unchecked'}
-                // onPress={() => handleInputs('SupplierType', 3)}
-                uncheckedColor="#032e63"
-                color="#032e63"
-              />
-              <Text style={{color:'#000'}}>Both</Text>
-            </View>
-          </View>
-        </View> */}
-        {/* <View style={{marginTop: 10}}>
-          <Text style={styles.text}>
-            Any branches you have<Text style={{color: 'red'}}>{' *'}</Text>
-          </Text>
-          <CheckBox
-            disabled={false}
-            // value={inputs.IsAnyBranch}
-            // onValueChange={newValue =>
-            //   handleInputs('IsAnyBranch', !inputs.IsAnyBranch)
-            // }
-            tintColors={{true: '#032e63', false: '#032e63'}}
-            onTintColor="#032e63"
-            onCheckColor="#032e63"
-            boxType="square"
-            style={{height: 16, width: 18, marginTop: 10}}
-          />
-        </View> */}
         <View style={{marginTop: 10}}>
           <Text style={styles.text}>Type of jewellery</Text>
           <View
@@ -1140,6 +1011,14 @@ console.log('request sned on update data ',data);
                 value={inputs.JTyped}
                 onValueChange={newValue => {
                   setInputs(prev => ({...prev, JTyped: newValue}));
+                  handleInputs(
+                    'diamond_purity',
+                    newValue ? [...inputs.diamond_purity] : [],
+                  );
+                  handleInputs(
+                    'diamond_specialisation',
+                    newValue ? [...inputs.diamond_specialisation] : [],
+                  );
                 }}
                 tintColors={{true: '#032e63', false: '#032e63'}}
                 onTintColor="#032e63"
@@ -1153,7 +1032,17 @@ console.log('request sned on update data ',data);
               <CheckBox
                 disabled={false}
                 value={inputs.JTypeg}
-                onValueChange={newValue => handleInputs('JTypeg', newValue)}
+                onValueChange={newValue => {
+                  handleInputs('JTypeg', newValue),
+                    handleInputs(
+                      'gold_purity',
+                      newValue ? [...inputs.gold_purity] : [],
+                    ),
+                    handleInputs(
+                      'gold_specialisation',
+                      newValue ? [...inputs.gold_specialisation] : [],
+                    );
+                }}
                 tintColors={{true: '#032e63', false: '#032e63'}}
                 onTintColor="#032e63"
                 onCheckColor="#032e63"
@@ -1166,7 +1055,17 @@ console.log('request sned on update data ',data);
               <CheckBox
                 disabled={false}
                 value={inputs.JTypep}
-                onValueChange={newValue => handleInputs('JTypep', newValue)}
+                onValueChange={newValue => {
+                  handleInputs('JTypep', newValue),
+                    handleInputs(
+                      'platinum_specialisation',
+                      newValue ? [...inputs.platinum_specialisation] : [],
+                    ),
+                    handleInputs(
+                      'platinum_purity',
+                      newValue ? [...inputs.platinum_purity] : [],
+                    );
+                }}
                 tintColors={{true: '#032e63', false: '#032e63'}}
                 onTintColor="#032e63"
                 onCheckColor="#032e63"
@@ -1179,7 +1078,17 @@ console.log('request sned on update data ',data);
               <CheckBox
                 disabled={false}
                 value={inputs.JTypes}
-                onValueChange={newValue => handleInputs('JTypes', newValue)}
+                onValueChange={newValue => {
+                  handleInputs('JTypes', newValue);
+                  handleInputs(
+                    'silver_purity',
+                    newValue ? [...inputs.silver_purity] : [],
+                  );
+                  handleInputs(
+                    'silver_specialisation',
+                    newValue ? [...inputs.silver_specialisation] : [],
+                  );
+                }}
                 tintColors={{true: '#032e63', false: '#032e63'}}
                 onTintColor="#032e63"
                 onCheckColor="#032e63"
@@ -1197,15 +1106,19 @@ console.log('request sned on update data ',data);
                 Diamond purity<Text style={{color: 'red'}}>{' *'}</Text>
               </Text>
               <MultiSelect
-                items={items1}
-                uniqueKey="name"
+                // items={convertArrayToItems(
+                //   selector?.typeOfjewellery?.diamondPurityList,
+                // )}
+                items={selector?.typeOfjewellery?.diamondPurityList}
+                uniqueKey="value"
                 onSelectedItemsChange={val => {
                   handleInputs('diamond_purity', val);
-                  if (val.includes('Custom Purity')) {
-                    setCustomPurityDia(true);
-                  } else {
-                    setCustomPurityDia(false);
-                  }
+                  // if (val.includes('Custom purity')) {
+                  //   setCustomPurityDia(true);
+                  //   handleInputs('diamondcustom_purity', '');
+                  // } else {
+                  //   setCustomPurityDia(false);
+                  // }
                 }}
                 selectedItems={inputs.diamond_purity}
                 searchIcon={false}
@@ -1236,6 +1149,9 @@ console.log('request sned on update data ',data);
                   marginTop: 5,
                   // borderWidth:1
                 }}
+                styleItemsContainer={{
+                  height: hp(20),
+                }}
                 tagContainerStyle={{
                   backgroundColor: '#032e63',
                   justifyContent: 'space-between',
@@ -1247,7 +1163,7 @@ console.log('request sned on update data ',data);
             {customPurityDia == true ? (
               <View style={{marginTop: 10}}>
                 <TextInput
-                  placeholder="Please specify custom purity"
+                  placeholder="Please specify Custom purity"
                   style={{
                     borderWidth: 1,
                     marginTop: 4,
@@ -1258,6 +1174,7 @@ console.log('request sned on update data ',data);
                     color: '#000',
                   }}
                   placeholderTextColor={'grey'}
+                  keyboardType="decimal-pad"
                   value={inputs.diamondcustom_purity}
                   onChangeText={val =>
                     handleInputs('diamondcustom_purity', val)
@@ -1307,6 +1224,9 @@ console.log('request sned on update data ',data);
                   marginTop: 5,
                   // borderWidth:1
                 }}
+                styleItemsContainer={{
+                  height: hp(20),
+                }}
                 tagContainerStyle={{
                   backgroundColor: '#032e63',
                   justifyContent: 'space-between',
@@ -1324,16 +1244,11 @@ console.log('request sned on update data ',data);
                 Gold purity<Text style={{color: 'red'}}>{' *'}</Text>
               </Text>
               <MultiSelect
-                items={items}
-                uniqueKey="name"
-                onSelectedItemsChange={val => {
-                  handleInputs('gold_purity', val);
-                  if (val.includes('Custom Purity')) {
-                    setCustomPurityGo(true);
-                  } else {
-                    setCustomPurityGo(false);
-                  }
-                }}
+                // items={convertArrayToItems(
+                //   selector?.typeOfjewellery?.goldPurityList,
+                // )}
+                items={selector?.typeOfjewellery?.goldPurityList}
+                uniqueKey="value"
                 selectedItems={inputs.gold_purity}
                 searchIcon={false}
                 tagBorderColor={'#032e63'}
@@ -1363,11 +1278,23 @@ console.log('request sned on update data ',data);
                   marginTop: 5,
                   // borderWidth:1
                 }}
+                styleItemsContainer={{
+                  height: hp(20),
+                }}
                 tagContainerStyle={{
                   backgroundColor: '#032e63',
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   width: '48%',
+                }}
+                onSelectedItemsChange={val => {
+                  handleInputs('gold_purity', val);
+                  // if (val.includes('Custom purity')) {
+                  //   setCustomPurityGo(true);
+                  //  uses
+                  // } else {
+                  //   setCustomPurityGo(false);
+                  // }
                 }}
               />
             </View>
@@ -1375,7 +1302,7 @@ console.log('request sned on update data ',data);
             {customPurityGo == true ? (
               <View style={{marginTop: 10}}>
                 <TextInput
-                  placeholder="Please specify custom purity"
+                  placeholder="Please specify Custom purity"
                   style={{
                     borderWidth: 1,
                     marginTop: 4,
@@ -1386,6 +1313,7 @@ console.log('request sned on update data ',data);
                     color: '#000',
                   }}
                   placeholderTextColor={'grey'}
+                  keyboardType="decimal-pad"
                   value={inputs.goldcustom_purity}
                   onChangeText={val => handleInputs('goldcustom_purity', val)}
                 />
@@ -1433,6 +1361,9 @@ console.log('request sned on update data ',data);
                   marginTop: 5,
                   // borderWidth:1
                 }}
+                styleItemsContainer={{
+                  height: hp(20),
+                }}
                 tagContainerStyle={{
                   backgroundColor: '#032e63',
                   justifyContent: 'space-between',
@@ -1450,15 +1381,19 @@ console.log('request sned on update data ',data);
                 Platinum purity<Text style={{color: 'red'}}>{' *'}</Text>
               </Text>
               <MultiSelect
-                items={items2}
-                uniqueKey="name"
+                // items={convertArrayToItems(
+                //   selector?.typeOfjewellery?.platinumPurityList,
+                // )}
+                items={selector?.typeOfjewellery?.platinumPurityList}
+                uniqueKey="value"
                 onSelectedItemsChange={val => {
                   handleInputs('platinum_purity', val);
-                  if (val.includes('Custom Purity')) {
-                    setCustomPurityPla(true);
-                  } else {
-                    setCustomPurityPla(false);
-                  }
+                  // if (val.includes('Custom purity')) {
+                  //   setCustomPurityPla(true);
+                  //   handleInputs('platinumcustom_purity', '');
+                  // } else {
+                  //   setCustomPurityPla(false);
+                  // }
                 }}
                 selectedItems={inputs.platinum_purity}
                 searchIcon={false}
@@ -1491,6 +1426,9 @@ console.log('request sned on update data ',data);
                   marginTop: 5,
                   // borderWidth:1
                 }}
+                styleItemsContainer={{
+                  height: hp(20),
+                }}
                 tagContainerStyle={{
                   backgroundColor: '#032e63',
                   justifyContent: 'space-between',
@@ -1502,7 +1440,7 @@ console.log('request sned on update data ',data);
             {customPurityPla == true ? (
               <View style={{marginTop: 10}}>
                 <TextInput
-                  placeholder="Please specify custom purity"
+                  placeholder="Please specify Custom purity"
                   style={{
                     borderWidth: 1,
                     marginTop: 4,
@@ -1512,6 +1450,7 @@ console.log('request sned on update data ',data);
                     paddingLeft: 10,
                     color: '#000',
                   }}
+                  keyboardType="decimal-pad"
                   placeholderTextColor={'grey'}
                   value={inputs.platinumcustom_purity}
                   onChangeText={val =>
@@ -1561,6 +1500,9 @@ console.log('request sned on update data ',data);
                   marginTop: 5,
                   // borderWidth:1
                 }}
+                styleItemsContainer={{
+                  height: hp(20),
+                }}
                 tagContainerStyle={{
                   backgroundColor: '#032e63',
                   justifyContent: 'space-between',
@@ -1578,15 +1520,19 @@ console.log('request sned on update data ',data);
                 Silver purity<Text style={{color: 'red'}}>{' *'}</Text>
               </Text>
               <MultiSelect
-                items={items3}
-                uniqueKey="name"
+                // items={convertArrayToItems(
+                //   selector?.typeOfjewellery?.silverPurityList,
+                // )}
+                items={selector?.typeOfjewellery?.silverPurityList}
+                uniqueKey="value"
                 onSelectedItemsChange={val => {
                   handleInputs('silver_purity', val);
-                  if (val.includes('Custom Purity')) {
-                    setCustomPuritySil(true);
-                  } else {
-                    setCustomPuritySil(false);
-                  }
+                  // if (val.includes('Custom purity')) {
+                  //   setCustomPuritySil(true);
+                  //   handleInputs('silvercustom_purity', '');
+                  // } else {
+                  //   setCustomPuritySil(false);
+                  // }
                 }}
                 selectedItems={inputs.silver_purity}
                 searchIcon={false}
@@ -1617,6 +1563,9 @@ console.log('request sned on update data ',data);
                   marginTop: 5,
                   // borderWidth:1
                 }}
+                styleItemsContainer={{
+                  height: hp(20),
+                }}
                 tagContainerStyle={{
                   backgroundColor: '#032e63',
                   justifyContent: 'space-between',
@@ -1628,7 +1577,7 @@ console.log('request sned on update data ',data);
             {customPuritySil == true ? (
               <View style={{marginTop: 10}}>
                 <TextInput
-                  placeholder="Please specify custom purity"
+                  placeholder="Please specify Custom purity"
                   style={{
                     borderWidth: 1,
                     marginTop: 4,
@@ -1638,6 +1587,7 @@ console.log('request sned on update data ',data);
                     paddingLeft: 10,
                     color: '#000',
                   }}
+                  keyboardType="decimal-pad"
                   placeholderTextColor={'grey'}
                   value={inputs.silvercustom_purity}
                   onChangeText={val => handleInputs('silvercustom_purity', val)}
@@ -1686,6 +1636,9 @@ console.log('request sned on update data ',data);
                   marginTop: 5,
                   // borderWidth:1
                 }}
+                styleItemsContainer={{
+                  height: hp(20),
+                }}
                 tagContainerStyle={{
                   backgroundColor: '#032e63',
                   justifyContent: 'space-between',
@@ -1696,63 +1649,6 @@ console.log('request sned on update data ',data);
             </View>
           </View>
         ) : null}
-        {/* <View style={{marginTop: 10}}>
-          <Text style={styles.text}>Diamond quality</Text>
-          <TextInput
-            placeholder="Specify Your Qualities"
-            style={{
-              borderWidth: 1,
-              marginTop: 4,
-              height: 40,
-              borderRadius: 6,
-              borderColor: 'grey',
-              paddingLeft: 10,color:'#000'
-            }}
-            placeholderTextColor={'grey'}
-            value={inputs.DiamondQuality}
-            onChangeText={val => handleInputs('DiamondQuality', val)}
-          />
-        </View> */}
-        {/* <View style={{marginTop: 10}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginTop: 10,
-            }}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <CheckBox
-                disabled={false}
-                value={inputs.IsActive}
-                onValueChange={newValue => handleInputs('IsActive', newValue)}
-                tintColors={{true: '#032e63', false: '#032e63'}}
-                onTintColor="#032e63"
-                onCheckColor="#032e63"
-                boxType="square"
-                style={{height: 16, width: 18}}
-              />
-              <Text style={{marginLeft: 10,color:'#000'}}>Is Active</Text>
-            </View>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <CheckBox
-                disabled={false}
-                value={inputs.IsDefaultSupplier}
-                onValueChange={newValue =>
-                  handleInputs('IsDefaultSupplier', newValue)
-                }
-                tintColors={{true: '#032e63', false: '#032e63'}}
-                onTintColor="#032e63"
-                onCheckColor="#032e63"
-                boxType="square"
-                style={{height: 16, width: 18}}
-              />
-              <Text style={{marginLeft: 10 ,color:'#000'}}>
-                Default Supplier for all retailers
-              </Text>
-            </View>
-          </View>
-        </View> */}
 
         <View style={{marginTop: 10}}>
           <Text style={styles.text}>Upload image of your product:</Text>
@@ -1821,8 +1717,8 @@ console.log('request sned on update data ',data);
               }}>
               <Image
                 style={{
-                  height: widthPercentageToDP(30),
-                  width: widthPercentageToDP(30),
+                  height: wp(30),
+                  width: wp(30),
                   alignSelf: 'center',
                   marginTop: 10,
                 }}
@@ -1896,8 +1792,8 @@ console.log('request sned on update data ',data);
                 }}>
                 <Image
                   style={{
-                    height: widthPercentageToDP(30),
-                    width: widthPercentageToDP(30),
+                    height: wp(30),
+                    width: wp(30),
                     alignSelf: 'center',
                     marginTop: 10,
                   }}
@@ -1958,7 +1854,7 @@ console.log('request sned on update data ',data);
                 color: '#000',
               }}
               value={inputs.ProductName3}
-              onChangeText={val => handleProductImages('ProductName3', val)}
+              onChangeText={val => handleInputs('ProductName3', val)}
             />
             {inputs.ProductImage3?.uri ? (
               <View
@@ -1971,8 +1867,8 @@ console.log('request sned on update data ',data);
                 }}>
                 <Image
                   style={{
-                    height: widthPercentageToDP(30),
-                    width: widthPercentageToDP(30),
+                    height: wp(30),
+                    width: wp(30),
                     alignSelf: 'center',
                     marginTop: 10,
                   }}
@@ -1981,73 +1877,6 @@ console.log('request sned on update data ',data);
               </View>
             ) : null}
           </View>
-
-          {/* <FlatList
-            data={details2?.product}
-            renderItem={({item, index}) => (
-              <View>
-                <View style={styles.uploadView}>
-                  <TouchableOpacity
-                    onPress={() => handleProductImages(index, 'image')}
-                    style={styles.grey}>
-                    <Text style={{color: '#fff'}}>Choose File</Text>
-                  </TouchableOpacity>
-                  <View
-                    style={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '70%',
-                    }}>
-                    {item.image2`${index + 1}`?.name == '' ||
-                    undefined ? (
-                      <Text style={{color:'#000'}}>No File Choosen</Text>
-                    ) : (
-                      <Text style={{color:'#000'}}>
-                        {item[`image2${index + 1}`]?.name}
-                      </Text>
-                    )}
-                  </View>
-                </View>
-                <TextInput
-                  placeholder={'Product Name'}
-                  placeholderTextColor={item?.OwnerName ? 'black' : 'grey'}
-                  style={{
-                    borderWidth: 1,
-                    marginTop: 4,
-                    height: 40,
-                    borderRadius: 6,
-                    borderColor: 'grey',
-                    paddingLeft: 10,color:'#000'
-                  }}
-                  value={item?.(`product_name${index + 1}`)}
-                  onChangeText={val => handleProductImages(index, val)}
-                />
-                {item.image2
-                `${index + 1}`?.uri ? (
-                  <View
-                    style={{
-                      elevation: 5,
-                      shadowColor: 'black',
-                      shadowOffset: {height: 4, width: 4},
-                      shadowOpacity: 5,
-                      shadowRadius: 4,
-                    }}>
-                    <Image
-                      style={{
-                        height: widthPercentageToDP(30),
-                        width: widthPercentageToDP(30),
-                        alignSelf: 'center',
-                        marginTop: 10,
-                      }}
-                      source={{uri: `https://olocker.co/uploads/partner/${item[`image2${index + 1}`]}`
-                      }}
-                    
-                    />
-                  </View>
-                ) : null}
-              </View>
-            )}
-          /> */}
         </View>
 
         <View style={{marginTop: 10}}>
@@ -2189,8 +2018,8 @@ console.log('request sned on update data ',data);
                 }}>
                 <Image
                   style={{
-                    height: widthPercentageToDP(30),
-                    width: widthPercentageToDP(30),
+                    height: wp(30),
+                    width: wp(30),
                     alignSelf: 'center',
                     marginTop: 10,
                   }}
@@ -2248,8 +2077,8 @@ console.log('request sned on update data ',data);
                 }}>
                 <Image
                   style={{
-                    height: widthPercentageToDP(30),
-                    width: widthPercentageToDP(30),
+                    height: wp(30),
+                    width: wp(30),
                     alignSelf: 'center',
                     marginTop: 10,
                   }}
@@ -2307,8 +2136,8 @@ console.log('request sned on update data ',data);
                 }}>
                 <Image
                   style={{
-                    height: widthPercentageToDP(30),
-                    width: widthPercentageToDP(30),
+                    height: wp(30),
+                    width: wp(30),
                     alignSelf: 'center',
                     marginTop: 10,
                   }}
@@ -2316,57 +2145,6 @@ console.log('request sned on update data ',data);
                 />
               </View>
             ) : null}
-
-            {/* <View style={styles.sView}>
-              <TouchableOpacity
-                onPress={() => handleImageUpload('showroom_image')}
-                style={styles.sTouch}>
-                <Text style={{color: '#fff'}}>Choose File</Text>
-              </TouchableOpacity>
-              <View
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '70%',
-                }}>
-                {inputs.showroom_image.length <= 0 ? (
-                  <Text style={{color:'#000'}}>No File Choosen</Text>
-                ) : (
-                  <Text style={{color:'#000'}}>
-                    {
-                      inputs.showroom_image[inputs.showroom_image.length - 1]
-                        ?.name
-                    }
-                  </Text>
-                )}
-              </View>
-            </View>
-            <FlatList
-              data={inputs.showroom_image}
-              horizontal
-              style={{marginTop: 10}}
-              renderItem={({item}) => {
-                console.log('thjos os called', item);
-                return (
-                  <View
-                    style={{
-                      height: widthPercentageToDP(30),
-                      width: widthPercentageToDP(30),
-                      elevation: 5,
-                      shadowColor: 'black',
-                      shadowOffset: {height: 4, width: 4},
-                      shadowOpacity: 5,
-                      shadowRadius: 4,
-                      marginHorizontal: widthPercentageToDP(2),
-                    }}>
-                    <Image
-                      style={{height: '100%', width: '100%'}}
-                      source={{uri: item.uri}}
-                    />
-                  </View>
-                );
-              }}
-            /> */}
           </View>
         </View>
 
@@ -2445,8 +2223,8 @@ console.log('request sned on update data ',data);
               }}>
               <Image
                 style={{
-                  height: widthPercentageToDP(30),
-                  width: widthPercentageToDP(30),
+                  height: wp(30),
+                  width: wp(30),
                   alignSelf: 'center',
                   marginTop: 10,
                 }}
@@ -2528,8 +2306,8 @@ console.log('request sned on update data ',data);
               }}>
               <Image
                 style={{
-                  height: widthPercentageToDP(30),
-                  width: widthPercentageToDP(30),
+                  height: wp(30),
+                  width: wp(30),
                   alignSelf: 'center',
                   marginTop: 10,
                 }}
@@ -2611,8 +2389,8 @@ console.log('request sned on update data ',data);
               }}>
               <Image
                 style={{
-                  height: widthPercentageToDP(30),
-                  width: widthPercentageToDP(30),
+                  height: wp(30),
+                  width: wp(30),
                   alignSelf: 'center',
                   marginTop: 10,
                 }}
@@ -2620,83 +2398,6 @@ console.log('request sned on update data ',data);
               />
             </View>
           ) : null}
-
-          {/* <FlatList
-            data={ownerImages}
-            renderItem={({item, index}) => (
-              <View>
-                <View>
-                  <View style={styles.uploadView}>
-                    <TouchableOpacity
-                      onPress={() => handleOwnerImages(index, 'image', '')}
-                      style={styles.grey}>
-                      <Text style={{color: '#fff'}}>Choose File</Text>
-                    </TouchableOpacity>
-                    <View
-                      style={{
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: '70%',
-                      }}>
-                      {item[`hiddenowner_image${index + 1}`]?.name == '' ? (
-                        <Text style={{color:'#000'}}>No File Choosen</Text>
-                      ) : (
-                        <Text style={{color:'#000'}}>
-                          {item[`hiddenowner_image${index + 1}`]?.name}
-                        </Text>
-                      )}
-                    </View>
-                  </View>
-                  {item[`hiddenowner_image${index + 1}`]?.uri ? (
-                    <View
-                      style={{
-                        elevation: 5,
-                        shadowColor: 'black',
-                        shadowOffset: {height: 4, width: 4},
-                        shadowOpacity: 5,
-                        shadowRadius: 4,
-                      }}>
-                      <Image
-                        style={{
-                          height: widthPercentageToDP(30),
-                          width: widthPercentageToDP(30),
-                          alignSelf: 'center',
-                          marginTop: 10,
-                        }}
-                        source={{
-                          uri: item[`hiddenowner_image${index + 1}`]?.uri,
-                        }}
-                      />
-                    </View>
-                  ) : null}
-                </View>
-                <TextInput
-                  placeholder="Owner Name"
-                  style={{
-                    borderWidth: 1,
-                    marginTop: 4,
-                    height: 40,
-                    borderRadius: 6,
-                    borderColor: 'grey',
-                    paddingLeft: 10,color:'#000'
-                  }}
-                  placeholderTextColor={'grey'}
-                  value={item[`owner_name${index + 1}`]}
-                  onChangeText={val => handleOwnerImages(index, val, 'name')}
-                />
-                <View style={styles.multiline}>
-                  <TextInput
-                  placeholderTextColor={'grey'}
-                    placeholder="Write about owner description"
-                    style={[styles.input,{color:'#000'}]}
-                    multiline
-                    value={item[`owner_description${index + 1}`]}
-                    onChangeText={val => handleOwnerImages(index, val, '')}
-                  />
-                </View>
-              </View>
-            )}
-          /> */}
         </View>
         <View style={{marginTop: 10}}>
           <Text style={styles.text}>Logo Upload</Text>
@@ -2747,8 +2448,8 @@ console.log('request sned on update data ',data);
               }}>
               <Image
                 style={{
-                  height: widthPercentageToDP(30),
-                  width: widthPercentageToDP(30),
+                  height: wp(30),
+                  width: wp(30),
                   alignSelf: 'center',
                   marginTop: 10,
                 }}
@@ -2785,7 +2486,7 @@ console.log('request sned on update data ',data);
           title={'Edit Profile '}
           onPress={() => navigation.goBack()}
         />
-        {fetching  ? <Loading /> : null}
+        {fetching ? <Loading /> : null}
         {renderScreen()}
       </View>
     );
@@ -2807,7 +2508,7 @@ export default EditSupplierProfile;
 const items = [
   {
     id: '1',
-    name: 'Custom Purity',
+    name: 'Custom purity',
   },
   {
     id: '2',
@@ -2850,103 +2551,3 @@ const items3 = [
   {id: '1', name: 'Custom purity'},
   {id: '2', name: '92'},
 ];
-
-// import React, {useEffect, useState} from 'react';
-// import {
-//   View,
-//   Text,
-//   Image,
-//   ScrollView,
-//   TouchableOpacity,
-//   TextInput,
-//   Platform,
-// } from 'react-native';
-// import {useNavigation} from '@react-navigation/native';
-// import StatusBar from '../../../components/StatusBar';
-// import styles from './styles';
-// import Buttom from '../../../components/StoreButtomTab';
-// import Header from '../../../components/CustomHeader';
-// const Editprofile = () => {
-//   const navigation = useNavigation();
-//   const [selectedItems, setSelectedItems] = useState('');
-//   return (
-//     <View style={styles.container1}>
-//        <Header
-//         source={require('../../../assets/L.png')}
-//         source2={require('../../../assets/Image/dil.png')}
-//         source1={require('../../../assets/Fo.png')}
-//         title={'Edit Profile '}
-//         onPress={() => navigation.goBack()}
-//         onPress2={() => navigation.navigate('FavDetails')}
-//         onPress1={() => navigation.navigate('MessageBox')}
-//       />
-//       <ScrollView style={{flex: 1, paddingHorizontal: 10, paddingVertical: 20}}>
-//         <View style={styles.main}>
-//           <View
-//             style={{
-//               height: 114,
-//               width: 114,
-//               backgroundColor: '#918f99',
-//               borderRadius: 57,
-//               alignItems: 'center',
-//               justifyContent: 'center',
-//             }}>
-//             <Text style={{fontSize: 16, color: '#fff'}}>Add Photo</Text>
-//           </View>
-//           </View>
-//           <View>
-//           <Text style={styles.title}>Company Name <Text style={{color:'red'}}>*</Text></Text>
-//           <View style={styles.main1}>
-//             <TextInput
-//               style={{width: '90%', marginLeft: 10}}
-//               placeholder="Company Name"
-//               placeholderTextColor="black"
-//             />
-//           </View>
-
-//           <Text style={styles.title}>Display Name <Text style={{color:'red'}}>*</Text></Text>
-//           <View style={styles.main1}>
-//             <TextInput
-//               style={{width: '90%', marginLeft: 10}}
-//               placeholder="Display Name"
-//               placeholderTextColor="black"
-//             />
-//           </View>
-//           <Text style={styles.title}>OwnerName <Text style={{color:'red'}}>*</Text></Text>
-//           <View style={styles.main1}>
-//             <TextInput
-//               style={{width: '90%', marginLeft: 10}}
-//               placeholder="OwnerName"
-//               placeholderTextColor="black"
-//             />
-//           </View>
-//           <Text style={styles.title}>HO Address <Text style={{color:'red'}}>*</Text></Text>
-//           <View style={styles.main1}>
-//             <TextInput
-//               style={{width: '90%', marginLeft: 10}}
-//               placeholder="HO Address"
-//               placeholderTextColor="black"
-//             />
-//           </View>
-//           </View>
-//         <View style={{marginTop: 20, marginHorizontal: 110, marginBottom: 60}}>
-//           <TouchableOpacity
-//             // onPress={() => navigation.navigate('Loyalty')}
-//             style={styles.button}>
-//             <Text style={styles.bttext}>{'Save'}</Text>
-//           </TouchableOpacity>
-
-//         </View>
-//       </ScrollView>
-//       <StatusBar />
-
-//     </View>
-//   );
-// };
-// export default Editprofile;
-
-// const Data = [
-//   {label: 'Football', value: 'football'},
-//   {label: 'Baseball', value: 'baseball'},
-//   {label: 'Hockey', value: 'hockey'},
-// ];

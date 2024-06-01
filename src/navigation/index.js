@@ -1,10 +1,10 @@
 import React from 'react';
-import { Image } from 'react-native';
-import { NavigationContainer, StackActions } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {Image, View} from 'react-native';
+import {NavigationContainer, StackActions} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SplashScreen from '../screens/Auth/SplashPage';
 import Login from '../screens/Auth/LoginPage';
-import ForgotPassword from "../screens/Auth/ForgotPassword";
+import ForgotPassword from '../screens/Auth/ForgotPassword';
 import Register from '../screens/Auth/RegisterPage';
 import HomeScreen from '../screens/Main/HomeScreen';
 import MyCatalogue from '../screens/Main/MyCatalogue';
@@ -26,26 +26,27 @@ import Purchase from '../screens/Main/Purchasehistory';
 import LoyaltyPage from '../screens/Main/Loyaltypage';
 import Loyalty from '../screens/Main/Loyalty';
 import MyNetwork from '../screens/Main/MyNetwork';
+import MyNetworks from '../screens/Main/MyNetworks';
 import PendingRequest from '../screens/Main/PendingRequest';
 import SentRequest from '../screens/Main/SentRequest';
-import MyNetworks from '../screens/Main/MyNetworks';
 import PartnerProfile from '../screens/Main/PartnerProfile';
 import editProduct from '../screens/Main/EditProductDetails';
-import CategoryDetails from '../screens/Main/CategoryDetails';
 import MyProducts from '../screens/Main/MyProducts';
 import Filter from '../screens/Main/Filter';
 import Edit from '../screens/Main/Editprofile';
 import ChangePassword from '../screens/Main/ChangePassword';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import ChatScreen from '../screens/Main/ChatScreen'
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import ChatScreen from '../screens/Main/ChatScreen';
 import MessageBox2 from '../screens/Main/MessageBox2';
+import collectionViewproductList from '../screens/Main/collectionviewproduct';
+import {navigationRef} from './RootNavigation';
 
 const Stack1 = createNativeStackNavigator();
 function HomeScreen1() {
   return (
     <Stack1.Navigator
       initialRouteName="Home"
-      screenOptions={{ headerShown: false }}>
+      screenOptions={{headerShown: false}}>
       <Stack1.Screen name="Home" component={HomeScreen} />
       <Stack1.Screen name="SelectOption" component={SelectOption} />
       <Stack1.Screen name="Addcategory" component={AddCategory} />
@@ -55,11 +56,20 @@ function HomeScreen1() {
       <Stack1.Screen name="MyProductDetails" component={MyProductDetails} />
       <Stack1.Screen name="SubCategory" component={SubCategory} />
       <Stack1.Screen name="MyProducts" component={MyProducts} />
-      <Stack1.Screen name="CategoryDetails" component={CategoryDetails} />
       <Stack1.Screen name="Filter" component={Filter} />
       <Stack1.Screen name="FavDetails" component={DetailsFav} />
       <Stack1.Screen name="Editproduct" component={editProduct} />
+      <Stack1.Screen
+        name="collectionproductlist"
+        component={collectionViewproductList}
+      />
+      {/* <Stack2.Screen name="MyNetwork1" component={MyNetwork1} /> */}
 
+      <Stack2.Screen name="MyNetwork" component={MyNetwork} />
+      <Stack2.Screen name="MyNetworks" component={MyNetworks} />
+      <Stack2.Screen name="PartnerProfile" component={PartnerProfile} />
+      <Stack2.Screen name="PendingRequest" component={PendingRequest} />
+      <Stack2.Screen name="SentRequest" component={SentRequest} />
     </Stack1.Navigator>
   );
 }
@@ -68,15 +78,16 @@ function Customer1() {
   return (
     <Stack3.Navigator
       initialRouteName="Customers"
-      screenOptions={{ headerShown: false }}>
+      screenOptions={{headerShown: false}}>
       <Stack3.Screen name="Customers" component={Customers} />
+      <Stack3.Screen name="Editprofile" component={Edit} />
+      <Stack3.Screen name="changepassword" component={ChangePassword} />
       <Stack3.Screen name="Mycustomer" component={Mycustomer} />
       <Stack3.Screen name="Feedback" component={Feedback} />
       <Stack3.Screen name="MyCustomerDetail" component={MyCustomerDetail} />
       <Stack3.Screen name="Messagebox" component={Messagebox} />
       <Stack3.Screen name="Purchase" component={Purchase} />
-      <Stack3.Screen name="Editprofile" component={Edit} />
-      <Stack3.Screen name="changepassword" component={ChangePassword} />
+
       <Stack3.Screen name="Loyalty" component={Loyalty} />
       <Stack3.Screen name="Loyalty1" component={LoyaltyPage} />
       <Stack3.Screen name="Chat" component={Chat} />
@@ -88,7 +99,7 @@ function MyNetwork1() {
   return (
     <Stack2.Navigator
       initialRouteName="MyNetwork"
-      screenOptions={{ headerShown: false }}>
+      screenOptions={{headerShown: false}}>
       <Stack2.Screen name="MyNetwork" component={MyNetwork} />
       <Stack2.Screen name="MyNetworks" component={MyNetworks} />
       <Stack2.Screen name="PartnerProfile" component={PartnerProfile} />
@@ -108,24 +119,26 @@ function Bottom() {
         tabBarShowLabel: false,
         tabBarStyle: {
           backgroundColor: '#01377d',
-          paddingTop: 5,
-          paddingBottom: 5,
+          //  paddingTop: 3 ,
+          //   paddingBottom: 3,
         },
       }}>
       <Tab.Screen
         name="Home1"
         component={HomeScreen1}
         options={{
-          tabBarIcon: ({ focused }) => {
+          tabBarIcon: ({focused}) => {
             return (
-              <Image
-                style={{
-                  tintColor: focused ? '#fff' : 'grey',
-                  height: 26,
-                  width: 24,
-                }}
-                source={require('../assets/For.png')}
-              />
+              <View style={{borderWidth: 0, width: '25%'}}>
+                <Image
+                  style={{
+                    tintColor: focused ? '#fff' : 'grey',
+                    height: 24,
+                    width: 22,
+                  }}
+                  source={require('../assets/For.png')}
+                />
+              </View>
             );
           },
         }}
@@ -134,16 +147,18 @@ function Bottom() {
         name="MyNetwork1"
         component={MyNetwork1}
         options={{
-          tabBarIcon: ({ focused }) => {
+          tabBarIcon: ({focused}) => {
             return (
-              <Image
-                style={{
-                  tintColor: focused ? '#fff' : 'grey',
-                  height: 26,
-                  width: 26,
-                }}
-                source={require('../assets/Lay.png')}
-              />
+              <View style={{borderWidth: 0, width: '25%'}}>
+                <Image
+                  style={{
+                    tintColor: focused ? '#fff' : 'grey',
+                    height: 24,
+                    width: 24,
+                  }}
+                  source={require('../assets/Lay.png')}
+                />
+              </View>
             );
           },
         }}
@@ -152,16 +167,18 @@ function Bottom() {
         name="Message"
         component={MessageList}
         options={{
-          tabBarIcon: ({ focused }) => {
+          tabBarIcon: ({focused}) => {
             return (
-              <Image
-                style={{
-                  tintColor: focused ? '#fff' : 'grey',
-                  height: 28,
-                  width: 28,
-                }}
-                source={require('../assets/noti.png')}
-              />
+              <View style={{borderWidth: 0, width: '25%'}}>
+                <Image
+                  style={{
+                    tintColor: focused ? '#fff' : 'grey',
+                    height: 25,
+                    width: 25,
+                  }}
+                  source={require('../assets/noti.png')}
+                />
+              </View>
             );
           },
         }}
@@ -170,16 +187,18 @@ function Bottom() {
         name="Customer1"
         component={Customer1}
         options={{
-          tabBarIcon: ({ focused }) => {
+          tabBarIcon: ({focused}) => {
             return (
-              <Image
-                style={{
-                  tintColor: focused ? '#fff' : 'grey',
-                  height: 25,
-                  width: 22,
-                }}
-                source={require('../assets/Sh.png')}
-              />
+              <View style={{borderWidth: 0, width: '25%'}}>
+                <Image
+                  style={{
+                    tintColor: focused ? '#fff' : 'grey',
+                    height: 25,
+                    width: 22,
+                  }}
+                  source={require('../assets/Sh.png')}
+                />
+              </View>
             );
           },
         }}
@@ -191,17 +210,18 @@ function Bottom() {
 const Stack = createNativeStackNavigator();
 function Navigate() {
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
         initialRouteName="Splash"
-        screenOptions={{ headerShown: false }}>
+        screenOptions={{headerShown: false}}>
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Home" component={Bottom} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
         <Stack.Screen name="RegisterPage" component={Register} />
-        <Stack1.Screen name='ChatScreen' component={ChatScreen} />
-        <Stack1.Screen name='MessageBox' component={MessageBox2} />
+        <Stack.Screen name="ChatScreen" component={ChatScreen} />
+        <Stack.Screen name="MessageBox" component={MessageBox2} />
+        {/* <Stack1.Screen name='MyNetwork1'component={MyNetwork1}/> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

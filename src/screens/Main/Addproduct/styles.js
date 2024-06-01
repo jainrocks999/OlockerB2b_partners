@@ -1,36 +1,37 @@
 import React from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 export default StyleSheet.create({
-  container1:{ flex: 1, backgroundColor: 'white' },
-  breakupV:{
+  container1: {flex: 1, backgroundColor: 'white'},
+  breakupV: {
     alignItems: 'center',
     flexDirection: 'row',
     marginHorizontal: wp(3),
     // borderWidth: 1
   },
-  modelText:{ fontSize: 16, fontWeight: '700', color: '#000' },
+  modelText: {fontSize: 16, fontWeight: '700', color: '#000'},
   // color: '#032e63'
-  upload:{
+  upload: {
     alignSelf: 'center',
     marginTop: 5,
-    borderWidth: 1, borderColor: '#979998' ,
+    borderWidth: 1,
+    borderColor: '#979998',
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    
+
     flexDirection: 'row',
     height: hp(5.5),
     borderRadius: wp(3.5),
     width: '55%',
   },
-  TextMain:{ fontSize: 16, fontWeight: '700', color: '#000' },
-  textBreack:{ fontSize: 14, fontWeight: '600',color:'#474747' },
+  TextMain: {fontSize: 16, fontWeight: '700', color: '#000'},
+  textBreack: {fontSize: 14, fontWeight: '600', color: '#474747'},
   dropdown: {
     marginTop: wp(2),
-    color:'#474747',
+    color: '#474747',
     height: hp(5.5),
     backgroundColor: 'white',
     borderRadius: wp(3),
@@ -42,7 +43,7 @@ export default StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
-    marginLeft:5,
+    marginLeft: 5,
     // elevation: 3,
   },
   icon: {
@@ -53,7 +54,6 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-
   },
   textItem: {
     flex: 1,
@@ -61,7 +61,7 @@ export default StyleSheet.create({
   },
   placeholderStyle: {
     fontSize: 16,
-    color:'#474747'
+    color: '#474747',
   },
   selectedTextStyle: {
     fontSize: 16,
@@ -127,8 +127,6 @@ export default StyleSheet.create({
     height: wp(5.5),
   },
 
-
-
   container: {
     width: '100%',
     backgroundColor: '#032e63',
@@ -137,22 +135,20 @@ export default StyleSheet.create({
     // paddingHorizontal: 12,
     flexDirection: 'row',
     paddingVertical: wp(3),
-    paddingHorizontal: wp(3)
-
+    paddingHorizontal: wp(3),
   },
   text: {
     color: '#000',
     fontSize: 16,
     fontWeight: '700',
-    marginLeft:4
+    marginLeft: 4,
   },
   headertouch: {
     flexDirection: 'row',
     width: wp(30),
     // borderWidth: 1,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
-
 
   row: {
     backgroundColor: '#032e63',
@@ -161,51 +157,45 @@ export default StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#ccc',
     paddingVertical: 10,
-    width: '100%'
+    width: '100%',
   },
   Subrow: {
-
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomWidth: 2,
     borderColor: '#032e63',
     borderColor: '#ccc',
     paddingVertical: 10,
-    height: 60
+    height: 60,
   },
   cell: {
     color: 'white',
     flex: 1,
     textAlign: 'center',
-    fontWeight: '600'
+    fontWeight: '600',
   },
   Subcell: {
     color: '#000',
     flex: 1,
     textAlign: 'center',
-    fontWeight: '700'
+    fontWeight: '700',
   },
-  mrt:
-    {
-       marginHorizontal: wp(3), 
-       marginTop: wp(3.5) },
- 
+  mrt: {
+    marginHorizontal: wp(3),
+    marginTop: wp(3.5),
+  },
+
   btn: {
-    borderWidth: 1, borderColor: '#979998' ,
+    borderWidth: 1,
+    borderColor: '#979998',
     width: '49%',
     height: hp(5.5),
     borderRadius: wp(3),
     alignItems: 'center',
     justifyContent: 'center',
   },
-  txt2: { fontSize: 14, fontWeight: '600', color: '#032e63' }
-
+  txt2: {fontSize: 14, fontWeight: '600', color: '#032e63'},
 });
-
-
-
-
-
 
 // import {StyleSheet, Platform} from 'react-native';
 // export default StyleSheet.create({

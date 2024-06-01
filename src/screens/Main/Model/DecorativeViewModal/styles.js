@@ -141,12 +141,12 @@ export default StyleSheet.create({
     },
     cartItem: {
         flexDirection: 'row',
-        width: '80%',
+        width:  wp(58),
         justifyContent: 'space-between',
     },
     cardTitle: {
         fontSize: wp(4),
-        width: '65%',
+        width: '55%',
         marginTop: wp(1),
     },
     dot: {

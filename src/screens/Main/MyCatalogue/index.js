@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -11,59 +11,52 @@ import {
 } from 'react-native';
 import TabView from '../../../components/StoreButtomTab';
 import Header from '../../../components/CustomHeader';
-import Carousel from 'react-native-banner-carousel';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import Loader from '../../../components/Loader';
 import Banner from '../../../components/Banner';
-import { FlatListSlider } from 'react-native-flatlist-slider';
+import {FlatListSlider} from 'react-native-flatlist-slider';
 import ImagePath from '../../../components/ImagePath';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './styles';
 import Toast from 'react-native-simple-toast';
-import { useIsFocused } from '@react-navigation/native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { useSelector, useDispatch } from 'react-redux';
-const MyCatalogue = ({ route }) => {
+import {useSelector, useDispatch} from 'react-redux';
+const MyCatalogue = ({route}) => {
   const dispatch = useDispatch();
   const [product, setProduct] = useState(true);
   const [partner, setPartner] = useState(false);
   const [userdata, setUserdata] = useState(false);
   const isFetching = useSelector(state => state.isFetching);
+  const isFetching1 = useSelector(state => state.isFetching1);
   const selector = useSelector(state => state.Collection?.collection);
-  const [supplier,setSupplier]=useState();
-
-
-
+  const [supplier, setSupplier] = useState();
   const selector1 = useSelector(state => state.SupplierList?.suppliers);
   const selector2 = useSelector(state => state.Categories);
   const selector3 = useSelector(state => state.SupplierCategories);
   const selector4 = useSelector(state => state.BannerList?.data);
-
-
-
   const BannerData = [];
-  selector4?.map((item) => {
-    if (item.ImageSection == "partnerCatalog" && item.isActive == 1) {
-      const url = `${ImagePath.path2}${item.ImageUrl}${item.ImageName
-        }`;
+  selector4?.map(item => {
+    if (item.ImageSection == 'partnerCatalog' && item.isActive == 1) {
+      const url = `${ImagePath.path2}${item.ImageUrl}${item.ImageName}`;
       BannerData.push({
         image: url,
         desc: 'Red fort',
       });
     }
-  })
+  });
+  const isFocused = useIsFocused();
   const lenght = BannerData.length;
   const navigation = useNavigation();
   const BannerWidth = (Dimensions.get('window').width * 8) / 9;
   const BannerHeight = 140;
   // const scrollRef = useRef();
   const win = Dimensions.get('window');
-  const isFocused = useIsFocused();
+
   const [tc, setTc] = useState(0);
   const [tc1, setTc1] = useState(0);
 
@@ -79,18 +72,17 @@ const MyCatalogue = ({ route }) => {
     });
   };
 
-
   useEffect(() => {
     if (isFocused) {
-      collectionDataR()
+      collectionDataR();
     }
-  }, [isFocused])
+  }, [isFocused]);
   const collectionDataR = async () => {
-    AsyncStorage.setItem('supplierID','');
+    AsyncStorage.setItem('supplierID', '');
     const Token = await AsyncStorage.getItem('loginToken');
     const Id = await AsyncStorage.getItem('Partnersrno');
-    const supplier =await AsyncStorage.getItem('supplierID');
-   setSupplier(supplier);
+    const supplier = await AsyncStorage.getItem('supplierID');
+    setSupplier(supplier);
     dispatch({
       type: 'User_categories_Request',
       url: 'partners/productTypeList',
@@ -104,50 +96,62 @@ const MyCatalogue = ({ route }) => {
       Token: Token,
       partnerId: Id,
     });
-   
-  }
+  };
 
-
-  const ProductList = async (id, Value) => {
+  const ProductList = async item => {
     const partnerid = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken');
-    dispatch({
-      type: 'User_ProductList_Request',
-      url: 'partners/productTypeProducts',
-      userId: partnerid,
-      userType: 'partner',
-      typeId: id,
-      Token: Token,
-      login_user_id: partnerid,
-      login_user_type: 'partner',
-      name: Value,
-      navigation,
+
+    navigation.navigate('MyProductDetails', {
+      item,
+      ProductL: true,
     });
+    // dispatch({
+    //   type: 'User_ProductList_Request',
+    //   url: 'partners/productTypeProducts',
+    //   userId: partnerid,
+    //   userType: 'partner',
+    //   typeId: id,
+    //   Token: Token,
+    //   login_user_id: partnerid,
+    //   login_user_type: 'partner',
+    //   name: Value,
+    //   start:0,
+    //   limit:20,
+    //   navigation,
+    // });
   };
 
   const ProductList1 = async item => {
     const partnerid = await AsyncStorage.getItem('Partnersrno');
     const supplier = await AsyncStorage.getItem('supplierID');
     const Token = await AsyncStorage.getItem('loginToken');
-    dispatch({
-      type: 'User_SupplierProductList_Request',
-      url: 'partners/productTypeProducts',
-      userId: supplier,
-      userType: 'supplier',
-      typeId: item.Id,
-      Token: Token,
-      login_user_id: partnerid,
-      login_user_type: 'partner',
-      name: item.Value,
-      navigation,
+
+    navigation.navigate('MyProductDetails', {
+      item,
+      ProductL: false,
     });
+
+    // dispatch({
+    //   type: 'User_SupplierProductList_Request',
+    //   url: 'partners/productTypeProducts',
+    //   userId: supplier,
+    //   userType: 'supplier',
+    //   typeId: item.Id,
+    //   Token: Token,
+    //   login_user_id: partnerid,
+    //   login_user_type: 'partner',
+    //   name: item.Value,
+    //   start:0,
+    //   limit:20,
+    //   navigation,
+    // });
   };
- 
+
   const manageProfile = async id => {
     const Token = await AsyncStorage.getItem('loginToken');
-   
     AsyncStorage.setItem('supplierID', id);
-    setSupplier(id)
+    setSupplier(id);
     dispatch({
       type: 'User_SupplierCategories_Request',
       url: 'partners/productTypeList',
@@ -155,7 +159,6 @@ const MyCatalogue = ({ route }) => {
       userType: 'supplier',
       Token: Token,
     });
-   
   };
 
   const manageProduct = async () => {
@@ -177,6 +180,7 @@ const MyCatalogue = ({ route }) => {
     setProduct(true);
     setPartner(false);
     setUserdata(false);
+    setSupplier();
     // Myproduct();
   };
   const tabCategory = () => {
@@ -185,8 +189,23 @@ const MyCatalogue = ({ route }) => {
     setProduct(false);
   };
 
+  const collectionViewProduct = async item => {
+    const Token = await AsyncStorage.getItem('loginToken');
+    const Id = await AsyncStorage.getItem('Partnersrno');
+    dispatch({
+      type: 'User_collectionProductViewList_Request',
+      url: 'partners//collectionProductViewList',
+      collection_id: item.SrNo,
+      login_user_id: Id,
+      login_user_type: 'partner',
+      Token: Token,
+      name: item.Name,
+      navigation,
+    });
+  };
+
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <Header
         source1={require('../../../assets/Fo.png')}
         source2={require('../../../assets/Image/dil.png')}
@@ -195,14 +214,13 @@ const MyCatalogue = ({ route }) => {
         onPress1={() => navigation.navigate('MessageBox')}
         onPress2={() => navigation.navigate('FavDetails')}
       />
-      {isFetching ? <Loader /> : null}
+      {isFetching || isFetching1 ? <Loader /> : null}
       <ScrollView
         ref={scrollViewRef}
         contentOffset={{
           x: 0,
           y: userdata ? tc : tc1,
         }}>
-
         <ScrollView
           ref={scrollViewRef}
           onLayout={event => {
@@ -210,9 +228,8 @@ const MyCatalogue = ({ route }) => {
             setTc(layout.height);
           }}>
           <View style={styles.container}>
-          {lenght > 0 ?
-            <View style={styles.container1}>
-
+            {lenght > 0 ? (
+              <View style={styles.container1}>
                 <FlatListSlider
                   data={BannerData}
                   height={170}
@@ -221,9 +238,9 @@ const MyCatalogue = ({ route }) => {
                     marginVertical: 0,
                     paddingHorizontal: 16,
                   }}
-                  indicatorContainerStyle={{ position: 'absolute', bottom: -16 }}
-                  indicatorActiveColor={'#ffffff'}
-                  indicatorInActiveColor={'#ffffff'}
+                  indicatorContainerStyle={{position: 'absolute', bottom: -16}}
+                  indicatorActiveColor={'red'}
+                  indicatorInActiveColor={'grey'}
                   indicatorActiveWidth={5}
                   animation
                   component={<Banner />}
@@ -231,28 +248,48 @@ const MyCatalogue = ({ route }) => {
                   width={300}
                   autoscroll={true}
                   loop={false}
-                /> 
-            </View>: null}
+                />
+              </View>
+            ) : null}
             <View
               ref={scrollViewRef}
-              // ref={scrollViewRef}
               onLayout={event => {
                 const layout = event.nativeEvent.layout;
                 setTc1(layout.height);
               }}
               style={styles.main}>
               <TouchableOpacity
-               disabled={partner==true?true:false}
-                style={{ alignItems: 'center' }}
+                disabled={partner == true ? true : false}
+                style={{alignItems: 'center'}}
                 onPress={
                   () => setUserdata(false)
                   // navigation.navigate('MyProducts')
                 }>
-                  
                 <View style={styles.main1}>
-                <View style={{height:30,width:30,borderRadius:15,backgroundColor:'#da062f',zIndex:1,alignSelf:'flex-end',bottom:5}}>
-                <Text style={{fontSize:20,color:'#fff',textAlign:'center'}}>{selector2?.list?.length}</Text>
-                </View>
+                  <View
+                    style={{
+                      height: 32,
+                      width: 32,
+                      borderRadius: 16,
+                      backgroundColor: '#da062f',
+                      zIndex: 5,
+                      alignSelf: 'flex-end',
+                      bottom: 8,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: '#fff',
+                        textAlign: 'center',
+                        marginTop: 3,
+                      }}>
+                      {selector2?.list?.length > 0
+                        ? selector2?.list?.length <= 99
+                          ? selector2?.list?.length
+                          : '99+'
+                        : '0'}
+                    </Text>
+                  </View>
                   <Image
                     style={styles.img}
                     source={require('../../../assets/Image/my.png')}
@@ -262,13 +299,33 @@ const MyCatalogue = ({ route }) => {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setUserdata(true)}
-                disabled={partner==true?true:false}
+                disabled={partner == true ? true : false}
                 style={styles.touch}>
-                 
                 <View style={styles.main1}>
-                <View style={{bottom:5,height:30,width:30,borderRadius:15,backgroundColor:'#da062f',zIndex:5,alignSelf:'flex-end',}}>
-                <Text style={{fontSize:20,color:'#fff',textAlign:'center'}}>{selector?.length}</Text>
-                </View>
+                  <View
+                    style={{
+                      bottom: 8,
+                      height: 32,
+                      width: 32,
+                      borderRadius: 16,
+                      backgroundColor: '#da062f',
+                      zIndex: 5,
+                      alignSelf: 'flex-end',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: '#fff',
+                        textAlign: 'center',
+                        marginTop: 3,
+                      }}>
+                      {selector?.length > 0
+                        ? selector?.length <= 99
+                          ? selector?.length
+                          : '99+'
+                        : '0'}
+                    </Text>
+                  </View>
                   <Image
                     style={styles.img1}
                     source={require('../../../assets/Image/neck.png')}
@@ -285,16 +342,21 @@ const MyCatalogue = ({ route }) => {
                   colors={['#da062f', '#a90022']}>
                   <View style={styles.linerview}>
                     <Image
-                      style={{ height: 22, width: 30 }}
+                      style={{
+                        height: 18,
+                        width: 27,
+                        marginLeft: 5,
+                        marginBottom: 4,
+                      }}
                       source={require('../../../assets/plus.png')}
                     />
                     <Text style={styles.linert}>{'ADD'}</Text>
-                    <View style={{ width: 30 }} />
+                    <View style={{width: 15}} />
                   </View>
                 </LinearGradient>
               </TouchableOpacity>
             </View>
-            <View style={{ height: 28 }} />
+            <View style={{height: 28}} />
           </View>
 
           <View style={styles.card}>
@@ -302,12 +364,12 @@ const MyCatalogue = ({ route }) => {
               onPress={() => manageProduct()}
               style={[
                 styles.cardtouch,
-                { backgroundColor: product == true ? '#032e63' : '#fff' },
+                {backgroundColor: product == true ? '#032e63' : '#fff'},
               ]}>
               <Text
                 style={[
                   styles.tcard,
-                  { color: product == true ? '#fff' : '#032e63' },
+                  {color: product == true ? '#fff' : '#032e63'},
                 ]}>
                 My Products
               </Text>
@@ -316,34 +378,31 @@ const MyCatalogue = ({ route }) => {
               onPress={() => tabCategory()}
               style={[
                 styles.cardtouch,
-                { backgroundColor: partner == true ? '#032e63' : '#fff' },
+                {backgroundColor: partner == true ? '#032e63' : '#fff'},
               ]}>
               <Text
                 style={[
                   styles.tcard,
-                  { color: partner == true ? '#fff' : '#032e63' },
+                  {color: partner == true ? '#fff' : '#032e63'},
                 ]}>
                 Supplier Categories
               </Text>
             </TouchableOpacity>
           </View>
 
-          <View style={{ marginTop: 10 }}>
+          <View style={{marginTop: 10}}>
             {product == true ? (
               <FlatList
                 data={selector2?.list}
                 numColumns={3}
-                renderItem={({ item }) => (
+                scrollEnabled={false}
+                renderItem={({item, index}) => (
                   <TouchableOpacity
                     onPress={
-                      () => ProductList(item.Id, item.Value)
+                      () => ProductList(item)
                       // navigation.navigate('MyProductDetails')
                     }
                     style={styles.card1}>
-
-
-
-
                     {item.ImageName === '' ? (
                       <Image
                         style={{
@@ -366,22 +425,24 @@ const MyCatalogue = ({ route }) => {
                         }}
                         resizeMode={'stretch'}
                         source={{
-                          uri: `${selector2.imagepath}${item.ImageName
-                            }`,
+                          uri: `${selector2.imagepath}${item.ImageName}`,
                         }}
                       />
                     )}
                     <View style={styles.card1v}>
-                      
                       <Text
                         style={[
                           styles.card1t,
-                          { color: '#032e63', fontWeight: '700' },
+                          {color: '#032e63', fontWeight: '700'},
                         ]}>
-                        {item.Value}
+                        {item?.Value?.substring(0, 12)}
                       </Text>
 
-                      <Text style={[styles.card1t, { color: '#0d0d0d',fontWeight:'700', }]}>
+                      <Text
+                        style={[
+                          styles.card1t,
+                          {color: '#0d0d0d', fontWeight: '700'},
+                        ]}>
                         {item.pTotal <= 0
                           ? `${item.pTotal} Item`
                           : `${item.pTotal} Items`}
@@ -393,138 +454,219 @@ const MyCatalogue = ({ route }) => {
             ) : null}
 
             {partner == true ? (
-              <Text style={styles.partnert}>MY Supplier List</Text>
-            ) : null}
-            {partner == true ? (
-              <FlatList
-                showsHorizontalScrollIndicator={false}
-                horizontal={true}
-                data={selector1}
-                style={{ margin: 10, marginTop: 0, marginBottom: 10 }}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    onPress={() => manageProfile(item.SupplierSrNo)}
-                    style={[styles.card2,{  shadowColor:supplier==item.SupplierSrNo?'#032e63':'#fff',
-                     shadowOpacity: 0.6,
-                     shadowOffset: { width: 0, height: 2 },
-                     shadowRadius: 20,
-                       elevation: 6,borderWidth:supplier==item.SupplierSrNo?1:0
-                    }]}>
-   
-                    <View style={[styles.card2v,{borderWidth:0}
-                      ]}>
-                      <Image
-                        style={[styles.card2img,{width:supplier==item.SupplierSrNo?'100%':'100%'}]}
-                        resizeMode="stretch"
-                        source={item.logoImage ? { uri: `${item.logoImage}` } : require('../../../assets/logo.png')}
-                      />
-                    </View>
-                    <View style={[styles.card2v1,{}]}>
-                      {supplier==item.SupplierSrNo?
-                      <Text style={styles.card2v1t}>{item.SupplierName}</Text>:
-                      <Text style={[{color:'grey',fontSize:15,fontFamily: 'Acephimere',}]}>{item.SupplierName}</Text>}
-                      {/* <Text style={{ fontFamily: 'Acephimere', color: '#666666', fontSize: 12 }}>{item.CityName}</Text> */}
-                    </View>
-                  </TouchableOpacity>
-                )}
-              />
-            ) : null}
-
-            {partner == true ? (
-              <Text style={styles.partnert}>Supplier Categories List</Text>
-            ) : null}
-           {supplier? (
-              <FlatList
-                data={selector3?.list}
-                numColumns={3}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    onPress={() => ProductList1(item)}
-                    // onPress={() =>
-                    //   navigation.navigate('MyProductDetails', {id: item.Id})
-                    // }
-                    style={styles.card1}>
-
-                    <Image
+              <View>
+                {selector1?.length == 0 ? (
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: '15%',
+                      marginBottom: '15%',
+                    }}>
+                    <Text
                       style={{
-                        width: win.width * 0.33,
-                        height: '71%',
-                        resizeMode: 'contain',
-                        alignSelf: 'center',
-                        // borderWidth: 5,
-                      }}
-                      resizeMode={'stretch'}
-                      source={item.ImageName === '' ? require('../../../assets/logo.png') : {
-                        uri: `${ImagePath.path2}${'uploads/product_type/'}${item.ImageName}`
-                      }}
+                        color: 'grey',
+                        fontFamily: 'Acephimere',
+                        fontSize: 19,
+                        fontWeight: '700',
+                      }}>
+                      {' '}
+                      {'No supplier in the network'}{' '}
+                    </Text>
+                  </View>
+                ) : (
+                  <>
+                    <Text style={styles.partnert}>MY Supplier List</Text>
+                    <FlatList
+                      showsHorizontalScrollIndicator={false}
+                      horizontal={true}
+                      data={selector1}
+                      style={{margin: 10, marginTop: 0, marginBottom: 10}}
+                      renderItem={({item}) => (
+                        <TouchableOpacity
+                          onPress={() => manageProfile(item.SupplierSrNo)}
+                          style={[
+                            styles.card2,
+                            {
+                              shadowColor:
+                                supplier == item.SupplierSrNo
+                                  ? '#032e63'
+                                  : '#fff',
+                              shadowOpacity: 0.6,
+                              shadowOffset: {width: 0, height: 2},
+                              shadowRadius: 20,
+                              elevation: 6,
+                              borderWidth:
+                                supplier == item.SupplierSrNo ? 1 : 0,
+                            },
+                          ]}>
+                          <View style={[styles.card2v, {borderWidth: 0}]}>
+                            <Image
+                              style={[
+                                styles.card2img,
+                                {
+                                  width:
+                                    supplier == item.SupplierSrNo
+                                      ? '100%'
+                                      : '100%',
+                                },
+                              ]}
+                              resizeMode="stretch"
+                              source={
+                                item.logoImage
+                                  ? {uri: `${item.logoImage}`}
+                                  : require('../../../assets/logo.png')
+                              }
+                            />
+                          </View>
+                          <View style={[styles.card2v1, {}]}>
+                            {supplier == item.SupplierSrNo ? (
+                              <Text style={styles.card2v1t}>
+                                {item.SupplierName}
+                              </Text>
+                            ) : (
+                              <Text
+                                style={[
+                                  {
+                                    color: 'grey',
+                                    fontSize: 15,
+                                    fontFamily: 'Acephimere',
+                                  },
+                                ]}>
+                                {item.SupplierName}
+                              </Text>
+                            )}
+                            {/* <Text style={{ fontFamily: 'Acephimere', color: '#666666', fontSize: 12 }}>{item.CityName}</Text> */}
+                          </View>
+                        </TouchableOpacity>
+                      )}
                     />
-
-                    <View style={styles.card1v}>
-                      <Text
-                        style={[
-                          styles.card1t,
-                          { color: '#032e63', fontWeight: '700' },
-                        ]}>
-                        {item.Value}
-                      </Text>
-                      <Text style={[styles.card1t, { color: '#0d0d0d',fontWeight:'700' }]}>
-                        {item.pTotal <= 0
-                          ? `${item.pTotal} Item`
-                          : `${item.pTotal} Items`}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
+                  </>
                 )}
-              />
+              </View>
+            ) : null}
+            {/* {partner == true ? (
+              <Text style={styles.partnert}>Supplier Categories List</Text>
+            ) : null} */}
+            {supplier ? (
+              <View>
+                <Text style={styles.partnert}>Supplier Categories List</Text>
+                <FlatList
+                  data={selector3?.list}
+                  numColumns={3}
+                  scrollEnabled={false}
+                  renderItem={({item}) => (
+                    <TouchableOpacity
+                      onPress={() => ProductList1(item)}
+                      style={styles.card1}>
+                      <Image
+                        style={{
+                          width: win.width * 0.33,
+                          height: '71%',
+                          resizeMode: 'contain',
+                          alignSelf: 'center',
+                          // borderWidth: 5,
+                        }}
+                        resizeMode={'stretch'}
+                        source={
+                          item.ImageName === ''
+                            ? require('../../../assets/logo.png')
+                            : {
+                                uri: `${
+                                  ImagePath.path2
+                                }${'uploads/product_type/'}${item.ImageName}`,
+                              }
+                        }
+                      />
+
+                      <View style={styles.card1v}>
+                        <Text
+                          style={[
+                            styles.card1t,
+                            {color: '#032e63', fontWeight: '700'},
+                          ]}>
+                          {item?.Value?.substring(0, 12)}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.card1t,
+                            {color: '#0d0d0d', fontWeight: '700'},
+                          ]}>
+                          {item.pTotal <= 0
+                            ? `${item.pTotal} Item`
+                            : `${item.pTotal} Items`}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
             ) : null}
           </View>
         </ScrollView>
 
         {product == true ? (
-          <View ref={scrollViewRef} style={{ backgroundColor: '#fff' }}>
-            <View style={styles.card3}>
-              <Text style={styles.card3t}>My Collections</Text>
-            </View>
-            <View style={{ marginTop: selector?.length > 0 ? -10 : 0 }}>
+          <View ref={scrollViewRef} style={{backgroundColor: '#fff'}}>
+            <View style={{marginTop: selector?.length > 0 ? -10 : 0}}>
+              <View style={styles.card3}>
+                <Text style={styles.card3t}>My Collections</Text>
+              </View>
               <FlatList
                 data={selector}
-                renderItem={({ item }) => (
+                scrollEnabled={false}
+                renderItem={({item, index}) => (
                   <View
                     style={{
-                      height: hp('23%'),
-                      width: '100%',
-                      marginTop: '0.5%',
-                      // alignSelf: 'center',
-                      borderWidth: 0.5,
+                      height: hp('24%'),
+                      width: wp('99%'),
+                      marginTop: '0.2%',
+                      alignSelf: 'center',
+                      // borderWidth: 0.5,
+                      borderTopWidth: index == 0 ? 0.5 : null,
+                      borderLeftWidth: 0.5,
+                      borderRightWidth: 0.5,
+                      borderBottomWidth: 0.5,
                     }}>
-                    <View
-                      style={{
-                        height: hp('2.8%'),
-                        width: '100%',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      <Text style={styles.card3vt}>{item.Name}</Text>
-                    </View>
-                    <View
-                      style={{
-                        height: hp('20%'),
-                        width: wp('100%'),
-                        // maxHeight: hp('21.5%'),
-                      }}>
-
-                      <Image
+                    <TouchableOpacity
+                      onPress={() => collectionViewProduct(item)}>
+                      <View
                         style={{
-                          width: win.width * 0.99,
-                          height: '100%',borderRadius:10
-                           
-                        }}
-                     resizeMode='stretch'
-                        source={item.ImageName ?
-                          { uri: `${ImagePath.path2}${'uploads/collection/'}${item.ImageName}` } : require('../../../assets/logo.png')}
-                      />
-
-                    </View>
+                          height: hp('2.8%'),
+                          width: wp('100%'),
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Text style={styles.card3vt}>{item.Name}</Text>
+                      </View>
+                      <View
+                        style={{
+                          height: hp('20%'),
+                          width: wp('99%'),
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          //  maxHeight: hp('21.5%'),
+                          // borderWidth:5
+                          alignSelf: 'center',
+                        }}>
+                        <Image
+                          style={{
+                            width: '99%',
+                            height: '100%',
+                            borderRadius: 10,
+                          }}
+                          // resizeMode='stretch'
+                          source={
+                            item.ImageName
+                              ? {
+                                  uri: `${
+                                    ImagePath.path2
+                                  }${'uploads/collection/'}${item.ImageName}`,
+                                }
+                              : require('../../../assets/logo.png')
+                          }
+                        />
+                      </View>
+                    </TouchableOpacity>
                   </View>
                 )}
               />
@@ -532,9 +674,9 @@ const MyCatalogue = ({ route }) => {
           </View>
         ) : null}
 
-        <View style={{ height: 30 }} />
+        <View style={{height: 30}} />
       </ScrollView>
-      <View style={{ bottom: 0, position: 'absolute', left: 0, right: 0 }}>
+      <View style={{bottom: 0, position: 'absolute', left: 0, right: 0}}>
         {/* <TabView /> */}
       </View>
     </View>
@@ -542,14 +684,14 @@ const MyCatalogue = ({ route }) => {
 };
 export default MyCatalogue;
 const data = [
-  { title: require('../../../assets/Image/myjewlery.png') },
-  { title: require('../../../assets/Image/myjewlery.png') },
-  { title: require('../../../assets/Image/myjewlery.png') },
-  { title: require('../../../assets/Image/myjewlery.png') },
-  { title: require('../../../assets/Image/myjewlery.png') },
-  { title: require('../../../assets/Image/myjewlery.png') },
-  { title: require('../../../assets/Image/myjewlery.png') },
-  { title: require('../../../assets/Image/myjewlery.png'), type: 'add' },
+  {title: require('../../../assets/Image/myjewlery.png')},
+  {title: require('../../../assets/Image/myjewlery.png')},
+  {title: require('../../../assets/Image/myjewlery.png')},
+  {title: require('../../../assets/Image/myjewlery.png')},
+  {title: require('../../../assets/Image/myjewlery.png')},
+  {title: require('../../../assets/Image/myjewlery.png')},
+  {title: require('../../../assets/Image/myjewlery.png')},
+  {title: require('../../../assets/Image/myjewlery.png'), type: 'add'},
 ];
 const data1 = [
   {

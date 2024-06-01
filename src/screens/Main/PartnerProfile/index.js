@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import {
   Alert,
 } from 'react-native';
 import Header from '../../../components/CustomHeader';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import StatusBar from '../../../components/StatusBar';
 import BottomTab from '../../../components/StoreButtomTab';
 import Stars from 'react-native-stars';
@@ -25,16 +25,18 @@ import ImagePath from '../../../components/ImagePath';
 import axios from 'axios';
 import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useSelector, useDispatch } from 'react-redux';
-const HomeScreen = ({ route }) => {
+import {useSelector, useDispatch} from 'react-redux';
+import CheckBox from '@react-native-community/checkbox';
+const HomeScreen = ({route}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [id1, setId] = useState();
   const [visiable1, setVisible] = useState(false);
-  const selector = useSelector(state => state.SupplierDetail?.detail)
-
+  const selector = useSelector(state => state.SupplierDetail?.detail);
+  const [viewProd, setViewProd] = useState(false);
   const selector1 = useSelector(state => state.Status);
   const isFetching = useSelector(state => state.isFetching);
+  const isFetching1 = useSelector(state => state.isFetching1);
   const [profile, setProfile] = useState(true);
   const [message, setMessage] = useState(false);
   const [catalogue, setCatalogue] = useState(false);
@@ -43,7 +45,7 @@ const HomeScreen = ({ route }) => {
   const [clicked, setClicked] = useState(false);
   const BannerWidth = (Dimensions.get('window').width * 15) / 16;
   const BannerHeight = 140;
-  const [loader,setLoader]=useState(false)
+  const [loader, setLoader] = useState(false);
 
   const share = async () => {
     await Share.share({
@@ -75,75 +77,138 @@ const HomeScreen = ({ route }) => {
     setSetting(true);
   };
   const getStatus = () => {
-    const data = selector
-    console.log('IsPartnerSend', data.IsPartnerSend);
-    console.log('issuppliersend', data.IsSupplierSend)
+    const data = selector;
     return (
-      <View style={{ flexDirection: 'row', width: '80%', justifyContent: data?.IsSupplierSend == 1 ? 'space-evenly' : 'center' }}>
-        <TouchableOpacity
-          style={[styles.addButton, { backgroundColor: data.network_status == 'Reject' ? 'red' : data?.IsPartnerSend == 1 ? '#FFF' : data?.IsSupplierSend == 1 ? 'green' : '#ea056c' }]}
-          disabled={data?.IsPartnerSend == 1 || data.network_status == 'Reject'}
-          onPress={addToNetwork}
-        >
-          <Text style={[styles.text1, { color: data.network_status == 'Reject' ? '#fff' : data?.IsPartnerSend == 1 ? '#032e63' : '#FFF', fontWeight: data?.IsPartnerSend == 1 ? '900' : '500' }]}>
-            {data.network_status == 'Reject' ? "Rejected" : data?.IsPartnerSend == 1 ? "Requested" : data?.IsSupplierSend == 1 ? "Confirm" : "Add To Network"}
-          </Text>
-        </TouchableOpacity>
-        {data?.IsSupplierSend == 1 && data.network_status != 'Reject' ?
-          <TouchableOpacity style={[styles.addButton, { backgroundColor: 'red' }]} onPress={RejectMEthod}>
-            <Text style={styles.text1}>
-              {"Reject"}
+      <View>
+        <View
+          style={{
+            flexDirection: 'row',
+            width: '90%',
+            justifyContent:
+              data?.IsSupplierSend == 1 ? 'space-evenly' : 'center',
+          }}>
+          <TouchableOpacity
+            style={[
+              styles.addButton,
+              {
+                backgroundColor:
+                  data.network_status == 'Reject'
+                    ? 'red'
+                    : data?.IsPartnerSend == 1
+                    ? '#FFF'
+                    : data?.IsSupplierSend == 1
+                    ? 'green'
+                    : '#ea056c',
+              },
+            ]}
+            disabled={
+              data?.IsPartnerSend == 1 || data.network_status == 'Reject'
+            }
+            onPress={addToNetwork}>
+            <Text
+              style={[
+                styles.text1,
+                {
+                  color:
+                    data.network_status == 'Reject'
+                      ? '#fff'
+                      : data?.IsPartnerSend == 1
+                      ? '#032e63'
+                      : '#FFF',
+                  fontWeight: data?.IsPartnerSend == 1 ? '900' : '500',
+                },
+              ]}>
+              {data.network_status == 'Reject'
+                ? 'Rejected'
+                : data?.IsPartnerSend == 1
+                ? 'Requested'
+                : data?.IsSupplierSend == 1
+                ? 'Confirm'
+                : 'Add To Network'}
             </Text>
-          </TouchableOpacity> : null
-        }
+          </TouchableOpacity>
+          {data?.IsSupplierSend == 1 && data.network_status != 'Reject' ? (
+            <TouchableOpacity
+              style={[styles.addButton, {backgroundColor: 'red'}]}
+              onPress={RejectMEthod}>
+              <Text style={styles.text1}>{'Reject'}</Text>
+            </TouchableOpacity>
+          ) : null}
+        </View>
+        {data?.IsSupplierSend == 1 && data.network_status != 'Reject' ? (
+          <View style={{marginTop: 10, marginBottom: 10}}>
+            <View style={{flexDirection: 'row', marginLeft: -5}}>
+              <CheckBox
+                disabled={false}
+                value={viewProd}
+                onValueChange={newValue => {
+                  setViewProd(newValue);
+                }}
+                tintColors={{true: '#fff', false: '#fff'}}
+                onTintColor="#000"
+                onCheckColor="#000"
+                boxType="square"
+                style={{height: 16, width: 18}}
+              />
+              <Text
+                style={{
+                  marginLeft: 10,
+                  color: '#fff',
+                  fontSize: 12,
+                  fontFamily: 'Acephimere',
+                  textAlign: 'center',
+                }}>
+                Let my jewellery seen by your customers
+              </Text>
+            </View>
+            <View></View>
+          </View>
+        ) : null}
       </View>
-    )
-  }
+    );
+  };
   const RejectMEthod = async (id, index) => {
-
     const srno = await AsyncStorage.getItem('Partnersrno');
-    const Token = await AsyncStorage.getItem('loginToken')
-    setVisible(true)
-    const axios = require('axios');
+    const Token = await AsyncStorage.getItem('loginToken');
+    setVisible(true);
+   
     let data = new FormData();
     data.append('supplier_id', selector?.SrNo);
     data.append('statusId', '2');
     data.append('partnerId', srno);
     data.append('rejectReason', '');
+    data.append('IsShowInRetailerApp', viewProd == true ? 1 : 0);
+    data.append('ddlCategory', 'Category A');
 
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
       url: 'https://olocker.co/api//partners/updateSupplierRequest',
       headers: {
-        'Olocker': `Bearer ${Token}`,
-        // ...data.getHeaders()
+        Olocker: `Bearer ${Token}`,
+        
       },
-      data: data
+      data: data,
     };
 
-    axios.request(config)
-      .then((response) => {
-
+    axios
+      .request(config)
+      .then(response => {
         if (response.data.status == true) {
           setVisible(false);
-          partnerDetaitl(selector?.SrNo)
-
+          partnerDetaitl(selector?.SrNo);
         }
-
       })
-      .catch((error) => {
+      .catch(error => {
         setVisible(false);
         console.log(error);
       });
+  };
 
-  }
-
-
-  const partnerDetaitl = async (id) => {
-    const Token = await AsyncStorage.getItem('loginToken')
+  const partnerDetaitl = async id => {
+    const Token = await AsyncStorage.getItem('loginToken');
     const srno = await AsyncStorage.getItem('Partnersrno');
-    console.log('idd,,,,,,,,,,,,,,,,', id);
+   
     dispatch({
       type: 'User_supplierDetail_Request',
       url: '/partners/supplierDetail',
@@ -153,13 +218,11 @@ const HomeScreen = ({ route }) => {
       supplier_id: id,
       navigation,
       Status: 1,
-
-
-    })
+    });
   };
   const addToNetwork = async () => {
     const data = selector;
-    console.log('data ....', data?.SrNo);
+  
     const partnerid = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken');
     if (data.IsPartnerSend == 0 && data.IsSupplierSend == 0) {
@@ -170,77 +233,76 @@ const HomeScreen = ({ route }) => {
         supplierId: data?.SrNo,
         Token: Token,
         navigation,
-
       });
-    }
-    else if (data.IsSupplierSend == 1) {
+    } else if (data.IsSupplierSend == 1) {
       setVisible(true);
-      const axios = require('axios');
+     
       let data1 = new FormData();
       data1.append('supplier_id', data?.SrNo);
       data1.append('statusId', '1');
       data1.append('partnerId', partnerid);
       data1.append('rejectReason', '');
+      data1.append('IsShowInRetailerApp', viewProd == true ? 1 : 0);
+      data1.append('ddlCategory', 'Category A');
 
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
         url: 'https://olocker.co/api//partners/updateSupplierRequest',
         headers: {
-          'Olocker': `Bearer ${Token}`,
-          // ...data.getHeaders()
+          Olocker: `Bearer ${Token}`,
+         
         },
-        data: data1
+        data: data1,
       };
 
-      axios.request(config)
-        .then((response) => {
+      axios
+        .request(config)
+        .then(response => {
+          console.log('configgg', config);
           if (response?.data?.status == true) {
             setVisible(false);
-            partnerDetaitl(data?.SrNo)
+            partnerDetaitl(data?.SrNo);
             // Toast.show(response?.data?.msg);
-
           }
-
         })
-        .catch((error) => {
+        .catch(error => {
           setVisible(false);
           console.log('erororo why sree', error);
         });
     }
-  }
+  };
 
-  const handleRating=async(value)=>{
+  const handleRating = async value => {
     const srno = await AsyncStorage.getItem('Partnersrno');
-    const Token = await AsyncStorage.getItem('loginToken')
-    setRatting1(value)
-    setLoader(true)
-    const axios = require('axios');
+    const Token = await AsyncStorage.getItem('loginToken');
+    setRatting1(value);
+    setLoader(true);
     let config = {
       method: 'GET',
       maxBodyLength: Infinity,
       url: `https://olocker.co/api/partners/supplierRating?partnerId=${srno}&supplierId=${selector?.SrNo}&rating=${value}`,
       headers: {
-        'Olocker': `Bearer ${Token}`,
+        Olocker: `Bearer ${Token}`,
       },
     };
 
-    axios.request(config)
-      .then((response) => {
-        console.log('this is response',response.data);
+    axios
+      .request(config)
+      .then(response => {
+        console.log('this is response', response.data);
         if (response.data.status == true) {
-          setLoader(false)
-          Toast.show(response.data.msg)
-        }
-        else{
-          setLoader(false)
+          setLoader(false);
+          Toast.show(response.data.msg);
+        } else {
+          setLoader(false);
         }
       })
-      .catch((error) => {
-        setLoader(false)
+      .catch(error => {
+        setLoader(false);
         console.log(error);
       });
-  }
+  };
   return (
     <View style={styles.container}>
       <Header
@@ -252,30 +314,37 @@ const HomeScreen = ({ route }) => {
         onPress2={() => navigation.navigate('FavDetails')}
         onPress1={() => navigation.navigate('MessageBox')}
       />
-      {isFetching || visiable1 ||loader ? <Loader /> : null}
+      {isFetching ||isFetching1|| visiable1 || loader ? <Loader /> : null}
       <ScrollView>
-
-        <View style={{ backgroundColor: '#032e63', }}>
+        <View style={{backgroundColor: '#032e63'}}>
           <View style={styles.main}>
-            <View
-              style={styles.main1}>
-              <Image style={{ width: '100%', height: '100%', borderRadius: 10 }}
-                source={selector?.logoImage ? { uri: selector.logoImage } : require('../../../assets/logo.png')}
+            <View style={styles.main1}>
+              <Image
+                style={{width: '100%', height: '100%', borderRadius: 10}}
+                source={
+                  selector?.logoImage
+                    ? {uri: selector.logoImage}
+                    : require('../../../assets/logo.png')
+                }
               />
             </View>
             <View style={styles.details}>
-              <Text style={[styles.text1, { fontSize: 19, }]}> {selector?.SupplierName}
+              <Text style={[styles.text1, {fontSize: 19}]}>
+                {' '}
+                {selector?.SupplierName}
               </Text>
-              <Text
-                style={[styles.text1, { fontSize: 12, marginLeft: 2 }]}> {selector?.cityName} </Text>
+              <Text style={[styles.text1, {fontSize: 12, marginLeft: 2}]}>
+                {' '}
+                {selector?.cityName}{' '}
+              </Text>
 
-              <View
-                style={styles.star}>
-
-                {selector?.isAdd == 1 ?
+              <View style={styles.star}>
+                {selector?.isAdd == 1 ? (
                   <Stars
                     half={true}
-                    default={selector?.rating?parseFloat(selector?.rating):rating1}
+                    default={
+                      selector?.rating ? parseFloat(selector?.rating) : rating1
+                    }
                     // display={selector?.rating?parseFloat(selector?.rating):rating1}
                     spacing={5}
                     update={val => handleRating(val)}
@@ -285,21 +354,21 @@ const HomeScreen = ({ route }) => {
                     emptyStar={require('../../../assets/Image/star1.png')}
                     halfStar={require('../../../assets/Image/star2.png')}
                   />
-                  : null}
-                <View style={{ flexDirection: 'row' }}>
+                ) : null}
+                <View style={{flexDirection: 'row'}}>
                   <TouchableOpacity
                     onPress={() => Linking.openURL(`tel:${selector.MobileNo}`)}
                     style={styles.phone}>
                     <Image
-                      style={{ width: 30, height: 30 }}
+                      style={{width: 30, height: 30}}
                       source={require('../../../assets/PartnerImage/16.png')}
                     />
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => share()}
-                    style={[styles.phone, { marginLeft: 10, }]}>
+                    style={[styles.phone, {marginLeft: 10}]}>
                     <Image
-                      style={{ width: 30, height: 30 }}
+                      style={{width: 30, height: 30}}
                       source={require('../../../assets/PartnerImage/15.png')}
                     />
                   </TouchableOpacity>
@@ -307,122 +376,120 @@ const HomeScreen = ({ route }) => {
               </View>
             </View>
           </View>
-          <View style={[styles.addButtonV1, {
-            marginTop: 10,
-            alignSelf: 'flex-end',
-            flexDirection: 'row',
-            width: '70%',
-          }]}>
-            {selector?.isAdd == 0 ?
+          <View
+            style={[
+              styles.addButtonV1,
+              {
+                marginTop: 10,
+                alignSelf: 'flex-end',
+                flexDirection: 'row',
+                width: '70%',
+              },
+            ]}>
+            {selector?.isAdd == 0 ? (
               getStatus()
-              // <TouchableOpacity 
-              // disabled={selector?.SrNo==id1?true:false}
-              // onPressIn={addToNetwork}
-              //   style={[styles.addButton,{backgroundColor:selector?.SrNo===id1?'#FFF':'#ea056c'}]}>
-              //   <Text style={[styles.text1,{fontSize:12,color:selector?.SrNo===id1?'#032e63':'#FFF',fontWeight:selector?.SrNo===id1?'900':''}]}>
-              //    { selector?.SrNo===id1?'Requested':'Add To Network'}
-
-              //   </Text>
-              // </TouchableOpacity>
-              : <View style={styles.addButton}>
-                <Text style={[styles.text1, { fontSize: 12 }]}>
+            ) : (
+              <View style={styles.addButton}>
+                <Text style={[styles.text1, {fontSize: 12}]}>
                   {'Added To Network'}
                 </Text>
               </View>
-            }
-
+            )}
           </View>
 
           <View style={styles.blankV} />
         </View>
         <View>
-          {selector?.isAdd == 0 ? null :
+          {selector?.isAdd == 0 ? null : (
             <View style={styles.tabContainer}>
               <View style={styles.card}>
                 <TouchableOpacity
                   onPress={() => manageTab()}
                   style={styles.tabStyle}>
                   {profile ? (
-                    <Image style={styles.img1}
+                    <Image
+                      style={styles.img1}
                       source={require('../../../assets/PartnerImage/10.png')}
                     />
                   ) : (
-                    <Image style={styles.img1}
+                    <Image
+                      style={styles.img1}
                       source={require('../../../assets/PartnerImage/pro_uncolor.png')}
                     />
                   )}
                 </TouchableOpacity>
-                <Text style={styles.text2}>
-                  Profile
-                </Text>
+                <Text style={styles.text2}>Profile</Text>
               </View>
               <View style={styles.card}>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('ChatScreen', { item: selector, Id: true })
+                  onPress={
+                    () =>
+                      navigation.navigate('ChatScreen', {
+                        item: selector,
+                        Id: true,
+                      })
                     //  navigation.navigate('Customer1',{screen:'Messagebox'})
                   }
                   style={styles.tabStyle}>
                   {message ? (
-                    <Image style={styles.img1}
+                    <Image
+                      style={styles.img1}
                       source={require('../../../assets/PartnerImage/msg_active.png')}
                     />
                   ) : (
-                    <Image style={styles.img1}
+                    <Image
+                      style={styles.img1}
                       source={require('../../../assets/PartnerImage/11.png')}
                     />
                   )}
                 </TouchableOpacity>
-                <Text style={styles.text2}>
-                  Message
-                </Text>
+                <Text style={styles.text2}>Message</Text>
               </View>
               <View style={styles.card}>
                 <TouchableOpacity
                   onPress={() => manageTab2()}
                   style={styles.tabStyle}>
                   {catalogue ? (
-                    <Image style={styles.img1}
+                    <Image
+                      style={styles.img1}
                       source={require('../../../assets/PartnerImage/nackactive.png')}
                     />
                   ) : (
-                    <Image style={styles.img1}
+                    <Image
+                      style={styles.img1}
                       source={require('../../../assets/PartnerImage/8.png')}
                     />
                   )}
                 </TouchableOpacity>
-                <Text style={styles.text2}>
-                  Catalogue
-                </Text>
+                <Text style={styles.text2}>Catalogue</Text>
               </View>
               <View style={styles.card}>
                 <TouchableOpacity
                   onPress={() => manageTab3()}
                   style={styles.tabStyle}>
                   {setting ? (
-                    <Image style={styles.img1}
+                    <Image
+                      style={styles.img1}
                       source={require('../../../assets/PartnerImage/setting_active.png')}
                     />
                   ) : (
-                    <Image style={[styles.img1, { alignSelf: 'center' }]}
+                    <Image
+                      style={[styles.img1, {alignSelf: 'center'}]}
                       source={require('../../../assets/PartnerImage/7.png')}
                     />
                   )}
                 </TouchableOpacity>
-                <Text style={styles.text2}>
-                  Settings
-                </Text>
+                <Text style={styles.text2}>Settings</Text>
               </View>
             </View>
-          }
+          )}
         </View>
 
-
-        <View style={{ marginTop: 10 }}>
+        <View style={{marginTop: 10}}>
           {profile == true ? <Profile /> : null}
           {catalogue == true ? <Catalogue /> : null}
           {setting == true ? <Setting /> : null}
         </View>
-
       </ScrollView>
 
       <StatusBar />

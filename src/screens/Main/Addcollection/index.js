@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   TextInput,
   Platform,
 } from 'react-native';
-import { useNavigation ,useIsFocused } from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import StatusBar from '../../../components/StatusBar';
 import styles from './styles';
 import Header from '../../../components/CustomHeader';
@@ -16,31 +16,32 @@ import DocumentPicker from 'react-native-document-picker';
 import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../../../components/Loader';
-import { Dropdown } from 'react-native-element-dropdown';
-import { useDispatch, useSelector } from 'react-redux';
+import {Dropdown} from 'react-native-element-dropdown';
+import {useDispatch, useSelector} from 'react-redux';
 import TempletModel from './TempletModel';
-
+import axios from 'axios';
 import RNFS from 'react-native-fs';
-import { Collection } from 'victory';
+
 const Addcollection = () => {
   const navigation = useNavigation();
-  const  isFocused=useIsFocused();
+  const isFocused = useIsFocused();
   const dispatch = useDispatch();
   const isFetching = useSelector(state => state?.isFetching);
-  const [camera1,setCamera]=useState(false);
-  const [getapi,setGetapi]= useState(false);
+  const [camera1, setCamera] = useState(false);
+  const [getapi, setGetapi] = useState(false);
   const [templetmodel, setTempletModal] = useState(false);
-  const [status1, setStatus] = useState('Select Status');
+  const [status1, setStatus] = useState('1');
   const [collection, setCollection] = useState('');
   const [photo, setPhoto] = useState('');
   const [photo1, setPhoto1] = useState('');
   const [Photo2, setPhoto2] = useState('');
   const [visiable, setVisible] = useState(false);
+  const onlyCharacters = /^[a-zA-Z\s]*$/;
   useEffect(() => {
     if (isFocused) {
       Apicall();
     }
-  }, [isFocused])
+  }, [isFocused]);
   const Apicall = async () => {
     const partnerid = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken');
@@ -49,40 +50,30 @@ const Addcollection = () => {
       url: 'partners/creativeImgList',
       partnerId: partnerid,
       Token: Token,
-
     });
-  }
-  const getDataFromChild=(data,data1)=>{
-    console.log('this is data from chiled',data,data1);
-      let  image2=data.Logo.split('.').pop();
-      setPhoto(`${data1}${data.Logo}`);
-      setPhoto1(data.Logo);
-      setPhoto2(`image/${image2}`);
-     setGetapi(true);
-    setCamera(false)
-    
-
-     
-  }
-   const uploadApi=async()=>{
+  };
+  const getDataFromChild = (data, data1) => {
+    console.log('this is data from chiled', data, data1);
+    let image2 = data.Logo.split('.').pop();
+    setPhoto(`${data1}${data.Logo}`);
+    setPhoto1(data.Logo);
+    setPhoto2(`image/${image2}`);
+    setGetapi(true);
+    setCamera(false);
+  };
+  const uploadApi = async () => {
     setTempletModal(true);
-
-   }
+  };
   const uploadPhoto = async () => {
     try {
-      
       const res = await DocumentPicker.pickMultiple({
         type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
       });
-      console.log('virendra..',res[0]);
-      
-        setPhoto(res[0].uri);
+      setPhoto(res[0].uri);
       setPhoto1(res[0].name);
       setPhoto2(res[0].type);
-    setCamera(true);
-    setGetapi(false);
-  
-      
+      setCamera(true);
+      setGetapi(false);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
       } else {
@@ -91,75 +82,79 @@ const Addcollection = () => {
     }
   };
 
-  const convert = (data) => {
-
-    RNFS.readFile(data, 'base64')
-      .then(res => {
-       
-      });
-  }
   const AddCollectionData = async () => {
-    const Token = await AsyncStorage.getItem('loginToken')
+    const Token = await AsyncStorage.getItem('loginToken');
     const Id = await AsyncStorage.getItem('Partnersrno');
     const Branch = await AsyncStorage.getItem('Branch');
-    if (collection == '') {
-      Toast.show('Please enter name');
+    if (onlyCharacters.test(collection) == '') {
+      Toast.show('Please enter collection name only alphabetic characters.');
     } else if (status1 == '') {
       Toast.show('Please select status');
+    } else if (photo1 == '') {
+      Toast.show('Please upload image');
     } else {
       setVisible(true);
-      const axios = require('axios');
+
       let data = new FormData();
+      // getapi == true
+      //   ? data.append('hidden_image', {
+      //       uri: photo,
+      //       name: photo1.substring(photo1.lastIndexOf('/') + 1),
+      //       type: Photo2,
+      //     }):
       data.append('hidden_image', '');
       data.append('Description', '');
       data.append('Title', '');
       data.append('Name', collection);
       data.append('IsActive', status1);
       data.append('partnerId', Id);
+      //   camera1==true||getapi==true
+      // // camera1==true
+      //     ?
       data.append('ImageName', {
         uri: photo,
         name: photo1.substring(photo1.lastIndexOf('/') + 1),
         type: Photo2,
       });
-console.log(',,,,s',JSON.stringify(data));
+      // : data.append('ImageName', '');
       let config = {
         method: 'post',
         maxBodyLength: Infinity,
         url: 'https://olocker.co/api/partners//postCreateCollection',
         headers: {
-          'Olocker': `Bearer ${Token}`,
+          Olocker: `Bearer ${Token}`,
         },
-        data: data
+        data: data,
       };
 
-      axios.request(config)
-        .then((response) => {
+      axios
+        .request(config)
+        .then(response => {
+          console.log('adaddadad', response.data);
           if (response.data.success == true) {
-            Toast.show(response.data.msg);
-            navigation.navigate("Home1", {
-              screen: 'MyCatalogue'
-            })
+            Toast.show(response?.data?.msg);
+            navigation.navigate('Home1', {
+              screen: 'MyCatalogue',
+            });
 
             dispatch({
               type: 'User_collection_Request',
               url: '/partners/collectionList',
               Token: Token,
               partnerId: Id,
-
-            })
-            setVisible(false)
+            });
+            setVisible(false);
+          } else {
+            setVisible(false);
+            Toast.show('collection Not Added ');
           }
-          else {
-            Toast.show('collection Not Added ')
-          }
-
         })
-        .catch((error) => {
+        .catch(error => {
           setVisible(false);
           console.log(error);
         });
     }
-  }
+  };
   return (
     <View style={styles.container1}>
       <Header
@@ -173,11 +168,10 @@ console.log(',,,,s',JSON.stringify(data));
       />
       {visiable || isFetching ? <Loader /> : null}
       <ScrollView style={styles.scroll}>
-      <TempletModel
+        <TempletModel
           visi={templetmodel}
           close={() => setTempletModal(false)}
-         sendDatatoParent={getDataFromChild}
-
+          sendDatatoParent={getDataFromChild}
         />
 
         <View style={styles.card}>
@@ -197,60 +191,59 @@ console.log(',,,,s',JSON.stringify(data));
           <View style={styles.main}>
             <Text style={styles.Text1}>Status</Text>
             <View style={styles.main1}>
-             
-                <Dropdown
-                  style={{
-                    color: '#032e63',
-                    width: '100%',
+              <Dropdown
+                style={{
+                  color: '#032e63',
+                  width: '100%',
 
-                    marginBottom: -1,
-                    height: 40,
-                    // marginTop: 5
-                  }}
-                  placeholderStyle={{
-                    color: '#474747',
-                    width: '100%',
-                    fontSize:14,
-                    alignSelf: 'center',
-                    fontFamily: 'Acephimere'
-                  }}
-                  selectedTextStyle={{
-                    color: '#474747',
-                    width: '100%',
-                    fontSize: 14,
-                    marginBottom: -1,
-                    fontFamily: 'Acephimere',
-                  }}
-                  itemTextStyle={{ color: '#474747',}} 
-                  data={Status}
-                  inputSearchStyle={{
-                    borderRadius: 10,
-                    backgroundColor: '#f0f0f0',
-                  }}
-                  maxHeight={250}
-                  labelField="label"
-                  valueField="value"
-                  placeholder="Select Status"
-                  value={status1}
-                  onChange={item => {
-                    setStatus(item.value)
-                  }}
-                />
+                  marginBottom: -1,
+                  height: 40,
+                  // marginTop: 5
+                }}
+                placeholderStyle={{
+                  color: '#474747',
+                  width: '100%',
+                  fontSize: 14,
+                  alignSelf: 'center',
+                  fontFamily: 'Acephimere',
+                }}
+                selectedTextStyle={{
+                  color: '#474747',
+                  width: '100%',
+                  fontSize: 14,
+                  marginBottom: -1,
+                  fontFamily: 'Acephimere',
+                }}
+                itemTextStyle={{color: '#474747'}}
+                data={Status}
+                inputSearchStyle={{
+                  borderRadius: 10,
+                  backgroundColor: '#f0f0f0',
+                }}
+                maxHeight={250}
+                labelField="label"
+                valueField="value"
+                placeholder="Select Status"
+                value={status1}
+                onChange={item => {
+                  setStatus(item.value);
+                }}
+              />
             </View>
           </View>
 
           <View style={styles.main}>
             <Text style={styles.Text1}>Banner</Text>
           </View>
-         
-          <View style={[styles.card1, { marginTop: 20 }]}>
-            <View style={styles.bottom}>
 
+          <View style={[styles.card1, {marginTop: 20}]}>
+            <View style={styles.bottom}>
               <TouchableOpacity onPress={() => uploadPhoto()}>
                 {camera1 ? (
-                  <Image resizeMode='center'
-                    style={[styles.img1, { borderRadius: 10 }]}
-                    source={{ uri: photo }}
+                  <Image
+                    resizeMode="center"
+                    style={[styles.img1, {borderRadius: 10}]}
+                    source={{uri: photo}}
                   />
                 ) : (
                   <Image
@@ -260,27 +253,35 @@ console.log(',,,,s',JSON.stringify(data));
                 )}
               </TouchableOpacity>
 
-              <TouchableOpacity  onPress={() => {uploadApi()}}>
-                 {getapi ? ( <Image resizeMode='center'
-                  style={[styles.img1, {  borderRadius: 10 }]}
-                  source={{ uri: photo }}
-                />):
-               ( <Image
-                  style={[styles.img1,]}
-                  source={require('../../../assets/Image/select_tmp.png')}
-                />)}
-              </TouchableOpacity> 
+              <TouchableOpacity
+                onPress={() => {
+                  uploadApi();
+                }}>
+                {getapi ? (
+                  <Image
+                    resizeMode="center"
+                    style={[styles.img1, {borderRadius: 10}]}
+                    source={{uri: photo}}
+                  />
+                ) : (
+                  <Image
+                    style={[styles.img1]}
+                    source={require('../../../assets/Image/select_tmp.png')}
+                  />
+                )}
+              </TouchableOpacity>
             </View>
           </View>
           <View style={styles.bottom1}>
             <Text style={styles.bottom1t}>
-              Upload banner in 0000(H) * 0000(W) Dimention
+              Upload banner in 300(H) * 250(W) Dimention
             </Text>
           </View>
         </View>
         <View style={styles.bottom2}>
           <TouchableOpacity
-            onPress={() => AddCollectionData()
+            onPress={
+              () => AddCollectionData()
               // navigation.navigate('SelectOption')
             }
             style={styles.button}>
@@ -296,6 +297,6 @@ console.log(',,,,s',JSON.stringify(data));
 export default Addcollection;
 
 const Status = [
-  { label: 'Active', value: '1' },
-  { label: 'In Active', value: '0' },
+  {label: 'Active', value: '1'},
+  {label: 'In Active', value: '0'},
 ];

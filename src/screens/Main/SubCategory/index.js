@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
-  Keyboard,
   ScrollView,
   Image,
   Share,
@@ -11,92 +10,60 @@ import {
   Dimensions,
 } from 'react-native';
 import Header from '../../../components/CustomHeader';
-import TabView from '../../../components/StoreButtomTab';
-import { useNavigation } from '@react-navigation/native';
-import { FlatListSlider } from 'react-native-flatlist-slider';
+import {useNavigation} from '@react-navigation/native';
+import {FlatListSlider} from 'react-native-flatlist-slider';
 import Preview from '../../../components/Preview';
-import Banner from '../../../components/Banner';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './styles';
-import { useSelector, useDispatch } from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import Loader from '../../../components/Loader';
-import { Item } from 'react-native-paper/lib/typescript/components/List/List';
-const SubCategory = ({ route }) => {
+const SubCategory = ({route}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const selector = useSelector(state => state.ProductDetail?.detail);
-  const selector1 = useSelector(state => state.SupplierProDetail?.detail);
-   const productId=route?.params?.productId;
+  const productId = route?.params?.productId;
   const Detail = route.params.Details;
-  const isLiked = useSelector(state => state.mg)
+  const isLiked = useSelector(state => state.mg);
   const BannerWidth = (Dimensions.get('window').width * 15) / 18;
-  
+ const limit1 =useSelector(state => state.limit)
   const Data = [];
 
-  selector?.productimages.map((Item) => {
-    Data.push({
-      image: Item.images, desc: 'abcsd'
-    })
+  selector?.productimages.map(Item => {
+    Item.images == ''
+      ? Data
+      : Data.push({
+          image: Item.images,
+          desc: 'abcsd',
+        });
+  });
 
-  })
-
-
-
-  const lenght = Data.length
+  const lenght = Data.length;
   const isFetching = useSelector(state => state.isFetching);
   const [collection, setCollection] = useState(
-    selector?.productDetail?.ProductSku
+    selector?.productDetail?.ProductSku,
   );
-  const [stockNo, setStock] = useState(
-    selector?.productDetail?.ItemName)
-   
+  const [stockNo, setStock] = useState(selector?.productDetail?.ItemName);
+
   const [demo, setDemo] = useState(
-   
-    `${parseFloat(selector?.productDetail?.GrossWt).toFixed(2)} GM`
-
+    `${parseFloat(selector?.productDetail?.GrossWt).toFixed(2)} GM`,
   );
-
-
 
   const [editable, setEditable] = useState(false);
   const [editable1, setEditable1] = useState(false);
   const [editable2, setEditable2] = useState(false);
-  const [click1, setClick1] = useState(false);
-
-
 
   const share = async () => {
-
     await Share.share({
-
-      message: `Product Name : ${selector?.productDetail?.ItemName}\nProduct Details : ${selector?.productDetail?.ItemDesc}\n app url:${'https://olocker.co/partners'}\n  playStore url: ${'https://play.google.com/store/apps'}` ,
+      message: `Product Name : ${
+        selector?.productDetail?.ItemName
+      }\nProduct Details : ${
+        selector?.productDetail?.ItemDesc
+      }\n app url:${'https://olocker.co/partners'}\n  playStore url: ${'https://play.google.com/store/apps'}`,
       // url1 : 'https://play.google.com/store/apps',
     });
-    // await Share.share({
-    //   message: `Product Name : ${selector?.productDetail?.ItemName}  \nProduct Details : ${selector?.productDetail?.ItemDesc}\n playStore url: ${'https://play.google.com/store/apps'} `,
-    //   url:''
-    // });
   };
 
-
-
-  const manageEdit = () => {
-    setEditable(true);
-    setEditable1(true);
-    setEditable2(true);
-    // Detail();
-  };
-  const click = click1 => {
-    if (click1) {
-      setClick1(false);
-
-      RemoveWislist(Detail ? selector?.productDetail?.SrNo : selector1?.productDetail?.SrNo,);
-    } else {
-      AddWishList(Detail ? selector?.productDetail?.SrNo : selector1?.productDetail?.SrNo,)
-      setClick1(true);
-    }
-  };
-  const RemoveWislist = async (item) => {
+  const RemoveWislist = async item => {
     const partnerid = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken');
 
@@ -115,11 +82,12 @@ const SubCategory = ({ route }) => {
       id: selector?.productDetail?.ItemType,
       navigation: navigation,
       page: 'data',
-      partner: Detail ? true : false
+      iscollection: false,
+      collection_id: route.params.collection_id,
     });
-  }
+  };
   const AddWishList = async (item, index) => {
-   console.log('virenDRA',item);
+    console.log('virenDRA', item);
     const partnerid = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken');
     dispatch({
@@ -135,13 +103,12 @@ const SubCategory = ({ route }) => {
       partner: Detail ? true : false,
       id: selector?.productDetail?.ItemType,
       navigation: navigation,
-      page: 'data'
-
-    })
-
-  }
-  const EditProduct = async (item) => {
-     console.log('hhhihihi',productId);
+      page: 'data',
+      iscollection: false,
+      collection_id: route.params.collection_id,
+    });
+  };
+  const EditProduct = async item => {
     const partnerid = await AsyncStorage.getItem('Partnersrno');
     const Token = await AsyncStorage.getItem('loginToken');
     const Branch = await AsyncStorage.getItem('Branch');
@@ -150,11 +117,11 @@ const SubCategory = ({ route }) => {
       url: 'partners//editProduct',
       ProductSrNo: productId,
       PartnerSrNo: partnerid,
-      BranchSrNo: Branch,
+      // BranchSrNo: Branch,
       Token: Token,
       navigation: navigation,
-    })
-  }
+    });
+  };
   return (
     <View style={styles.container}>
       <Header
@@ -166,52 +133,33 @@ const SubCategory = ({ route }) => {
         onPress1={() => navigation.navigate('MessageBox')}
         onPress2={() => navigation.navigate('FavDetails')}
       />
-       {isFetching ? <Loader /> : null}
+      {isFetching ? <Loader /> : null}
       <ScrollView>
-      
         <View style={styles.main}>
-          {
-        //  selector?.productDetail?.is_exsit == false 
-           isLiked === false
-           ?
+          {isLiked === false ? (
             <TouchableOpacity
               onPress={() => {
-                AddWishList(selector?.productDetail?.SrNo)
-              }} >
+                AddWishList(selector?.productDetail?.SrNo);
+              }}>
               <Image
-                style={{ width: 21, height: 18, tintColor: 'grey', }}
-
+                style={{width: 21, height: 18, tintColor: 'grey'}}
                 source={require('../../../assets/Image/dil.png')}
               />
             </TouchableOpacity>
-
-            :
+          ) : (
             <TouchableOpacity
-              onPress={() => { RemoveWislist(selector?.productDetail?.SrNo); }
-              }>
+              onPress={() => {
+                RemoveWislist(selector?.productDetail?.SrNo);
+              }}>
               <Image
-                style={{ width: 21, height: 18, tintColor: 'red', }}
-
+                style={{width: 21, height: 18, tintColor: 'red'}}
                 source={require('../../../assets/Image/dil.png')}
               />
             </TouchableOpacity>
-          }
-          {/* <TouchableOpacity onPress={() =>
-            click(click1)}
-          >
-            <View>
-              <Image
-                style={{ width: 21, height: 18 }}
-                tintColor={click1 ? 'red' : '#fff'}
-                source={require('../../../assets/Image/dil.png')}
-              />
-            </View>
-          </TouchableOpacity> */}
+          )}
+
           <View>
-            <TouchableOpacity
-              onPress={() => share()}
-            // {()=>navigation.navigate('Filter')}
-            >
+            <TouchableOpacity onPress={() => share()}>
               <Image
                 style={styles.img}
                 source={require('../../../assets/Image/share1.png')}
@@ -219,38 +167,61 @@ const SubCategory = ({ route }) => {
             </TouchableOpacity>
           </View>
         </View>
-        {console.log('ghdghhdhdh',Data[0].image)}
-        <View style={{ marginTop: 10 }}>
-          {lenght ==1 ? 
-         <View style={{ justifyContent: 'center',
-         alignItems: 'center',
-         borderRadius:15,
-         height:200,
-         width:'100%'}}>
-         <Image
-           style={{height:190,width:BannerWidth,borderRadius:190}}
-           source={{uri:Data[0].image}}
-           resizeMode={Platform.OS=='android'?'contain':''}
-         />
-       </View>  :
-            <FlatListSlider
-              data={Data}
-              height={200}
-              // timer={5000}
-              contentContainerStyle={{ paddingHorizontal: 30 }}
-              indicatorContainerStyle={{ position: 'absolute', bottom: -20 }}
-              indicatorActiveColor={'#ffffff'}
-              indicatorInActiveColor={'grey'}
-              indicatorActiveWidth={5}
-              component={<Preview />}
-              separatorWidth={15}
-              width={310}
-              autoscroll={true}
-              loop={lenght >=1 ? false : false}
+
+        {lenght > 0 ? (
+          <View style={{marginTop: 10}}>
+            {lenght == 1 ? (
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 15,
+                  height: 200,
+                  width: '100%',
+                }}>
+                <Image
+                  style={{height: 190, width: BannerWidth, borderRadius: 190}}
+                  source={{uri: Data[0].image}}
+                  resizeMode={Platform.OS == 'android' ? 'contain' : ''}
+                />
+              </View>
+            ) : (
+              <FlatListSlider
+                data={Data}
+                height={200}
+                // timer={5000}
+                contentContainerStyle={{
+                  paddingHorizontal: 30,
+                  alignItems: 'center',
+                }}
+                indicatorContainerStyle={{position: 'absolute', bottom: -20}}
+                indicatorActiveColor={'red'}
+                indicatorInActiveColor={'grey'}
+                indicatorActiveWidth={5}
+                component={<Preview />}
+                separatorWidth={9}
+                width={310}
+                autoscroll={true}
+                loop={false}
+              />
+            )}
+          </View>
+        ) : (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: 15,
+              height: 200,
+              width: '100%',
+            }}>
+            <Image
+              style={{height: 190, width: BannerWidth, borderRadius: 190}}
+              source={require('../../../assets/logo.png')}
+              resizeMode={Platform.OS == 'android' ? 'contain' : ''}
             />
-           }
-          {/* })} */}
-        </View>
+          </View>
+        )}
 
         <View style={styles.view}>
           <Image
@@ -258,45 +229,38 @@ const SubCategory = ({ route }) => {
             source={require('../../../assets/Image/rupay.png')}
           />
           <Text style={styles.text}>
-            {/* {Detail
-              ? selector?.productDetail?.ProductsPrice?.substring(0, 8)
-              : selector1?.productDetail?.ProductsPrice?.substring(0, 8)} */
-              selector?.productDetail?.ProductsPrice==null?0:
-              parseFloat(selector?.productDetail?.ProductsPrice)?.toFixed(2)
-            }
+            {selector?.productDetail?.ProductsPrice == null
+              ? parseFloat(selector?.productDetail?.ProductCharges)?.toFixed(2)
+              : parseFloat(selector?.productDetail?.ProductsPrice)?.toFixed(2)}
           </Text>
           <Text style={styles.text1}>( Approximate Price )</Text>
         </View>
-        <View style={{ padding: 20 }}>
+        <View style={{padding: 20}}>
           <View style={styles.main1}>
             <View style={styles.main1view}>
               <View style={styles.main1view1}>
                 <Text style={styles.main1view1text}>
-                  {
-                    // selector?.ItemDesc
-                    // ? selector.ItemDesc?.substring(0, 35)
-                    //   :
-                    'PRODUCT DESCRIPTION'
-                  }
+                  {'PRODUCT DESCRIPTION'}
                 </Text>
               </View>
+   
+
               {Detail ? (
                 <TouchableOpacity
                   onPress={() => EditProduct(selector?.productDetail)}
-                  //  onPress={()=>manageEdit()}
-                  style={{ alignItems: 'flex-end' }}>
+                  style={{alignItems: 'flex-end'}}>
                   <Image
-                    style={{ width: 20, height: 20 }}
+                    style={{width: 20, height: 20}}
                     source={require('../../../assets/Image/edit.png')}
                   />
                 </TouchableOpacity>
               ) : null}
             </View>
-            <View style={{ marginLeft: 20, marginTop: 8 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{marginLeft: 20, marginTop: 8}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Text style={styles.cardtext}>{'Name       :      '}</Text>
                 <TextInput
-                  style={{ height: 40, color: '#052a47' }}
+                  style={{height: 40, color: '#052a47'}}
                   value={stockNo}
                   editable={editable1}
                   onChangeText={val => setStock(val)}
@@ -310,7 +274,7 @@ const SubCategory = ({ route }) => {
                 }}>
                 <Text style={styles.cardtext}>{'Stock No :      '}</Text>
                 <TextInput
-                  style={{ height: 40, color: '#052a47' }}
+                  style={{height: 40, color: '#052a47'}}
                   value={collection}
                   editable={editable}
                   onChangeText={val => setCollection(val)}
@@ -326,7 +290,7 @@ const SubCategory = ({ route }) => {
                 <Text style={styles.cardtext}>{'Metal        :     '}</Text>
 
                 <TextInput
-                  style={{ height: 40, color: '#052a47' }}
+                  style={{height: 40, color: '#052a47'}}
                   value={demo}
                   editable={editable2}
                   onChangeText={val => setDemo(val)}
@@ -355,11 +319,9 @@ const SubCategory = ({ route }) => {
               </TouchableOpacity>
           </View>)} */}
         </View>
-        <View style={{ height: 100 }} />
+        <View style={{height: 100}} />
       </ScrollView>
-      <View style={{ bottom: 0, left: 0, right: 0, position: 'absolute' }}>
-        {/* <TabView /> */}
-      </View>
+      <View style={{bottom: 0, left: 0, right: 0, position: 'absolute'}}></View>
     </View>
   );
 };

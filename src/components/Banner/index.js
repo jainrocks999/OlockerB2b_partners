@@ -89,7 +89,7 @@ const Preview = ({
   const BannerWidth = (Dimensions.get('window').width * 15) / 18;
   const BannerHeight = 180;
   return (
-      <View style={{alignItems:'center',justifyContent:'center',borderRadius:15}}>
+      <View style={{alignItems:'center',justifyContent:'center',borderRadius:15,}}>
     <TouchableOpacity
       // onPress={() => onPress(item)}
       >
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius:15
+    // borderRadius:15,
   },
   shadow: {
     ...Platform.select({

@@ -45,7 +45,7 @@ export default StyleSheet.create({
   main: {
     alignItems: 'center',
     height: 200,
-    marginTop: -120, 
+    marginTop: -120,
     // paddingVertical: 20,
     // borderBottomLeftRadius: 30,
     // borderBottomRightRadius: 30,
@@ -54,6 +54,7 @@ export default StyleSheet.create({
     marginTop: 10,
     paddingHorizontal: 12,
   },
+
   itemview1: {
     paddingHorizontal: 8,
     flexDirection: 'row',
@@ -190,15 +191,15 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 140,
-     marginLeft:10,
-    marginHorizontal:Platform.OS=='android'?6:12,
+    marginLeft: 10,
+    marginHorizontal: Platform.OS == 'android' ? 6 : 12,
   },
   Bt: {
     fontFamily: 'Roboto-Medium',
     fontSize: 16,
     marginBottom: 20,
     fontWeight: '700',
-    color:'#474747'
+    color: '#474747',
   },
   Bv: {
     bottom: 20,
@@ -212,16 +213,16 @@ export default StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     marginTop: 3,
-    color:'#474747'
+    color: '#474747',
   },
-   card2v1: {
+  card2v1: {
     // backgroundColor: '#fff',
     //  height:80,
     // borderBottomLeftRadius: 10,
     // borderBottomRightRadius: 10,
     // padding: 10,
-   alignItems:'center',
-     marginTop:5
+    alignItems: 'center',
+    marginTop: 5,
     //justifyContent: 'center',
   },
   card2v1t: {

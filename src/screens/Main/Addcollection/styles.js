@@ -1,5 +1,8 @@
-import { StyleSheet } from 'react-native';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import {StyleSheet} from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 export default StyleSheet.create({
   container: {
     width: '100%',
@@ -14,9 +17,8 @@ export default StyleSheet.create({
     flex: 1,
     // backgroundColor: '#f0eeee',
   },
- 
 
-crossbtn: {
+  crossbtn: {
     height: hp(5),
     width: hp(5),
     backgroundColor: '#032e63',
@@ -25,34 +27,33 @@ crossbtn: {
     right: wp(2),
     top: wp(2),
     alignItems: 'center',
-    justifyContent: 'center'
-},
-xbtn: {
+    justifyContent: 'center',
+  },
+  xbtn: {
     color: 'white',
     fontSize: wp(5),
-    fontWeight: 'bold'
-},
+    fontWeight: 'bold',
+  },
   scroll: {
     flex: 1,
     paddingHorizontal: 15,
     paddingVertical: 20,
   },
   modalView: {
-    height: hp(60),
-    width: wp(85),
+    height: hp(93),
+    width: wp(93),
     backgroundColor: 'white',
-     alignSelf: 'center',
+    alignSelf: 'center',
     elevation: 5,
-    marginTop: wp(30),
+    marginTop: wp(0),
     borderRadius: wp(2),
-    paddingHorizontal: wp(2)
-
-},
-modalText: {
-  borderWidth:0.4,
-  // width: wp(100),
-  marginTop: hp(3)
-},
+    paddingHorizontal: wp(2),
+  },
+  modalText: {
+    borderWidth: 0.4,
+    // width: wp(100),
+    marginTop: hp(0),
+  },
   input: {
     width: '90%',
     marginLeft: 0,
@@ -76,7 +77,7 @@ modalText: {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  img1: { height: 93, width: 90 },
+  img1: {height: 93, width: 90},
   Text1: {
     fontWeight: '500',
     color: '#949494',

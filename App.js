@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -9,20 +9,55 @@ import {
   SafeAreaView,
   FlatList,
 } from 'react-native';
-import { Provider } from 'react-redux';
+import {Provider} from 'react-redux';
 import Store from './src/Redux/Store';
 import RootApp from './src/navigation';
 import StatusBar from './src/components/StatusBar';
 import crashlytics from '@react-native-firebase/crashlytics';
-import PushNotificationIOS from "@react-native-community/push-notification-ios";
-import PushNotification from "react-native-push-notification";
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import PushNotification from 'react-native-push-notification';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { GetMessageCommon } from './src/screens/Main/ChatScreen/common';
+import {GetMessageCommon} from './src/screens/Main/ChatScreen/common';
+import * as RootNavigation from './src/navigation/RootNavigation';
 LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreAllLogs();
 
-
 const App = () => {
+  const manageLogin = async data1 => {
+    const user_id = await AsyncStorage.getItem('loginToken');
+    if (user_id == null) {
+      RootNavigation.push('Login');
+      // navigationRef.current?.dispatch(StackActions.push('FirstPage'));
+    } else if (user_id) {
+      RootNavigation.push('ChatScreen', {item: data1});
+
+      // navigationRef.current?.dispatch(StackActions.push('FirstPage'));
+    }
+  };
+
+  const Requestsentosupplier = async () => {
+    const user_id = await AsyncStorage.getItem('loginToken');
+    if (user_id == null) {
+      RootNavigation.push('Login');
+      // navigationRef.current?.dispatch(StackActions.push('FirstPage'));
+    } else if (user_id) {
+      RootNavigation.push('PendingRequest', {id: ''});
+      // 'MyNetwork1',{screen:'PendingRequest', id:''}
+      // navigationRef.current?.dispatch(StackActions.push('FirstPage'));
+    }
+  };
+
+  const RequestAccept = async () => {
+    const user_id = await AsyncStorage.getItem('loginToken');
+    if (user_id == null) {
+      RootNavigation.push('Login');
+      // navigationRef.current?.dispatch(StackActions.push('FirstPage'));
+    } else if (user_id) {
+      RootNavigation.push('MyNetworks');
+      // 'MyNetwork1',{screen:'MyNetworks'}
+      // navigationRef.current?.dispatch(StackActions.push('FirstPage'));
+    }
+  };
 
   const initializeNotifications = () => {
     PushNotification.deleteChannel('default-channel-id');
@@ -39,31 +74,68 @@ const App = () => {
     );
     PushNotification.configure({
       onRegister: function (token) {
-             console.log("TOKEN: virendra", token);
-             AsyncStorage.setItem('Tokenfcm',token.token)
-           },
+        console.log('TOKEN: virendra', token);
+        AsyncStorage.setItem('Tokenfcm', token.token);
+      },
 
       onNotification: function (notification) {
-        if (notification.userInteraction) {
-          if (notification.data.toScreen) {
-          }
-        } else {
-          PushNotification.localNotification({
-            allowWhileIdle: true,
-            ignoreInForeground: false,
-             title: notification.title,
-            message: notification.message,
-            soundName: 'notification.mp3',
-            visibility: 'public',
-            channelId: 'default',
-            playSound: true,
-          });
-          GetMessageCommon(notification?.data?.id,'supplier')
-          console.log('notification ,android',notification);
+        // if (notification.userInteraction) {
+        //   if (notification.data.toScreen) {
+        //   }
+        // } else {
+        PushNotification.localNotification({
+          title: notification.title,
+          message: notification.message,
+        });
 
+        let obj = notification?.data;
+        if (
+          notification.userInteraction === true &&
+          notification.foreground == false &&
+          notification.message == 'New Message From Supplier'
+        ) {
+          GetMessageCommon(obj?.id, 'supplier');
+          manageLogin(obj);
 
+          console.log('login Before  seession', obj);
+        } else if (
+          notification.userInteraction == true &&
+          notification.foreground == true &&
+          notification.message == 'New Message From Supplier'
+        ) {
+          GetMessageCommon(obj?.id, 'supplier');
+          console.log('login after seession', obj);
+          manageLogin(obj);
+        } else if (
+          notification.userInteraction == true &&
+          notification.foreground == false &&
+          notification.message == 'New Invitation Request'
+        ) {
+          Requestsentosupplier();
+        } else if (
+          notification.userInteraction == true &&
+          notification.foreground == true &&
+          notification.message == 'New Invitation Request'
+        ) {
+          Requestsentosupplier();
+        } else if (
+          notification.userInteraction == true &&
+          notification.foreground == false &&
+          notification.message == 'Request Accepted'
+        ) {
+          RequestAccept();
+        } else if (
+          notification.userInteraction == true &&
+          notification.foreground == true &&
+          notification.message == 'Request Accepted'
+        ) {
+          RequestAccept();
         }
-       },
+
+        console.log('notification ,android', notification);
+
+        // }
+      },
     });
 
     if (Platform.OS === 'ios') {
@@ -79,31 +151,26 @@ const App = () => {
     }
   };
 
-
-
-
-
-  
   useEffect(() => {
     initializeNotifications();
-    crashlytics().log('Analytics page just mounted')
-    getCrashlyticsDetail()
+    crashlytics().log('Analytics page just mounted');
+    getCrashlyticsDetail();
     return () => {
-      crashlytics().log('Analytics page just unmounted')
-    }
-  }, [])
+      crashlytics().log('Analytics page just unmounted');
+    };
+  }, []);
 
-   const getCrashlyticsDetail = async() => {
+  const getCrashlyticsDetail = async () => {
     const Id = await AsyncStorage.getItem('Partnersrno');
-    const userid =await AsyncStorage.getItem('userEmail')
+    const userid = await AsyncStorage.getItem('userEmail');
 
     try {
-      crashlytics().setUserId(Id)
-      crashlytics().setAttribute('username',userid)
+      crashlytics().setUserId(Id);
+      crashlytics().setAttribute('username', userid);
     } catch (err) {
-      crashlytics().recordError(err)
+      crashlytics().recordError(err);
     }
-  }
+  };
 
   return (
     <Fragment>

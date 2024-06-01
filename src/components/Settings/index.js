@@ -1,50 +1,51 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../Loader';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-import { select } from 'redux-saga/effects';
 import Toast from 'react-native-simple-toast';
 
-const Settings =() => {
+const Settings = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const network_id = useSelector(state => state.network_id)
-  const selector = useSelector(state => state.SupplierDetail?.detail)
-  const selector1 = useSelector(state => state.Status)
-  const removenetwork = async (id) => {
+  const network_id = useSelector(state => state.network_id);
+  const selector = useSelector(state => state.SupplierDetail?.detail);
+  const selector1 = useSelector(state => state.Status);
+  const removenetwork = async () => {
     const Token = await AsyncStorage.getItem('loginToken');
-    const axios = require('axios');
+    const partnerid = await AsyncStorage.getItem('Partnersrno');
 
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: `https://olocker.co/api/partners/removeNetworkSupplier?supplier_id=${selector?.SrNo}`,
-      headers: { 
-        'Olocker': `Bearer ${Token}`
-      }
+      url: `https://olocker.co/api/partners/removeNetworkSupplier?partner_id=${partnerid}&supplier_id=${selector?.SrNo}`,
+      headers: {
+        Olocker: `Bearer ${Token}`,
+      },
     };
-    
-    axios.request(config)
-    .then((response) => {
-      if(response.data.status==true){
-      navigation.replace( 'PartnerProfile')
-      partnerDetaitl(selector?.SrNo)
-      Toast.show(response?.data?.msg)
-      }
-      else{
-        Toast.show(response?.data?.msg)
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
 
-  const partnerDetaitl = async (id) => {
-    const Token = await AsyncStorage.getItem('loginToken')
+    axios
+      .request(config)
+      .then(response => {
+        console.log('remove from ,,,,', response.data);
+        if (response.data.status == true) {
+          partnerDetaitl(selector?.SrNo);
+          navigation.replace('PartnerProfile');
+
+          Toast.show(response?.data?.msg);
+        } else {
+          Toast.show(response?.data?.msg);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  const partnerDetaitl = async id => {
+    const Token = await AsyncStorage.getItem('loginToken');
     const srno = await AsyncStorage.getItem('Partnersrno');
     console.log('idd,,,,,,,,,,,,,,,,', id);
     dispatch({
@@ -53,21 +54,20 @@ const Settings =() => {
       supplierId: id,
       Token: Token,
       partnerId: srno,
-      supplier_id:id,
-      // navigation,
+      supplier_id: id,
+      navigation,
       Status: 1,
-
-
-    })
+    });
   };
   return (
     <View>
-      {selector.isAdd == 0 ? null :
-        <View style={{
-          backgroundColor: '#fff',
-          paddingVertical: 30,
-          paddingHorizontal: 15,
-        }}>
+      {selector.isAdd == 0 ? null : (
+        <View
+          style={{
+            backgroundColor: '#fff',
+            paddingVertical: 30,
+            paddingHorizontal: 15,
+          }}>
           <View
             style={{
               flexDirection: 'row',
@@ -76,7 +76,7 @@ const Settings =() => {
               marginTop: 0,
               width: '33%',
             }}>
-            <View style={{ width: '100%' }}>
+            <View style={{width: '100%'}}>
               <Text
                 style={{
                   fontSize: 14,
@@ -88,10 +88,13 @@ const Settings =() => {
               </Text>
             </View>
             <View
-              style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20 }}>
-
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginLeft: 20,
+              }}>
               <TouchableOpacity
-                onPress={() => removenetwork(network_id)}
+                onPress={() => removenetwork()}
                 style={{
                   borderColor: '#e9056b',
                   paddingHorizontal: 18,
@@ -108,11 +111,10 @@ const Settings =() => {
                   {'REMOVE'}
                 </Text>
               </TouchableOpacity>
-
             </View>
           </View>
         </View>
-      }
+      )}
     </View>
   );
 };

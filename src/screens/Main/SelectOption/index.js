@@ -1,36 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  Platform,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text} from 'react-native';
 import Header from '../../../components/CustomHeader';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import StatusBar from '../../../components/StatusBar';
 import styles from './styles';
-import { useIsFocused } from '@react-navigation/native';
-import { Dropdown } from 'react-native-element-dropdown';
+import {useIsFocused} from '@react-navigation/native';
+import {Dropdown} from 'react-native-element-dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch } from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 const SelectOption = () => {
   const navigation = useNavigation();
   const [type, setType] = useState();
-  const [visiable, setVisible] = useState([{label:'select',value:'select'}]);
+  const [visiable, setVisible] = useState([{label: 'select', value: 'select'}]);
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
 
   useEffect(
     val => {
       if (isFocused) {
-        manageOption;
+        manageOption();
         setType('');
       }
     },
     [isFocused],
   );
   const productTypeList = async () => {
-    const Token = await AsyncStorage.getItem('loginToken')
+    const Token = await AsyncStorage.getItem('loginToken');
     const Id = await AsyncStorage.getItem('Partnersrno');
     const Branch = await AsyncStorage.getItem('Branch');
     dispatch({
@@ -47,19 +43,17 @@ const SelectOption = () => {
 
     if (val == 'Product') {
       {
-        // setVisible(false);
-        navigation.navigate('Addproduct', { productEdit1: false }), { type: val }
+        navigation.navigate('Addproduct', {productEdit1: false}), {type: val};
         dispatch({
           type: 'User_editProduct_Success',
           payload: '',
           productEdit: false,
         });
-        productTypeList()
+        productTypeList();
       }
     } else if (val == 'Collections') {
       {
-        // setVisible(false);
-        navigation.navigate('Addcollection'), { type: val };
+        navigation.navigate('Addcollection'), {type: val};
         Apicall();
       }
     }
@@ -72,10 +66,9 @@ const SelectOption = () => {
       url: 'partners/creativeImgList',
       partnerId: partnerid,
       Token: Token,
-
     });
-  }
-  
+  };
+
   return (
     <View style={styles.container1}>
       <Header
@@ -88,35 +81,33 @@ const SelectOption = () => {
         onPress2={() => navigation.navigate('FavDetails')}
       />
       <View style={styles.main2}>
-        <View style={[styles.main, { alignItems: 'center' }]}>
+        <View style={[styles.main, {alignItems: 'center'}]}>
           <Text style={styles.Text1}>Select Type</Text>
           <View style={styles.main1}>
-          <Dropdown
-                  style={styles.card}
-                  placeholderStyle={styles.placeholder}
-                  selectedTextStyle={styles.rnimg}
-                  // iconStyle={{ tintColor: '#ffff' }}
-                  data={Data?Data:visiable}
-                  itemTextStyle={{ color: '#474747',}}
-
-                  inputSearchStyle={{
-                    borderRadius: 10,
-                    backgroundColor: '#f0f0f0',
-                  }}
-                  // itemTextStyle={{ fontSize: 15 }}
-                   itemContainerStyle={{ marginBottom: -5,borderRadius:10 }}
-                    maxHeight={250}
-                  labelField="label"
-                  valueField="value"
-                  placeholder="Select Type"
-                  value={type}
-                  onChange={item => {
-                   manageOption(item.value)
-                  }}
-                />
+            <Dropdown
+              style={styles.card}
+              placeholderStyle={styles.placeholder}
+              selectedTextStyle={styles.rnimg}
+              // iconStyle={{ tintColor: '#ffff' }}
+              data={Data ? Data : visiable}
+              itemTextStyle={{color: '#474747'}}
+              inputSearchStyle={{
+                borderRadius: 10,
+                backgroundColor: '#f0f0f0',
+              }}
+              // itemTextStyle={{ fontSize: 15 }}
+              itemContainerStyle={{marginBottom: -5, borderRadius: 10}}
+              maxHeight={250}
+              labelField="label"
+              valueField="value"
+              placeholder="Select Type"
+              value={type}
+              onChange={item => {
+                manageOption(item.value);
+              }}
+            />
           </View>
         </View>
-
       </View>
       <View style={styles.outcard}>
         <Text style={styles.outcardtext}>
@@ -124,7 +115,6 @@ const SelectOption = () => {
         </Text>
       </View>
 
-     
       <StatusBar />
     </View>
   );
@@ -132,8 +122,6 @@ const SelectOption = () => {
 export default SelectOption;
 
 const Data = [
-  { label: 'Product', value: 'Product' },
-  { label: 'Collections', value: 'Collections' },
-    // { label: 'Category', value: 'Category' },
-
+  {label: 'Product', value: 'Product'},
+  {label: 'Collections', value: 'Collections'},
 ];

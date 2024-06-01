@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   Text,
@@ -12,45 +12,44 @@ import {
   Alert,
   BackHandler,
 } from 'react-native';
-import Carousel from 'react-native-banner-carousel';
-import { useNavigation } from '@react-navigation/native';
-import Header from '../../../components/CustomHeader';
+import {useNavigation} from '@react-navigation/native';
+
 import styles from './styles';
 import Toast from 'react-native-simple-toast';
 import Loader from '../../../components/Loader';
-import { FlatListSlider } from 'react-native-flatlist-slider';
+import {FlatListSlider} from 'react-native-flatlist-slider';
 import Banner from '../../../components/Banner';
 import ImagePath from '../../../components/ImagePath';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch, useSelector } from 'react-redux';
-import { useIsFocused } from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
+import axios from 'axios';
 let backPress = 0;
 const HomeScreen = () => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const isFetching = useSelector(state => state.isFetching);
-
+  const [visiable, setVisiable] = useState(false);
   const selector = useSelector(state => state.Gold?.goldPrices);
   const selector1 = useSelector(state => state.SupplierList?.suppliers);
   const selector2 = useSelector(state => state.BannerList?.data);
   const BannerData = [];
+  const flatListRef = useRef(null);
 
-  
-  selector2?.map((item) => {
-    if (item.ImageSection == "partnerHome" && item.isActive == 1) {
-      const url = `${ImagePath.path2}${item.ImageUrl}${item.ImageName
-        }`;
+  selector2?.map(item => {
+    if (item.ImageSection == 'partnerHome' && item.isActive == 1) {
+      const url = `${ImagePath.path2}${item.ImageUrl}${item.ImageName}`;
       BannerData.push({
+        // ...item
         image: url,
         desc: 'Red fort',
       });
     }
-  })
+  });
   const lenght = BannerData.length;
   const [data, setData] = useState();
   const [collections, setCollecions] = useState();
   const win = Dimensions.get('window');
-
 
   const [sliderdata, setSlider] = useState();
 
@@ -72,18 +71,43 @@ const HomeScreen = () => {
           },
           style: 'cancel',
         },
-        { text: 'ok', onPress: () => LogoutApp() },
+        {text: 'ok', onPress: () => LogoutApp()},
       ],
-      { cancelable: false },
+      {cancelable: false},
     );
   };
 
   const LogoutApp = async () => {
-    await AsyncStorage.setItem('loginToken', '');
-
-    navigation.navigate('Login');
     const Token = await AsyncStorage.getItem('loginToken');
-   
+    const fcmToken = await AsyncStorage.getItem('Tokenfcm');
+    const Id = await AsyncStorage.getItem('Partnersrno');
+    setVisiable(true);
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `https://olocker.co/api/partners/logout?partnerId=${Id}&fcm_token=${fcmToken}`,
+      headers: {
+        Olocker: `Bearer ${Token}`,
+      },
+    };
+
+    axios
+      .request(config)
+      .then(response => {
+        if (response.data.status == true) {
+          setVisiable(false);
+          navigation.navigate('Login');
+          AsyncStorage.setItem('loginToken', '');
+          Toast.show(response.data.msg);
+        } else {
+          Toast.show(response.data.msg);
+          setVisiable(false);
+        }
+      })
+      .catch(error => {
+        setVisiable(false);
+        console.log(error);
+      });
   };
 
   const dispatch = useDispatch();
@@ -96,32 +120,16 @@ const HomeScreen = () => {
 
   const MyNetwork = async () => {
     const Token = await AsyncStorage.getItem('loginToken');
-   
-  }
+  };
   const ApiCallWithUseEffect = async () => {
     const Token = await AsyncStorage.getItem('loginToken');
     const Id = await AsyncStorage.getItem('Partnersrno');
-
-           
-    //  dispatch({
-    //   type:'Get_pushNotificationList_Request',
-    //   url:'/partners/pushNotificationList',
-    //   partnerId:Id,
-    //   Token:Token
-    //  })
-
-
-      dispatch({
-        type: 'Get_Sent_Request',
-        url: '/partners/requestedSupplierList',
-        partnerId: Id,
-        Token: Token,
-      });
-      dispatch({
-        type: 'Get_delete_Success',
-        payload: undefined
-      })
-
+    dispatch({
+      type: 'Get_Sent_Request',
+      url: '/partners/requestedSupplierList',
+      partnerId: Id,
+      Token: Token,
+    });
 
     dispatch({
       type: 'Get_State_Request',
@@ -134,14 +142,6 @@ const HomeScreen = () => {
       url: 'partners//getBannerList',
       Token: Token,
     });
-
-    dispatch({
-      type: 'Patner_Contact_Request',
-      url: 'supplier//supplierListForPartners',
-      user_id: Id,
-      Token: Token,
-    });
-
     dispatch({
       type: 'User_Gold_Request',
       url: '/partners/goldPrice',
@@ -157,8 +157,7 @@ const HomeScreen = () => {
     });
   };
 
-
-  const supplierprofile = async (id) => {
+  const supplierprofile = async id => {
     const Token = await AsyncStorage.getItem('loginToken');
     const Id = await AsyncStorage.getItem('Partnersrno');
     AsyncStorage.setItem('supplierID', id.SupplierSrNo);
@@ -167,12 +166,11 @@ const HomeScreen = () => {
       url: '/partners/supplierDetail',
       supplierId: id.SupplierSrNo,
       Token: Token,
-      partnerId:Id,
+      partnerId: Id,
       supplier_id: id.SupplierSrNo,
       navigation,
-      Status: 2
-
-    })
+      Status: 2,
+    });
     dispatch({
       type: 'User_SupplierCategories_Request',
       url: 'partners/productTypeList',
@@ -180,7 +178,7 @@ const HomeScreen = () => {
       userType: 'supplier',
       Token: Token,
     });
-  }
+  };
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
@@ -207,22 +205,23 @@ const HomeScreen = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
-        {isFetching ? <Loader /> : null}
+        {isFetching || visiable ? <Loader /> : null}
         <ImageBackground
           style={styles.imgback}
           source={require('../../../assets/Image/1.png')}>
           <View style={styles.container}>
             <View style={styles.headertouch}>
-              <TouchableOpacity onPress={() => navigation.navigate('MessageBox')}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('MessageBox')}>
                 <Image
                   style={styles.img1}
                   source={require('../../../assets/Fo.png')}
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                style={{ marginLeft: 15 }}
+                style={{marginLeft: 15}}
                 onPress={() => navigation.navigate('FavDetails')}>
                 <Image
                   style={styles.img2}
@@ -231,55 +230,23 @@ const HomeScreen = () => {
               </TouchableOpacity>
               <TouchableOpacity onPress={() => Logout()}>
                 <Image
-                  style={[styles.img3, { tintColor: '#FFFF', height: 26, width: 26 }]}
+                  style={[
+                    styles.img3,
+                    {tintColor: '#FFFF', height: 26, width: 26},
+                  ]}
                   source={require('../../../assets/Image/logout.png')}
                 />
               </TouchableOpacity>
             </View>
           </View>
-          <View style={{ paddingHorizontal: 10 }}>
+          <View style={{paddingHorizontal: 10}}>
             <Text style={styles.text1}>Welcome to MyJeweller</Text>
             <Text style={styles.text2}>{'Onestop solution\nfor you'}</Text>
           </View>
         </ImageBackground>
-        
 
-
-        {/* <View style={{ alignItems: 'center',
-    height: 200,
-    marginTop: -120,}}>
-          <FlatListSlider
-            data={selector2}
-            height={170}
-            timer={3000}
-            contentContainerStyle={{
-              marginVertical: 0,
-              paddingHorizontal: 30,
-            }}
-            indicatorContainerStyle={{position: 'absolute', bottom: 4}}
-            indicatorActiveColor={'#032e63'}
-            indicatorInActiveColor={'#ffffff'}
-            indicatorActiveWidth={5}
-            animation
-            component={<Banner />}
-            separatorWidth={15}
-            width={300}
-            autoscroll={false}
-            loop={false}
-          />
-        </View>
-
- */}
-
-
-
-
-
-      {lenght > 0 ?
-        <View style=
-         {styles.main}
-        >
-         
+        {lenght > 0 ? (
+          <View style={styles.main}>
             <FlatListSlider
               data={BannerData}
               height={170}
@@ -288,9 +255,9 @@ const HomeScreen = () => {
                 marginVertical: 0,
                 paddingHorizontal: 16,
               }}
-              indicatorContainerStyle={{ position: 'absolute', bottom: -1 }}
-              indicatorActiveColor={'#032e63'}
-              indicatorInActiveColor={'#ffffff'}
+              indicatorContainerStyle={{position: 'absolute', bottom: -1}}
+              indicatorActiveColor={'red'}
+              indicatorInActiveColor={'grey'}
               indicatorActiveWidth={5}
               animation
               component={<Banner />}
@@ -298,55 +265,60 @@ const HomeScreen = () => {
               width={300}
               autoscroll={true}
               loop={false}
-            /> 
-        </View>: null} 
-        <View style={styles.itemview}>
-          <View style={styles.itemview1}>
-            <Image
-              style={{
-                width: 102,
-                height: 22,
-                tintColor: '#032e63',
-                marginLeft: 5,
-              }}
-              source={require('../../../assets/Image/myjewlery.png')}
             />
-            <TouchableOpacity
-            //  onPress={()=>updateFieldChanged('1')}
-            >
-              <Text style={styles.text4}>Network</Text>
-            </TouchableOpacity>
-          </View>
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            horizontal={true}
-            data={selector1}
-            style={{ marginTop: 7, }}
-            renderItem={({ item }) => (
-              <View style={{borderWidth:0,height:165,width:165,margin:5}}>
-                <TouchableOpacity
-                  onPress={() => supplierprofile(item)}
-                  style={[styles.cardview43,{height:'70%',width:'100%'}]}>
 
-            
-                  <Image
-                    style={{
-                      width: '100%',
-                      height: '100%',
+            {/* <SliderBanner data={BannerData} bottom={-10}height={6}width={6} borderRadius={3}/> */}
+          </View>
+        ) : null}
+        {selector1?.length > 0 ? (
+          <View style={styles.itemview}>
+            <View style={styles.itemview1}>
+              <Image
+                style={{
+                  width: 102,
+                  height: 22,
+                  tintColor: '#032e63',
+                  marginLeft: 5,
+                }}
+                source={require('../../../assets/Image/myjewlery.png')}
+              />
+              <TouchableOpacity>
+                <Text style={styles.text4}>Network</Text>
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              showsHorizontalScrollIndicator={false}
+              horizontal={true}
+              data={selector1}
+              style={{marginTop: 7}}
+              renderItem={({item}) => (
+                <View
+                  style={{borderWidth: 0, height: 165, width: 165, margin: 5}}>
+                  <TouchableOpacity
+                    onPress={() => supplierprofile(item)}
+                    style={[styles.cardview43, {height: '70%', width: '100%'}]}>
+                    <Image
+                      style={{
+                        width: '100%',
+                        height: '100%',
                         // resizeMode: 'cover',
-                         borderRadius: 10,
-                    }}
-                    source={item.logoImage ? { uri: `${item.logoImage}` } : require('../../../assets/logo.png')}
-                  />
-                </TouchableOpacity>
-                <View style={styles.card2v1}>
-                      <Text style={styles.card2v1t}>{item.SupplierName}</Text>
-                      {/* <Text style={{ fontFamily: 'Acephimere', color: '#666666', fontSize: 12 }}>{item.CityName}</Text> */}
-                    </View>
-              </View>
-            )}
-          />
-        </View>
+                        borderRadius: 10,
+                      }}
+                      source={
+                        item.logoImage
+                          ? {uri: `${item.logoImage}`}
+                          : require('../../../assets/logo.png')
+                      }
+                    />
+                  </TouchableOpacity>
+                  <View style={styles.card2v1}>
+                    <Text style={styles.card2v1t}>{item.SupplierName}</Text>
+                  </View>
+                </View>
+              )}
+            />
+          </View>
+        ) : null}
         <View style={styles.middle1}>
           <View style={styles.middle}>
             <TouchableOpacity
@@ -354,10 +326,9 @@ const HomeScreen = () => {
                 navigation.navigate('MyCatalogue', {
                   data: data,
                   collections: collections,
-                 
                 })
               }
-              style={{ alignItems: 'center' }}>
+              style={{alignItems: 'center'}}>
               <View style={styles.card1}>
                 <Image
                   style={styles.img4}
@@ -366,10 +337,12 @@ const HomeScreen = () => {
               </View>
               <Text style={styles.textc}>{'Catalogue'}</Text>
             </TouchableOpacity>
-        
+
             <TouchableOpacity
-              onPress={() => navigation.navigate('MyNetwork1',{ screen: 'MyNetwork' })}
-              style={{ alignItems: 'center' }}>
+              onPress={() =>
+                navigation.navigate('MyNetwork1', {screen: 'MyNetwork'})
+              }
+              style={{alignItems: 'center'}}>
               <View style={styles.card1}>
                 <Image
                   style={styles.img4}
@@ -393,7 +366,7 @@ const HomeScreen = () => {
             <TouchableOpacity
               onPress={() => navigation.navigate('MyProducts')}
               style={styles.touch}>
-              <Text style={{ color: '#fff', fontSize: 12 }}>MORE</Text>
+              <Text style={{color: '#fff', fontSize: 12}}>MORE</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -402,7 +375,7 @@ const HomeScreen = () => {
             showsHorizontalScrollIndicator={false}
             horizontal={true}
             data={selector?.slice(0, 3)}
-            renderItem={({ item }) => (
+            renderItem={({item}) => (
               <ImageBackground
                 source={require('../../../assets/PartnerImage/goldIcon.png')}
                 style={styles.Bimg}>
@@ -410,27 +383,35 @@ const HomeScreen = () => {
                   0,
                 )} K`}</Text>
                 <View style={styles.Bv}>
-                <Text style={{ fontFamily: 'Roboto-Medium',
-    fontSize: 13,
-    
-    fontWeight: '600',
-    color:'#474747'}}>({`${item.Purity}`})</Text>
-                  <View style={{flexDirection:'row',bottom:-3,alignItems:'center',justifyContent:'center'}}>
+                  <Text
+                    style={{
+                      fontFamily: 'Roboto-Medium',
+                      fontSize: 13,
 
-                  <Image
-                    style={{ height: 16, width: 20 ,marginTop:3}}
-                    source={require('../../../assets/Image/rupay.png')}
-                  />
-                  <Text style={styles.Btt}>{item.AM}</Text>
-                </View>
+                      fontWeight: '600',
+                      color: '#474747',
+                    }}>
+                    ({`${item.Purity}`})
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      bottom: -3,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      style={{height: 16, width: 20, marginTop: 3}}
+                      source={require('../../../assets/Image/rupay.png')}
+                    />
+                    <Text style={styles.Btt}>{item.AM}</Text>
+                  </View>
                 </View>
               </ImageBackground>
             )}
           />
         </View>
       </ScrollView>
-      {/* <TabView /> */}
-
     </SafeAreaView>
   );
 };
@@ -479,16 +460,16 @@ var object = {
       id: 1,
       title: 'A',
       data: [
-        { id: '1', name: 'First Name', type: 'text' },
-        { id: '2', name: 'Last Name', type: 'text' },
+        {id: '1', name: 'First Name', type: 'text'},
+        {id: '2', name: 'Last Name', type: 'text'},
       ],
     },
     {
       id: 2,
       title: 'B',
       data: [
-        { id: '1', name: 'Twitter', type: 'text' },
-        { id: '2', name: 'Twitter follower', type: 'number' },
+        {id: '1', name: 'Twitter', type: 'text'},
+        {id: '2', name: 'Twitter follower', type: 'number'},
       ],
     },
   ],

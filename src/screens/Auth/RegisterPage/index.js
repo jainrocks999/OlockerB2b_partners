@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -7,13 +7,13 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import styles from './styles';
 
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import RNPickerSelect from 'react-native-picker-select';
-import { Formik } from 'formik';
+import {Formik} from 'formik';
 import * as yup from 'yup';
 const loginValidationSchema = yup.object().shape({
   companyName: yup.string().required('Please enter company name'),
@@ -92,20 +92,20 @@ const Login = () => {
               extraScrollHeight={10}
               enableOnAndroid={true}
               keyboardShouldPersistTaps="handled"
-              contentContainerStyle={{ flex: 1 }}>
+              contentContainerStyle={{flex: 1}}>
               <View style={styles.headerimg}>
                 <Image
-                  style={{ marginTop: 40 }}
+                  style={{marginTop: 40}}
                   source={require('../../../assets/ol.png')}
                 />
               </View>
-              <View style={[styles.card, { marginTop: 20 }]}>
+              <View style={[styles.card, {marginTop: 20}]}>
                 <View style={[styles.view]}>
                   <View style={styles.main}>
                     <Text style={styles.text}>Register</Text>
                   </View>
                   <View style={styles.line} />
-                  <View style={[styles.input, { marginTop: 20 }]}>
+                  <View style={[styles.input, {marginTop: 20}]}>
                     <TextInput
                       style={styles.input1}
                       placeholder="Enter Company Name"
@@ -120,7 +120,7 @@ const Login = () => {
                       <Text style={styles.warn}>{errors.companyName}</Text>
                     )}
                   </View>
-                  <View style={[styles.input, { marginTop: 10 }]}>
+                  <View style={[styles.input, {marginTop: 10}]}>
                     <TextInput
                       style={styles.input1}
                       placeholder="Enter Display Name"
@@ -135,7 +135,7 @@ const Login = () => {
                       <Text style={styles.warn}>{errors.displayName}</Text>
                     )}
                   </View>
-                  <View style={[styles.input, { marginTop: 10 }]}>
+                  <View style={[styles.input, {marginTop: 10}]}>
                     <TextInput
                       style={styles.input1}
                       placeholder="Enter Owner Name"
@@ -150,7 +150,7 @@ const Login = () => {
                       <Text style={styles.warn}>{errors.ownerName}</Text>
                     )}
                   </View>
-                  <View style={[styles.input, { marginTop: 10 }]}>
+                  <View style={[styles.input, {marginTop: 10}]}>
                     <TextInput
                       style={styles.input1}
                       placeholder="Enter Home Address"
@@ -165,7 +165,7 @@ const Login = () => {
                       <Text style={styles.warn}>{errors.homeAddress}</Text>
                     )}
                   </View>
-                  <View style={[styles.input, { marginTop: 10 }]}>
+                  <View style={[styles.input, {marginTop: 10}]}>
                     <TextInput
                       style={styles.input1}
                       placeholder="Enter Email Address"
@@ -181,7 +181,7 @@ const Login = () => {
                       <Text style={styles.warn}>{errors.email}</Text>
                     )}
                   </View>
-                  <View style={[styles.input, { marginTop: 10 }]}>
+                  <View style={[styles.input, {marginTop: 10}]}>
                     <TextInput
                       style={styles.input1}
                       placeholder="Enter Password"
@@ -196,7 +196,7 @@ const Login = () => {
                       <Text style={styles.warn}>{errors.password}</Text>
                     )}
                   </View>
-                  <View style={[styles.input, { marginTop: 10 }]}>
+                  <View style={[styles.input, {marginTop: 10}]}>
                     <TextInput
                       style={styles.input1}
                       placeholder="Enter Company GSTIN"
@@ -211,7 +211,7 @@ const Login = () => {
                       <Text style={styles.warn}>{errors.companygsTin}</Text>
                     )}
                   </View>
-                  <View style={[styles.input, { marginTop: 10 }]}>
+                  <View style={[styles.input, {marginTop: 10}]}>
                     <RNPickerSelect
                       onValueChange={val => setUsserstate(val)}
                       items={State}
@@ -239,7 +239,7 @@ const Login = () => {
                       }}
                       value={values.userstate}
                       useNativeAndroidPickerStyle={false}
-                      placeholder={{ label: 'Select State', value: '' }}
+                      placeholder={{label: 'Select State', value: ''}}
                     />
                   </View>
                   <View style={styles.error}>
@@ -247,7 +247,7 @@ const Login = () => {
                       <Text style={styles.warn}>{errors.stateName}</Text>
                     )}
                   </View>
-                  <View style={[styles.input, { marginTop: 10 }]}>
+                  <View style={[styles.input, {marginTop: 10}]}>
                     <RNPickerSelect
                       items={City}
                       style={{
@@ -275,7 +275,7 @@ const Login = () => {
                       value={values.city}
                       onValueChange={val => setCity(val)}
                       useNativeAndroidPickerStyle={false}
-                      placeholder={{ label: 'Select City', value: '' }}
+                      placeholder={{label: 'Select City', value: ''}}
                     />
                   </View>
                   <View style={styles.error}>
@@ -283,7 +283,7 @@ const Login = () => {
                       <Text style={styles.warn}>{errors.cityName}</Text>
                     )}
                   </View>
-                  <View style={[styles.input, { marginTop: 10 }]}>
+                  <View style={[styles.input, {marginTop: 10}]}>
                     <TextInput
                       style={styles.input1}
                       placeholder="Enter Pincode"
@@ -299,7 +299,7 @@ const Login = () => {
                       <Text style={styles.warn}>{errors.pincode}</Text>
                     )}
                   </View>
-                  <View style={[styles.input, { marginTop: 10 }]}>
+                  <View style={[styles.input, {marginTop: 10}]}>
                     <TextInput
                       style={styles.input1}
                       placeholder="Enter Mobile Number"
@@ -315,7 +315,7 @@ const Login = () => {
                       <Text style={styles.warn}>{errors.mobile}</Text>
                     )}
                   </View>
-                  <View style={{ paddingHorizontal: 20 }}>
+                  <View style={{paddingHorizontal: 20}}>
                     <TouchableOpacity
                       onPress={() => handleSubmit()}
                       style={{
@@ -327,10 +327,10 @@ const Login = () => {
                         width: '80%',
                         height: 45,
                       }}>
-                      <Text style={{ color: '#474747' }}>Register New</Text>
+                      <Text style={{color: '#474747'}}>Register New</Text>
                     </TouchableOpacity>
                   </View>
-                  <View style={{ height: 40 }} />
+                  <View style={{height: 40}} />
                 </View>
               </View>
             </KeyboardAwareScrollView>
@@ -343,13 +343,13 @@ const Login = () => {
 export default Login;
 
 const City = [
-  { label: 'Mumbai', value: 'Mumbai' },
-  { label: 'Indore', value: 'Indore' },
-  { label: 'Ahmadabad', value: 'Ahmadabad' },
+  {label: 'Mumbai', value: 'Mumbai'},
+  {label: 'Indore', value: 'Indore'},
+  {label: 'Ahmadabad', value: 'Ahmadabad'},
 ];
 
 const State = [
-  { label: 'Maharastra', value: 'Maharastra' },
-  { label: 'Madhya Pradesh', value: 'Madhya Pradesh' },
-  { label: 'Uttar Pradesh', value: 'Uttar Pradesh' },
+  {label: 'Maharastra', value: 'Maharastra'},
+  {label: 'Madhya Pradesh', value: 'Madhya Pradesh'},
+  {label: 'Uttar Pradesh', value: 'Uttar Pradesh'},
 ];

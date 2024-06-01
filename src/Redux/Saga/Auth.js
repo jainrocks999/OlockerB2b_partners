@@ -1,79 +1,106 @@
-import { ToastAndroid, YellowBox } from 'react-native';
-import { takeEvery, put, call } from 'redux-saga/effects';
+import {Alert, ToastAndroid, YellowBox} from 'react-native';
+import {takeEvery, put, call} from 'redux-saga/effects';
 import Api from '../Api';
 import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { parse } from 'react-native-svg';
-import { act } from 'react-test-renderer';
-import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
-
-
-
 
 // Add WishList  partner
 function* AddwishList(action) {
-
   try {
-
-
     const data = new FormData();
-    data.append('checkProduct', action.checkProduct)
-    data.append('PartnerSrNo', action.PartnerSrNo)
-    data.append('userType', action.userType)
-    const response = yield call(Api.fetchDataByPOST1, action.url, data, action.Token);
-
+    data.append('checkProduct', action.checkProduct);
+    data.append('PartnerSrNo', action.PartnerSrNo);
+    data.append('userType', action.userType);
+    const response = yield call(
+      Api.fetchDataByPOST1,
+      action.url,
+      data,
+      action.Token,
+    );
 
     if (response.status == true) {
-
       yield put({
         type: 'User_addProductWishlist_Success',
         payload: response,
       });
       yield put({
         type: 'User_mg_Success',
-        payload: action.mg
-      })
+        payload: action.mg,
+      });
 
-      if (action.partner) {
+      if (!action.iscollection) {
+        if (action.partner) {
+          yield put({
+            type: 'User_ProductList_Success',
+            payload: {list: action.Data},
+          });
 
+          // yield put({
+          //   type: 'User_ProductList_Request',
+          //   url: 'partners/productTypeProducts',
+          //   userId: action.PartnerSrNo,
+          //   userType: 'partner',
+          //   typeId: action.id,
+          //   Token: action.Token,
+          //   name: action.name,
+          //   login_user_id: action.PartnerSrNo,
+          //   login_user_type: 'partner',
+          //   start: action.start,
+          //   limit: action.limit,
+          //   navigation: action.navigation,
+          //   page: action.page,
+          // });
+          if (action.collection_id) {
+            // Alert.alert(action.collection_id.toStri)
+            yield put({
+              type: 'User_collectionProductViewList_Request',
+              url: 'partners//collectionProductViewList',
+              collection_id: action.collection_id,
+              login_user_id: action.PartnerSrNo,
+              login_user_type: 'partner',
+              Token: action.Token,
+              name: false,
+              navigation: false,
+            });
+          }
+        } else {
+          yield put({
+            type: 'User_ProductList_Success',
+            payload: {list: action.Data},
+          });
+
+          // yield put({
+          //   type: 'User_SupplierProductList_Request',
+          //   url: 'partners/productTypeProducts',
+          //   userId: action.supllier,
+          //   userType: 'supplier',
+          //   typeId: action.id,
+          //   Token: action.Token,
+          //   name: action.name,
+          //   login_user_id: action.PartnerSrNo,
+          //   login_user_type: 'partner',
+          //   navigation: action.navigation,
+          //   start: action.start,
+          //   limit: action.limit,
+          //   page: action.page,
+          // });
+        }
+      } else {
         yield put({
-
-          type: 'User_ProductList_Request',
-          url: 'partners/productTypeProducts',
-          userId: action.PartnerSrNo,
-          userType: 'partner',
-          typeId: action.id,
+          type: 'User_collectionProductViewList_Request',
+          url: 'partners//collectionProductViewList',
+          collection_id: action.collectionid,
+          login_user_id: action.PartnerSrNo,
+          login_user_type: action.userType,
           Token: action.Token,
           name: action.name,
-          login_user_id: action.PartnerSrNo,
-          login_user_type: 'partner',
-          navigation: action.navigation,
-          page: action.page
-
-        })
-      }
-      else {
-
-
-        yield put({
-          type: 'User_SupplierProductList_Request',
-          url: 'partners/productTypeProducts',
-          userId: action.supllier,
-          userType: 'supplier',
-          typeId: action.id,
-          Token: action.Token,
-          name: action.name,
-          login_user_id: action.PartnerSrNo,
-          login_user_type: 'partner',
-          navigation: action.navigation,
-          page: action.page
-
-        })
+          navigation: false,
+        });
       }
       // if (action && action.navigation) {
       //   action.navigation.navigate('FavDetails',)
       // }
-     
+
       Toast.show(response.msg);
     } else {
       yield put({
@@ -91,26 +118,26 @@ function* AddwishList(action) {
 
 // Add WishList  Supplier
 function* AddwishList1(action) {
-
   try {
     const data = new FormData();
-    data.append('checkProduct', action.checkProduct)
-    data.append('PartnerSrNo', action.PartnerSrNo)
-    data.append('userType', action.userType)
+    data.append('checkProduct', action.checkProduct);
+    data.append('PartnerSrNo', action.PartnerSrNo);
+    data.append('userType', action.userType);
 
-    const response = yield call(Api.fetchDataByPOST1, action.url, data, action.Token);
-
+    const response = yield call(
+      Api.fetchDataByPOST1,
+      action.url,
+      data,
+      action.Token,
+    );
 
     if (response.status == true) {
-
       yield put({
         type: 'User_addProductWishlist1_Success',
         payload: response,
       });
       // action.navigation.navigate('FavDetails', { FavDAta: false })
       Toast.show(response.msg);
-
-
     } else {
       yield put({
         type: 'User_addProductWishlist1_Error',
@@ -118,14 +145,11 @@ function* AddwishList1(action) {
       Toast.show(response.msg);
     }
   } catch (error) {
-
     yield put({
       type: 'User_addProductWishlist1_Error',
     });
   }
 }
-
-
 
 //Login
 function* doLogin(action) {
@@ -133,13 +157,12 @@ function* doLogin(action) {
     const data = {
       email: action.email,
       password: action.password,
-      fcm_token: action.fcm_token
+      fcm_token: action.fcm_token,
     };
-    console.log('data....',data);
+
     const response = yield call(Api.fetchDataByGET, action.url, data);
-    if (!response) {
-      Toast.show('Please enter  Valid user id & password   ');
-    } else if (response.status == true) {
+
+    if (response.status == true) {
       yield put({
         type: 'User_Login_Success',
         payload: response,
@@ -161,7 +184,7 @@ function* doLogin(action) {
     yield put({
       type: 'User_Login_Error',
     });
-        Toast.show(error);
+    Toast.show('something went wrong');
   }
 }
 // Collection
@@ -169,7 +192,6 @@ function* getCollection(action) {
   try {
     const data = {
       partnerId: action.partnerId,
-
     };
     const response = yield call(
       Api.fetchDataByGET1,
@@ -191,7 +213,7 @@ function* getCollection(action) {
     yield put({
       type: 'User_collection_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 // Gold price
@@ -220,7 +242,7 @@ function* getGold(action) {
     yield put({
       type: 'User_collection_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 // Supplier List
@@ -249,19 +271,16 @@ function* SupplierList(action) {
     yield put({
       type: 'User_SupplierList_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
-// my Product list
-function* ProductList(action) {
-  // console.log('accccccccc', action);
+
+function* collectionProdcut(action) {
   try {
     const data = {
-      userId: action.userId,
-      userType: action.userType,
-      typeId: action.typeId,
+      collection_id: action.collection_id,
       login_user_id: action.login_user_id,
-      login_user_type: action.login_user_type
+      login_user_type: action.login_user_type,
     };
     const response = yield call(
       Api.fetchDataByGET1,
@@ -271,19 +290,74 @@ function* ProductList(action) {
     );
     if (response.status == true) {
       yield put({
-        type: 'User_ProductList_Success',
+        type: 'User_collectionProductViewList_Success',
         payload: response,
       });
-
-      if (action.page != 'data') {
-        action.navigation.navigate('MyProductDetails', {
+      if (action.navigation) {
+        action.navigation.navigate('collectionproductlist', {
           name: action.name,
-          ProductL: true,
-          id: action.typeId
         });
       }
-
+      // if (action.page != 'data') {
+      //   action.navigation.navigate('MyProductDetails', {
+      //     name: action.name,
+      //     ProductL: true,
+      //     id: action.typeId
+      //   });
+      // }
     } else {
+      yield put({
+        type: 'User_collectionProductViewList_Error',
+      });
+    }
+  } catch (error) {
+    yield put({
+      type: 'User_collectionProductViewList_Error',
+    });
+    Toast.show(error);
+  }
+}
+
+// my Product list
+function* ProductList(action) {
+  try {
+    const data = {
+      userId: action.userId,
+      userType: action.userType,
+      typeId: action.typeId,
+      login_user_id: action.login_user_id,
+      login_user_type: action.login_user_type,
+      start: action.start,
+      limit: action.limit,
+    };
+    const response = yield call(
+      Api.fetchDataByGET1,
+      action.url,
+      action.Token,
+      data,
+    );
+
+    if (response.status == true) {
+      yield put({
+        type: 'User_ProductList_Success',
+        payload: action.Data
+          ? {...response, list: [...action.Data, ...response.list]}
+          : response,
+      });
+      yield put({
+        type: 'Product_limit',
+        payload: action.start,
+      });
+
+      // if (action.page == 'data') {
+      //   action.navigation.navigate('MyProductDetails', {
+
+      //     ProductL:false,
+      //     // id: action.typeId,
+      //   });
+      // }
+    } else {
+      Toast.show(response.msg);
       yield put({
         type: 'User_ProductList_Error',
       });
@@ -292,7 +366,7 @@ function* ProductList(action) {
     yield put({
       type: 'User_ProductList_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 //SupplierProductList
@@ -304,7 +378,9 @@ function* SupplierProductList(action) {
       userType: action.userType,
       typeId: action.typeId,
       login_user_id: action.login_user_id,
-      login_user_type: action.login_user_type
+      login_user_type: action.login_user_type,
+      start: action.start,
+      limit: action.limit,
     };
     const response = yield call(
       Api.fetchDataByGET1,
@@ -312,11 +388,16 @@ function* SupplierProductList(action) {
       action.Token,
       data,
     );
-
     if (response.status == true) {
       yield put({
         type: 'User_SupplierProductList_Success',
-        payload: response,
+        payload: action.Data
+          ? {...response, list: [...action.Data, ...response.list]}
+          : response,
+      });
+      yield put({
+        type: 'Product_limit',
+        payload: response.list.length <= 0 ? action.start - 20 : action.start,
       });
 
       if (action.page != 'data') {
@@ -324,10 +405,11 @@ function* SupplierProductList(action) {
           name: action.name,
           ProductL: false,
           id: action.typeId,
-          supplierId: action.userId
+          supplierId: action.userId,
         });
       }
     } else {
+      Toast.show(response.msg);
       yield put({
         type: 'User_SupplierProductList_Error',
       });
@@ -336,14 +418,13 @@ function* SupplierProductList(action) {
     yield put({
       type: 'User_SupplierProductList_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
 //Supplier Categories
 
 function* SupplierCategories(action) {
-
   try {
     const data = {
       userId: action.userId,
@@ -371,7 +452,7 @@ function* SupplierCategories(action) {
     yield put({
       type: 'User_SupplierCategories_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
@@ -394,12 +475,9 @@ function* ProductCategories(action) {
         payload: response,
       });
       yield put({
-
         type: 'is_product_edit',
         payload: true,
-
-
-      })
+      });
 
       // AsyncStorage.setItem('ImagePath', response.imagepath);
     } else {
@@ -411,20 +489,19 @@ function* ProductCategories(action) {
     yield put({
       type: 'User_categories_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
 // my Product Details
 function* ProductDetails(action) {
-
   try {
     const data = {
       userId: action.userId,
       userType: action.userType,
       productId: action.productId,
       login_user_id: action.login_user_id,
-      login_user_type: action.login_user_type
+      login_user_type: action.login_user_type,
     };
     const response = yield call(
       Api.fetchDataByGET1,
@@ -439,12 +516,14 @@ function* ProductDetails(action) {
       });
       yield put({
         type: 'User_mg_Success',
-        payload: action.mg
-      })
+        payload: action.mg,
+      });
+
       action.navigation.navigate('SubCategory', {
         name: action.name,
-       productId:action.productId,
-        Details: true,
+        productId: action.productId,
+        Details: action.part,
+        collection_id: action?.collection_id ?? false,
       });
     } else {
       yield put({
@@ -455,7 +534,7 @@ function* ProductDetails(action) {
     yield put({
       type: 'User_singleProductDetail_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
@@ -467,8 +546,7 @@ function* SupplierProductDetails(action) {
       userType: action.userType,
       productId: action.productId,
       login_user_id: action.login_user_id,
-      login_user_type: action.login_user_type
-
+      login_user_type: action.login_user_type,
     };
     const response = yield call(
       Api.fetchDataByGET1,
@@ -483,8 +561,8 @@ function* SupplierProductDetails(action) {
       });
       yield put({
         type: 'User_mg_Success',
-        payload: action.mg
-      })
+        payload: action.mg,
+      });
       action.navigation.navigate('SubCategory', {
         name: action.name,
         Details: false,
@@ -498,20 +576,15 @@ function* SupplierProductDetails(action) {
     yield put({
       type: 'User_SupplierProDetail_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
-// State List 
+// State List
 function* StateList(action) {
   try {
     const data = {};
-    const response = yield call(
-      Api.fetchDataByGET1,
-      action.url,
-      action.Token,
-
-    );
+    const response = yield call(Api.fetchDataByGET1, action.url, action.Token);
     if (response.status == true) {
       yield put({
         type: 'Get_State_Success',
@@ -527,21 +600,20 @@ function* StateList(action) {
     yield put({
       type: 'Get_State_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
-// Pending Request 
+// Pending Request
 function* pendinRequest(action) {
   try {
     const data = {
-      partnerId: action.partnerId
+      partnerId: action.partnerId,
     };
     const response = yield call(
       Api.fetchDataByGET1,
       action.url,
       action.Token,
-      data
-
+      data,
     );
     if (response.status == true) {
       yield put({
@@ -559,22 +631,21 @@ function* pendinRequest(action) {
     yield put({
       type: 'Get_Pending_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
-// sent Request 
+// sent Request
 function* SentRequest(action) {
   try {
     const data = {
-      partnerId: action.partnerId
+      partnerId: action.partnerId,
     };
     const response = yield call(
       Api.fetchDataByGET1,
       action.url,
       action.Token,
-      data
-
+      data,
     );
     if (response.status == true) {
       yield put({
@@ -592,11 +663,11 @@ function* SentRequest(action) {
     yield put({
       type: 'Get_Sent_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
-// Acecpt Reequest 
+// Acecpt Reequest
 function* AcecptRequest(action) {
   try {
     let data = new FormData();
@@ -613,8 +684,7 @@ function* AcecptRequest(action) {
       Api.fetchDataByGET3,
       action.url,
       action.Token,
-      data
-
+      data,
     );
     if (response.status == true) {
       yield put({
@@ -632,13 +702,12 @@ function* AcecptRequest(action) {
     yield put({
       type: 'Get_/updateSupplierRequest_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
-// Reject Reequest 
+// Reject Reequest
 function* RejectRequest(action) {
-
   try {
     let data = new FormData();
     data.append('partnerId', action.partnerId);
@@ -654,14 +723,12 @@ function* RejectRequest(action) {
       Api.fetchDataByGET3,
       action.url,
       action.Token,
-      data
-
+      data,
     );
     if (response.status == true) {
       yield put({
         type: 'Get_/updateSupplierRequest1_Success',
         payload: response,
-       
       });
 
       //  action.navigation.navigate('SentRequest');
@@ -674,35 +741,30 @@ function* RejectRequest(action) {
     yield put({
       type: 'Get_/updateSupplierRequest1_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
-// Supplier Details 
+// Supplier Details
 function* SupplierDetail(action) {
-  console.log('ascccc',action);
   try {
-
     const data = {
       supplierId: action.supplierId,
-      partnerId:action. partnerId
+      partnerId: action.partnerId,
     };
     const response = yield call(
       Api.fetchDataByGET1,
       action.url,
       action.Token,
-      data
-
+      data,
     );
-    console.log('responsse afrete delete network ',response);
     if (response.status == true) {
       yield put({
         type: 'User_supplierDetail_Success',
         payload: response,
         Status: action.Status,
-        // network_id: action.network_id
       });
 
-      action.navigation.navigate('MyNetwork1', { screen: 'PartnerProfile', });
+      action.navigation.navigate('MyNetwork1', {screen: 'PartnerProfile'});
     } else {
       yield put({
         type: 'User_supplierDetail_Error',
@@ -712,11 +774,11 @@ function* SupplierDetail(action) {
     yield put({
       type: 'User_supplierDetail_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
-// WishList Request 
+// WishList Request
 
 function* WishListRequest(action) {
   try {
@@ -727,8 +789,8 @@ function* WishListRequest(action) {
     const response = yield call(
       Api.fetchDataByGET12,
       action.url,
-      action.Token, data
-
+      action.Token,
+      data,
     );
 
     if (response.status == true) {
@@ -738,17 +800,12 @@ function* WishListRequest(action) {
       });
 
       // action.navigation.navigate('MyNetwork1', { screen: 'MyNetwork' })
-    }
-
-
-    else if (response.status == false && response.error == true) {
-      // console.log('wishlist item.........11', response);
+    } else if (response.status == false && response.error == true) {
       yield put({
         type: 'Get_wishListProduct_Success',
         payload: response.data,
       });
-    }
-    else {
+    } else {
       yield put({
         type: 'Get_wishListProduct_Error',
       });
@@ -758,7 +815,7 @@ function* WishListRequest(action) {
       yield put({
         type: 'Get_wishListProduct_Error',
       });
-          Toast.show(error);
+      Toast.show(error);
     }
   }
 }
@@ -767,12 +824,7 @@ function* WishListRequest(action) {
 function* BannerLIst(action) {
   try {
     const data = {};
-    const response = yield call(
-      Api.fetchDataByGET1,
-      action.url,
-      action.Token,
-
-    );
+    const response = yield call(Api.fetchDataByGET1, action.url, action.Token);
     if (response.status == true) {
       yield put({
         type: 'User_getBannerList_Success',
@@ -788,39 +840,41 @@ function* BannerLIst(action) {
     yield put({
       type: 'User_getBannerList_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
-// Add Collection 
+// Add Collection
 
 function* Addcollection(action) {
   try {
-
     const data = new FormData();
-    data.append('hidden_image', action.hidden_image)
-    data.append('Description', action.Description)
-    data.append('Title', action.Title)
-    data.append('Name', action.Name)
-    data.append('IsActive', action.IsActive)
-    data.append('ImageName', action.ImageName)
-    data.append('partnerId', action.partnerId)
+    data.append('hidden_image', action.hidden_image);
+    data.append('Description', action.Description);
+    data.append('Title', action.Title);
+    data.append('Name', action.Name);
+    data.append('IsActive', action.IsActive);
+    data.append('ImageName', action.ImageName);
+    data.append('partnerId', action.partnerId);
 
-
-
-    const response = yield call(Api.fetchDataByPOST1, action.url, action.Token, data);
+    const response = yield call(
+      Api.fetchDataByPOST1,
+      action.url,
+      action.Token,
+      data,
+    );
     if (response.data.success == true) {
-      Toast.show('collection added successfully ')
+      Toast.show('collection added successfully ');
       yield put({
         type: 'Add_Collection_Success',
-        payload: response
+        payload: response,
       });
 
-      action.navigation.navigate("Home1", {
-        screen: 'MyCatalogue'
-      })
+      action.navigation.navigate('Home1', {
+        screen: 'MyCatalogue',
+      });
     } else {
-      Toast.show('collection Not Added ')
+      Toast.show('collection Not Added ');
       yield put({
         type: 'Add_Collection_Error',
       });
@@ -829,13 +883,12 @@ function* Addcollection(action) {
     yield put({
       type: 'Add_Collection_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
-// Remove WishList 
+// Remove WishList
 function* RemoveWishlist(action) {
   try {
-
     const data = {
       PartnerSrNo: action.PartnerSrNo,
       productId: action.productId,
@@ -845,8 +898,7 @@ function* RemoveWishlist(action) {
       Api.fetchDataByGET12,
       action.url,
       action.Token,
-      data
-
+      data,
     );
 
     if (response.status == true) {
@@ -856,45 +908,77 @@ function* RemoveWishlist(action) {
       });
       yield put({
         type: 'User_mg_Success',
-        payload: action.mg
-      })
+        payload: action.mg,
+      });
+      if (!action.iscollection) {
+        if (action.partner) {
+          yield put({
+            type: 'User_ProductList_Success',
+            payload: {list: action.Data},
+          });
 
-      if (action.partner) {
+          // yield put({
+          //   type: 'User_ProductList_Request',
+          //   url: 'partners/productTypeProducts',
+          //   userId: action.PartnerSrNo,
+          //   userType: 'partner',
+          //   typeId: action.id,
+          //   Token: action.Token,
+          //   name: action.name,
+          //   start: action.start,
+          //   limit: action.limit,
+          //   login_user_id: action.PartnerSrNo,
+          //   login_user_type: 'partner',
+          //   navigation: action.navigation,
+          //   page: action.page,
+          // });
 
+          if (action.collection_id) {
+            yield put({
+              type: 'User_collectionProductViewList_Request',
+              url: 'partners//collectionProductViewList',
+              collection_id: action.collection_id,
+              login_user_id: action.PartnerSrNo,
+              login_user_type: 'partner',
+              Token: action.Token,
+              name: false,
+              navigation: false,
+            });
+          }
+        } else {
+          console.log('suplier ............request ', action.partner);
+          yield put({
+            type: 'User_ProductList_Success',
+            payload: {list: action.Data},
+          });
 
+          // yield put({
+          //   type: 'User_SupplierProductList_Request',
+          //   url: 'partners/productTypeProducts',
+          //   userId: action.supllier,
+          //   userType: 'supplier',
+          //   typeId: action.id,
+          //   Token: action.Token,
+          //   name: action.name,
+          //   login_user_id: action.PartnerSrNo,
+          //   login_user_type: 'partner',
+          //   start: action.start,
+          //   limit: action.limit,
+          //   navigation: action.navigation,
+          //   page: action.page,
+          // });
+        }
+      } else {
         yield put({
-
-          type: 'User_ProductList_Request',
-          url: 'partners/productTypeProducts',
-          userId: action.PartnerSrNo,
-          userType: 'partner',
-          typeId: action.id,
+          type: 'User_collectionProductViewList_Request',
+          url: 'partners//collectionProductViewList',
+          collection_id: action.collectionid,
+          login_user_id: action.PartnerSrNo,
+          login_user_type: action.userType,
           Token: action.Token,
           name: action.name,
-          login_user_id: action.PartnerSrNo,
-          login_user_type: 'partner',
-          navigation: action.navigation,
-          page: action.page
-
-        })
-      }
-      else {
-        console.log('suplier ............request ', action);
-        yield put({
-          type: 'User_SupplierProductList_Request',
-          url: 'partners/productTypeProducts',
-          userId: action.supllier,
-          userType: 'supplier',
-          typeId: action.id,
-          Token: action.Token,
-          name: action.name,
-          login_user_id: action.PartnerSrNo,
-          login_user_type: 'partner',
-          navigation: action.navigation,
-          page: action.page
-
-
-        })
+          navigation: false,
+        });
       }
       yield put({
         type: 'Get_wishListProduct_Request',
@@ -902,10 +986,8 @@ function* RemoveWishlist(action) {
         partnerId: action.PartnerSrNo,
         userType: 'partner',
         Token: action.Token,
-
       });
       Toast.show(response.msg);
-
     } else {
       yield put({
         type: 'Get_removeProductWishlist_Error',
@@ -916,24 +998,21 @@ function* RemoveWishlist(action) {
     yield put({
       type: 'Get_removeProductWishlist_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
-// partner contact 
+// partner contact
 function* partnerContact(action) {
-
-  console.log('supplier......', action);
   try {
     const data = {
-      user_id: action.user_id
+      user_id: action.user_id,
     };
 
     const response = yield call(
       Api.fetchDataByGET1,
       action.url,
       action.Token,
-      data
-
+      data,
     );
     if (response.status == true) {
       yield put({
@@ -949,23 +1028,22 @@ function* partnerContact(action) {
     yield put({
       type: 'Patner_Contact_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
-// GetMessage 
+// GetMessage
 function* GetMeassege(action) {
   try {
     const data = {
       sender_id: action.sender_id,
       reciver_id: action.reciver_id,
       user_type: action.user_type,
-
     };
     const response = yield call(
       Api.fetchDataByGET1,
       action.url,
-      action.Token, data
-
+      action.Token,
+      data,
     );
 
     if (response.status == true) {
@@ -983,11 +1061,10 @@ function* GetMeassege(action) {
       }),
         // Toast.show('get successss')
 
-      yield put({
-        type: 'get_Message_Success',
-        payload: message,
-      });
-
+        yield put({
+          type: 'get_Message_Success',
+          payload: message,
+        });
     } else {
       yield put({
         type: 'get_Message_Error',
@@ -997,21 +1074,17 @@ function* GetMeassege(action) {
     yield put({
       type: 'get_Message_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
-// Sent Message 
+// Sent Message
 function* SentMeassge(action) {
   try {
-
-
-
     const response = yield call(Api.fetchDataByPOSTchat, action);
     if (response.status == true) {
-
       yield put({
         type: 'Message_Send_Success',
-        payload: response.status
+        payload: response.status,
       });
       // GetMessageCommon(action.reciver_id, action.user_type);
       yield put({
@@ -1023,14 +1096,11 @@ function* SentMeassge(action) {
         Token: action.Token,
       });
       yield put({
-      
-          type: 'Patner_Contact_Request',
-          url: 'supplier//supplierListForPartners',
-          user_id: action.sender_id,
-          Token: action.Token,
-      
-      })
-
+        type: 'Patner_Contact_Request',
+        url: 'supplier//supplierListForPartners',
+        user_id: action.sender_id,
+        Token: action.Token,
+      });
     } else {
       // Toast.show('collection Not Added ')
       yield put({
@@ -1041,7 +1111,7 @@ function* SentMeassge(action) {
     yield put({
       type: 'Message_Send_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 // Add To Network
@@ -1052,37 +1122,36 @@ function* AddToNetwork(action) {
     data.append('partnerId', action.partnerId);
     data.append('supplierId', action.supplierId);
 
-    const response = yield call(Api.fetchDataByPOST1, action.url, data, action.Token,);
-    // console.log('...............>>>>>>>>.', response);
+    const response = yield call(
+      Api.fetchDataByPOST1,
+      action.url,
+      data,
+      action.Token,
+    );
     if (response.status == true) {
-     
       yield put({
         type: 'User_sendRequestToSupplier_Success',
-        payload: response
+        payload: response,
       });
-      yield put (
-        {
+      yield put({
+        type: 'User_supplierDetail_Request',
+        url: '/partners/supplierDetail',
+        supplierId: action.supplierId,
+        Token: action.Token,
+        partnerId: action.partnerId,
+        supplier_id: action.supplierId,
+        navigation: action.navigation,
+        Status: 1,
 
-          type: 'User_supplierDetail_Request',
-          url: '/partners/supplierDetail',
-          supplierId: action.supplierId,
-          Token: action.Token,
-          partnerId: action.partnerId,
-          supplier_id:action.supplierId,
-          navigation:action.navigation,
-          Status: 1,
-
-
-          // type: 'Get_Sent_Request',
-          // url: '/partners/requestedSupplierList',
-          // partnerId: action.partnerId,
-          // Token:action.Token
-          // // navigation,
-        }
-      )
-      Toast.show(response.msg)
+        // type: 'Get_Sent_Request',
+        // url: '/partners/requestedSupplierList',
+        // partnerId: action.partnerId,
+        // Token:action.Token
+        // // navigation,
+      });
+      Toast.show(response.msg);
     } else {
-      Toast.show(response.msg)
+      Toast.show(response.msg);
       yield put({
         type: 'User_sendRequestToSupplier_Error',
       });
@@ -1091,13 +1160,12 @@ function* AddToNetwork(action) {
     yield put({
       type: 'User_sendRequestToSupplier_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
-// Remove From Network 
+// Remove From Network
 function* RemoveFromNetwork(action) {
-
   try {
     const data = {
       supplier_id: action.supplierId,
@@ -1114,28 +1182,28 @@ function* RemoveFromNetwork(action) {
         type: 'User_removeNetworkSupplier_Success',
         payload: response,
       });
-      console.log('remove from ntemowrk ',action);
+      console.log('remove from ntemowrk ', action);
       yield put({
         type: 'User_supplierDetail_Request',
         url: '/partners/supplierDetail',
         supplierId: action.supplierId,
         Token: action.Token,
-        partnerId:action. partnerId,
+        partnerId: action.partnerId,
         navigation: action.navigation,
         Status: action.Status,
-      })
-      Toast.show(response.msg)
+      });
+      Toast.show(response.msg);
     } else {
       yield put({
         type: 'User_removeNetworkSupplier_Error',
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     }
   } catch (error) {
     yield put({
       type: 'User_removeNetworkSupplier_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 // Item List
@@ -1144,7 +1212,7 @@ function* ItemList11(action) {
     const data = {
       PartnerSrNo: action.PartnerSrNo,
       category: action.category,
-      BranchSrNo: action.BranchSrNo
+      BranchSrNo: action.BranchSrNo,
     };
     const response = yield call(
       Api.fetchDataByGET1,
@@ -1152,11 +1220,8 @@ function* ItemList11(action) {
       action.Token,
       data,
     );
-   
 
     if (response.status == true) {
-
-
       yield put({
         type: 'product_TypeList_Success',
         payload: response.data,
@@ -1165,7 +1230,6 @@ function* ItemList11(action) {
         type: 'product_session_Success',
         payload: response.current_session_id,
       });
-
     } else {
       yield put({
         type: 'product_TypeList_Error',
@@ -1175,13 +1239,12 @@ function* ItemList11(action) {
     yield put({
       type: 'product_TypeList_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 // Add Metal
 
 function* AddMetal(action) {
-
   try {
     const data = new FormData();
     data.append('current_session_id', action.data.current_session_id);
@@ -1194,37 +1257,38 @@ function* AddMetal(action) {
     data.append('hProductSrNo', action.data.hProductSrNo);
     data.append('isAdd', action.data.isAdd);
 
-
-
-    const response = yield call(Api.fetchDataByPOST1, action.url, data, action.Token);
+    const response = yield call(
+      Api.fetchDataByPOST1,
+      action.url,
+      data,
+      action.Token,
+    );
 
     if (response.status == true) {
-    
       yield put({
         type: 'product_addMetal_Success',
         payload: response.data,
-        GrossWt1: action.data.grosswt
+        GrossWt1: action.data.grosswt,
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     } else {
       yield put({
         type: 'product_addMetal_Error',
-        payload: response.data
+        payload: response.data,
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     }
   } catch (error) {
     yield put({
       type: 'product_addMetal_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
-// Add Diamond 
+// Add Diamond
 
 function* AddDaimond(action) {
   try {
-   
     const data = new FormData();
 
     data.append('current_session_id', action.data.current_session_id);
@@ -1239,34 +1303,36 @@ function* AddDaimond(action) {
     data.append('hProductSrNo', action.data.hProductSrNo);
     data.append('isAdd', action.data.isAdd);
 
+    const response = yield call(
+      Api.fetchDataByPOST1,
+      action.url,
+      data,
+      action.Token,
+    );
 
-    const response = yield call(Api.fetchDataByPOST1, action.url, data, action.Token);
-   
     if (response.status == true) {
-
       yield put({
         type: 'product_addDiamond_Success',
-        payload: response.data
+        payload: response.data,
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     } else {
       yield put({
         type: 'product_addDiamond_Error',
-        payload: response.data
+        payload: response.data,
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     }
   } catch (error) {
     yield put({
       type: 'product_addDiamond_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
-// Add Stone 
+// Add Stone
 function* AddStone(action) {
   try {
-   
     const data = new FormData();
     data.append('current_session_id', action.data.current_session_id);
     data.append('BreakUp', action.data.BreakUp);
@@ -1278,33 +1344,35 @@ function* AddStone(action) {
     data.append('hStonesSrNo', action.data.hStonesSrNo);
     data.append('isAdd', action.data.isAdd);
 
-
-    const response = yield call(Api.fetchDataByPOST1, action.url, data, action.Token);
+    const response = yield call(
+      Api.fetchDataByPOST1,
+      action.url,
+      data,
+      action.Token,
+    );
     if (response.status == true) {
-
       yield put({
         type: 'product_addStone_Success',
-        payload: response.data
+        payload: response.data,
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     } else {
       yield put({
         type: 'product_addStone_Error',
-        payload: response.data
+        payload: response.data,
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     }
   } catch (error) {
     yield put({
       type: 'product_addStone_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
-// Add Decorative 
+// Add Decorative
 function* AddDecorative(action) {
   try {
-   
     const data = new FormData();
     data.append('current_session_id', action.data.current_session_id);
     data.append('BreakUp', action.data.BreakUp);
@@ -1316,68 +1384,75 @@ function* AddDecorative(action) {
     data.append('hProductSrNo', action.data.hProductSrNo);
     data.append('isAdd', action.data.isAdd);
 
-    const response = yield call(Api.fetchDataByPOST1, action.url, data, action.Token);
+    const response = yield call(
+      Api.fetchDataByPOST1,
+      action.url,
+      data,
+      action.Token,
+    );
 
     if (response.status == true) {
       yield put({
         type: 'product_addDecorative_Success',
-        payload: response.data
+        payload: response.data,
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     } else {
       yield put({
         type: 'product_addDecorative_Error',
-        payload: response.data
+        payload: response.data,
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     }
   } catch (error) {
     yield put({
       type: 'product_addDecorative_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
 // VeryFy MEtal
 
 function* VeryMEtal(action) {
+  console.log('very fy metal ', action);
   try {
-
-   
     const data = {
       GrossWt: action.GrossWt,
       MetalWtGrandTotal: action.MetalWtGrandTotal,
       DiamondGrandTotal: action.DiamondGrandTotal,
       StoneGrandTotal: action.StoneGrandTotal,
-      DecorationGrandTotal: action.DecorationGrandTotal
+      DecorationGrandTotal: action.DecorationGrandTotal,
     };
     const response = yield call(
       Api.fetchDataByGET1,
       action.url,
       action.Token,
-      data
+      data,
     );
-    if (response.status == true) {
+    if (
+      response.status == true ||
+      response.status == 201 ||
+      response.status == 202
+    ) {
       yield put({
         type: 'product_verifyWt_Success',
-        payload: response.msg,
+        payload: response,
       });
 
       // Toast.show(response.msg)
 
+      // Toast.show(response.msg)
     } else {
       yield put({
-        type: 'product_verifyWt_Error1',
-        payload: response.msg,
+        type: 'product_verifyWt_Error',
       });
-      // Toast.show(response.msg)
     }
   } catch (error) {
     yield put({
       type: 'product_verifyWt_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
@@ -1392,11 +1467,10 @@ function* ItemField(action) {
       Api.fetchDataByGET4,
       action.url,
 
-      data
+      data,
     );
 
     if (response.status == true) {
-
       yield put({
         type: 'get_itemfieldlist_Success',
         payload: response?.fields,
@@ -1404,41 +1478,41 @@ function* ItemField(action) {
     } else {
       yield put({
         type: 'get_itemfieldlist_Error',
-
       });
-
     }
   } catch (error) {
     yield put({
       type: 'get_itemfieldlist_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
-// Add Product 
+// Add Product
 
 function* AddProducts(action) {
   try {
-
     let data = new FormData();
     yield Object.keys(action.data).map(item => {
       data.append(item, action.data[item]);
     });
 
-    const response = yield call(Api.fetchDataByPOST1, action.url, data, action.Token);
+    const response = yield call(
+      Api.fetchDataByPOST1,
+      action.url,
+      data,
+      action.Token,
+    );
 
     if (response.status == true) {
-
       yield put({
         type: 'product_createProduct_Success',
-        payload: response
+        payload: response,
       });
       // Toast.show(response.msg)
     } else {
       yield put({
         type: 'product_createProduct_Error',
-
       });
       // Toast.show(response.msg)
     }
@@ -1446,10 +1520,10 @@ function* AddProducts(action) {
     yield put({
       type: 'product_createProduct_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
-// Remove Metal 
+// Remove Metal
 
 function* RemoveMetal(action) {
   try {
@@ -1457,13 +1531,12 @@ function* RemoveMetal(action) {
       MetalId: action.MetalId,
       current_session_id: action.current_session_id,
       hProductSrNo: action.hProductSrNo,
-
     };
     const response = yield call(
       Api.fetchDataByGET1,
       action.url,
       action.Token,
-      data
+      data,
     );
 
     if (response.status == true) {
@@ -1471,19 +1544,18 @@ function* RemoveMetal(action) {
         type: 'product_removeMetal_Success',
         payload: action.MetalId,
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     } else {
       yield put({
         type: 'product_removeMetal_Error',
-
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     }
   } catch (error) {
     yield put({
       type: 'product_removeMetal_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
@@ -1495,69 +1567,64 @@ function* RemoveDiamond(action) {
       DiamondId: action.DiamondId,
       current_session_id: action.current_session_id,
       hProductSrNo: action.hProductSrNo,
-
     };
     const response = yield call(
       Api.fetchDataByGET1,
       action.url,
       action.Token,
-      data
+      data,
     );
     if (response.status == true) {
-
       yield put({
         type: 'product_removeDiamond_Success',
         payload: action.DiamondId,
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     } else {
       yield put({
         type: 'product_removeDiamond_Error',
-
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     }
   } catch (error) {
     yield put({
       type: 'product_removeDiamond_Error',
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
-// Remove Decorative 
+// Remove Decorative
 function* RemoveDecorative(action) {
   try {
     const data = {
       DecorativeId: action.DecorativeId,
       current_session_id: action.current_session_id,
       hProductSrNo: action.hProductSrNo,
-    }
+    };
     const response = yield call(
       Api.fetchDataByGET1,
       action.url,
       action.Token,
-      data
+      data,
     );
     if (response.status == true) {
       yield put({
         type: 'product_removeDecorative_Success',
         payload: action.DecorativeId,
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     } else {
       yield put({
         type: 'product_removeDecorative_Error',
-
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     }
   } catch (error) {
     console.log(error);
     yield put({
       type: 'product_removeDecorative_Error',
-
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
@@ -1569,234 +1636,195 @@ function* RemoveStone(action) {
       StoneId: action.StoneId,
       current_session_id: action.current_session_id,
       hProductSrNo: action.hProductSrNo,
-    }
+    };
     const response = yield call(
       Api.fetchDataByGET1,
       action.url,
       action.Token,
-      data
+      data,
     );
     if (response.status == true) {
       yield put({
         type: 'product_removeStone_Success',
         payload: action.StoneId,
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     } else {
       yield put({
         type: 'product_removeStone_Error',
-
       });
-      Toast.show(response.msg)
+      Toast.show(response.msg);
     }
   } catch (error) {
     console.log(error);
     yield put({
       type: 'product_removeStone_Error',
-
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
-// Edit Product 
+// Edit Product
 function* EditProduct(action) {
   try {
     const data = {
       ProductSrNo: action.ProductSrNo,
       PartnerSrNo: action.PartnerSrNo,
-      BranchSrNo: action.BranchSrNo,
-    }
+      // BranchSrNo: action.BranchSrNo,
+    };
     const response = yield call(
       Api.fetchDataByGET1,
       action.url,
       action.Token,
-      data
+      data,
     );
-    
+
     if (response.status == true) {
-      console.log('edit product ,,,,,,,',response);
       yield put({
         type: 'User_editProduct_Success',
         payload: response.data,
         productEdit: true,
       });
-      action.navigation.navigate('Addproduct', { productEdit1: true, })
-
+      action.navigation.navigate('Addproduct', {productEdit1: true});
     } else {
       yield put({
         type: 'User_editProduct_Error',
-
       });
     }
   } catch (error) {
     console.log(error);
     yield put({
       type: 'User_editProduct_Error',
-
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
-// collection image 
+// collection image
 function* collectionimg(action) {
   try {
     const data = {
-      partnerId:action.partnerId
-    
-    }
+      partnerId: action.partnerId,
+    };
     const response = yield call(
       Api.fetchDataByGET1,
       action.url,
       action.Token,
-      data
+      data,
     );
-   
-    if (response.status == true) {
 
+    if (response.status == true) {
       yield put({
         type: 'Get_creativeImgList_Success',
         payload: response,
       });
-    
-
     } else {
       yield put({
         type: 'Get_creativeImgList_Error',
-
       });
     }
   } catch (error) {
     console.log(error);
     yield put({
       type: 'Get_creativeImgList_Error',
-
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
-function* Notification(action){
+function* Notification(action) {
   try {
     const data = {
-      partnerId:action.partnerId
-    
-    }
+      partnerId: action.partnerId,
+    };
     const response = yield call(
       Api.fetchDataByGET1,
       action.url,
       action.Token,
-      data
+      data,
     );
-  
-   if (response.status == true) {
-   
-    yield put({
-      type: 'Get_pushNotificationList_Success',
-      payload: response.data,
-    });
-  // Toast.show(response?.msg)
 
-  } else {
-    yield put({
-      type: 'Get_pushNotificationList_Error',
+    if (response.status == true) {
+      yield put({
+        type: 'Get_pushNotificationList_Success',
+        payload: response.data,
+      });
+      // Toast.show(response?.msg)
+    } else {
+      yield put({
+        type: 'Get_pushNotificationList_Error',
+      });
 
-    });
-   
-    // Toast.show(response?.msg)
-  }
-
-
-
+      // Toast.show(response?.msg)
+    }
   } catch (error) {
     yield put({
       type: 'Get_pushNotificationList_Error',
-
     });
-        Toast.show(error);
+    Toast.show(error);
   }
-
 }
 
-function* partnerProfile(action){
+function* partnerProfile(action) {
   try {
-    console.log('parnter ......action',action);
     const data = {
-      partnerId:action.partnerId
-    
-    }
+      partnerId: action.partnerId,
+    };
     const response = yield call(
       Api.fetchDataByGET1,
       action.url,
       action.Token,
-      data
+      data,
     );
-  
-   if (response.status == true) {
-    yield put({
-      type: 'User_editProfile_Success',
-      payload: response.data,
-    });
-  // Toast.show(response?.msg)
 
-  } else {
-    yield put({
-      type: 'User_editProfile_Error',
-
-    });
-  }
-
-
-
+    if (response.status == true) {
+      yield put({
+        type: 'User_editProfile_Success',
+        payload: response.data,
+      });
+      // Toast.show(response?.msg)
+    } else {
+      yield put({
+        type: 'User_editProfile_Error',
+      });
+    }
   } catch (error) {
     yield put({
       type: 'User_editProfile_Error',
-
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
-function* Getcity(action){
+function* Getcity(action) {
   try {
-  
     const data = {
-      stateId:action.stateId
-    
-    }
+      stateId: action.stateId,
+    };
     const response = yield call(
       Api.fetchDataByGET1,
       action.url,
       action.Token,
-      data
+      data,
     );
-  
-   if (response.status == true) {
-    // console.log('partner cityusdjfjskkjs,,12321321321',response);
-    yield put({
-      type: 'Get_getCities_Success',
-      payload: response,
-    });
- action.navigation.navigate('Editprofile',{
-  selector:action.selector,
-  extractedImages:action.extractedImages
 
- })
-
-  } else {
-    yield put({
-      type: 'Get_getCities_Error',
-
-    });
-  }
-
-
-
+    if (response.status == true) {
+      yield put({
+        type: 'Get_getCities_Success',
+        payload: response,
+      });
+      action.navigation.navigate('Editprofile', {
+        selector: action.selector,
+        extractedImages: action.extractedImages,
+      });
+    } else {
+      yield put({
+        type: 'Get_getCities_Error',
+      });
+    }
   } catch (error) {
     yield put({
       type: 'Get_getCities_Error',
-
     });
-        Toast.show(error);
+    Toast.show(error);
   }
 }
 
@@ -1836,15 +1864,14 @@ export default function* authSaga() {
   yield takeEvery('product_verifyWt_Request', VeryMEtal);
   yield takeEvery('get_itemfieldlist_request', ItemField);
   yield takeEvery('product_createProduct_Request', AddProducts);
-  yield takeEvery("product_removeMetal_Request", RemoveMetal);
+  yield takeEvery('product_removeMetal_Request', RemoveMetal);
   yield takeEvery('product_removeDiamond_Request', RemoveDiamond);
   yield takeEvery('product_removeDecorative_Request', RemoveDecorative);
   yield takeEvery('product_removeStone_Request', RemoveStone);
   yield takeEvery('User_editProduct_Request', EditProduct);
-  yield takeEvery('Get_creativeImgList_Request',collectionimg);
-  yield takeEvery('Get_pushNotificationList_Request',Notification);    
-  yield takeEvery('User_editProfile_Request',partnerProfile);
-  yield takeEvery('Get_getCities_Request',Getcity);
-
-
+  yield takeEvery('Get_creativeImgList_Request', collectionimg);
+  yield takeEvery('Get_pushNotificationList_Request', Notification);
+  yield takeEvery('User_editProfile_Request', partnerProfile);
+  yield takeEvery('Get_getCities_Request', Getcity);
+  yield takeEvery('User_collectionProductViewList_Request', collectionProdcut);
 }

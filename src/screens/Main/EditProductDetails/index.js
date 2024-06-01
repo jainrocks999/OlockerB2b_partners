@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,20 +8,15 @@ import {
   TextInput,
   Platform,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import StatusBar from '../../../components/StatusBar';
 import styles from './styles';
-import RNPickerSelect from 'react-native-picker-select';
-import Buttom from '../../../components/StoreButtomTab';
 import Header from '../../../components/CustomHeader';
-import { CheckBox } from 'react-native-elements';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast from 'react-native-simple-toast';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import CustomDrop from '../../../components/custumDropDown';
 import DocumentPicker from 'react-native-document-picker';
 import PickerModel from '../../../components/PickerModel';
-import { RadioButton } from 'react-native-paper';
+import {RadioButton} from 'react-native-paper';
 const Addproduct = () => {
   const navigation = useNavigation();
   const [type, setType] = useState('Select');
@@ -117,12 +112,12 @@ const Addproduct = () => {
         onPress1={() => navigation.navigate('Message')}
         onPress2={() => navigation.navigate('FavDetails')}
       />
-      <ScrollView style={{ flex: 1, paddingHorizontal: 15, paddingVertical: 15 }}>
+      <ScrollView style={{flex: 1, paddingHorizontal: 15, paddingVertical: 15}}>
         <KeyboardAwareScrollView
           extraScrollHeight={10}
           enableOnAndroid={true}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ flex: 1 }}>
+          contentContainerStyle={{flex: 1}}>
           <View style={styles.card}>
             <View style={styles.main}>
               <Text style={styles.Text1}>Select Type</Text>
@@ -316,7 +311,7 @@ const Addproduct = () => {
               <Text style={styles.Text1}>Stock number</Text>
               <View style={styles.main1}>
                 <TextInput
-                  style={{ width: '90%', marginLeft: 0, color: '#474747' }}
+                  style={{width: '90%', marginLeft: 0, color: '#474747'}}
                   placeholder="Enter Id"
                   placeholderTextColor="#474747"
                   value={stock_number}
@@ -324,8 +319,8 @@ const Addproduct = () => {
                 />
               </View>
             </View>
-            <View style={[styles.main, { marginBottom: -10 }]}>
-              <Text style={[styles.Text1, { marginTop: 4 }]}>Metal</Text>
+            <View style={[styles.main, {marginBottom: -10}]}>
+              <Text style={[styles.Text1, {marginTop: 4}]}>Metal</Text>
               <View
                 style={{
                   width: '70%',
@@ -408,7 +403,7 @@ const Addproduct = () => {
               <Text style={styles.Text1}>Purity</Text>
               <View style={styles.main1}>
                 <TextInput
-                  style={{ width: '90%', marginLeft: 0, color: '#474747' }}
+                  style={{width: '90%', marginLeft: 0, color: '#474747'}}
                   placeholder="Purity %"
                   placeholderTextColor="#474747"
                   value={purity}
@@ -451,9 +446,9 @@ const Addproduct = () => {
               </View>
             </View>
             <View style={[styles.main]}>
-              <Text style={[styles.Text1, { marginTop: 2 }]}>Making</Text>
-              <View style={{ flexDirection: 'row', width: '62%' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={[styles.Text1, {marginTop: 2}]}>Making</Text>
+              <View style={{flexDirection: 'row', width: '62%'}}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton
                     value={checked1}
                     color="#032e63"
@@ -495,20 +490,20 @@ const Addproduct = () => {
                 </View>
               </View>
             </View>
-            <View style={[styles.main, { marginTop: -7 }]}>
+            <View style={[styles.main, {marginTop: -7}]}>
               <Text style={styles.Text1}></Text>
               <View style={styles.main1}>
                 <TextInput
-                  style={{ width: '90%', marginLeft: 0, color: '#474747' }}
+                  style={{width: '90%', marginLeft: 0, color: '#474747'}}
                   placeholder=""
                   placeholderTextColor="#474747"
                 />
               </View>
             </View>
             <View style={[styles.main]}>
-              <Text style={[styles.Text1, { marginTop: 5 }]}>Inclusion</Text>
-              <View style={{ flexDirection: 'row', width: '62%' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={[styles.Text1, {marginTop: 5}]}>Inclusion</Text>
+              <View style={{flexDirection: 'row', width: '62%'}}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RadioButton
                     value={checked2}
                     color="#032e63"
@@ -550,11 +545,11 @@ const Addproduct = () => {
                 </View>
               </View>
             </View>
-            <View style={[styles.main, { marginTop: -7 }]}>
+            <View style={[styles.main, {marginTop: -7}]}>
               <Text style={styles.Text1}></Text>
               <View style={styles.main1}>
                 <TextInput
-                  style={{ width: '90%', marginLeft: 0, color: '#474747' }}
+                  style={{width: '90%', marginLeft: 0, color: '#474747'}}
                   placeholder="Stone name"
                   placeholderTextColor="#474747"
                   value={stone}
@@ -566,7 +561,7 @@ const Addproduct = () => {
               <Text style={styles.Text1}></Text>
               <View style={styles.main1}>
                 <TextInput
-                  style={{ width: '90%', marginLeft: 0, color: '#474747' }}
+                  style={{width: '90%', marginLeft: 0, color: '#474747'}}
                   placeholder="Diam value"
                   placeholderTextColor="#474747"
                   value={diam}
@@ -595,7 +590,7 @@ const Addproduct = () => {
               <Text style={styles.Text1}></Text>
               <View style={styles.main1}>
                 <TextInput
-                  style={{ width: '90%', marginLeft: 0, color: '#474747' }}
+                  style={{width: '90%', marginLeft: 0, color: '#474747'}}
                   placeholder="Stone value"
                   placeholderTextColor="#474747"
                   value={sValue}
@@ -608,7 +603,7 @@ const Addproduct = () => {
               <View
                 style={[
                   styles.main1,
-                  { alignItems: 'center', flexDirection: 'row' },
+                  {alignItems: 'center', flexDirection: 'row'},
                 ]}>
                 <Image
                   style={{
@@ -621,7 +616,7 @@ const Addproduct = () => {
                   source={require('../../../assets/Image/rupay.png')}
                 />
                 <TextInput
-                  style={{ width: '90%', marginLeft: 0, color: '#474747' }}
+                  style={{width: '90%', marginLeft: 0, color: '#474747'}}
                   placeholder="Enter amount"
                   placeholderTextColor="#474747"
                   value={price}
@@ -629,7 +624,7 @@ const Addproduct = () => {
                 />
               </View>
             </View>
-            <View style={[styles.main, { zIndex: 5 }]}>
+            <View style={[styles.main, {zIndex: 5}]}>
               <Text style={styles.Text1}>Status</Text>
               <View style={[styles.main1]}>
                 {/* <CustomDrop /> */}
@@ -691,12 +686,12 @@ const Addproduct = () => {
               <TouchableOpacity onPress={() => uploadPhoto()}>
                 {photo ? (
                   <Image
-                    style={{ height: 93, width: 90, borderRadius: 10 }}
-                    source={{ uri: photo }}
+                    style={{height: 93, width: 90, borderRadius: 10}}
+                    source={{uri: photo}}
                   />
                 ) : (
                   <Image
-                    style={{ height: 93, width: 90 }}
+                    style={{height: 93, width: 90}}
                     source={require('../../../assets/Image/add_photo.png')}
                   />
                 )}
@@ -707,12 +702,12 @@ const Addproduct = () => {
               <TouchableOpacity onPress={() => uploadPhoto1()}>
                 {photo1 ? (
                   <Image
-                    style={{ height: 93, width: 90, borderRadius: 10 }}
-                    source={{ uri: photo1 }}
+                    style={{height: 93, width: 90, borderRadius: 10}}
+                    source={{uri: photo1}}
                   />
                 ) : (
                   <Image
-                    style={{ height: 93, width: 90 }}
+                    style={{height: 93, width: 90}}
                     source={require('../../../assets/Image/add_photo.png')}
                   />
                 )}
@@ -720,12 +715,12 @@ const Addproduct = () => {
               <TouchableOpacity onPress={() => uploadPhoto2()}>
                 {photo2 ? (
                   <Image
-                    style={{ height: 93, width: 90, borderRadius: 10 }}
-                    source={{ uri: photo2 }}
+                    style={{height: 93, width: 90, borderRadius: 10}}
+                    source={{uri: photo2}}
                   />
                 ) : (
                   <Image
-                    style={{ height: 93, width: 90 }}
+                    style={{height: 93, width: 90}}
                     source={require('../../../assets/Image/add_photo.png')}
                   />
                 )}
@@ -737,7 +732,7 @@ const Addproduct = () => {
             <Image style={{height:93,width:90}} source={require('../../../assets/Image/add_photo.png')}/>
             </View> */}
             </View>
-            <View style={{ marginTop: 20 }} />
+            <View style={{marginTop: 20}} />
           </View>
           <View
             style={{
@@ -751,7 +746,7 @@ const Addproduct = () => {
               <Text style={styles.bttext}>{'Save'}</Text>
             </TouchableOpacity>
           </View>
-          <View style={{ marginTop: 35 }} />
+          <View style={{marginTop: 35}} />
         </KeyboardAwareScrollView>
       </ScrollView>
       <StatusBar />
@@ -762,32 +757,32 @@ const Addproduct = () => {
 export default Addproduct;
 
 const Data = [
-  { label: 'category', value: '1' },
-  { label: 'Yearly', value: '12' },
-  { label: 'Half-Yearly', value: '6' },
-  { label: 'Quarterly', value: '3' },
-  { label: 'Monthly', value: '1' },
+  {label: 'category', value: '1'},
+  {label: 'Yearly', value: '12'},
+  {label: 'Half-Yearly', value: '6'},
+  {label: 'Quarterly', value: '3'},
+  {label: 'Monthly', value: '1'},
 ];
 
 const dataType = [
-  { label: 'Gold', value: '1' },
-  { label: 'Silver', value: '12' },
-  { label: 'Platinum', value: '6' },
+  {label: 'Gold', value: '1'},
+  {label: 'Silver', value: '12'},
+  {label: 'Platinum', value: '6'},
 ];
 
 const dataCategory = [
-  { label: 'Necklace', value: '1' },
-  { label: 'Jewellery', value: '12' },
-  { label: 'Diamond', value: '6' },
+  {label: 'Necklace', value: '1'},
+  {label: 'Jewellery', value: '12'},
+  {label: 'Diamond', value: '6'},
 ];
 
 const dataCollection = [
-  { label: 'Necklace', value: '1' },
-  { label: 'Jewellery', value: '12' },
-  { label: 'Diamond', value: '6' },
+  {label: 'Necklace', value: '1'},
+  {label: 'Jewellery', value: '12'},
+  {label: 'Diamond', value: '6'},
 ];
 
 const dataStatus = [
-  { label: 'Active', value: '1' },
-  { label: 'In Active', value: '2' },
+  {label: 'Active', value: '1'},
+  {label: 'In Active', value: '2'},
 ];

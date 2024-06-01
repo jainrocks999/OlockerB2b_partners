@@ -3,7 +3,7 @@ const { default: store } = require("../../../Redux/Store");
 // import { useDispatch } from 'react-redux';
 
 export const GetMessageCommon = async (id, user_type) => {
-  console.log('vireenenenene...........121113322', id, user_type);
+   console.log('vireenenenene...........121113322', id, user_type);
   const partnerid = await AsyncStorage.getItem('Partnersrno');
   const Token = await AsyncStorage.getItem('loginToken');
   store.dispatch({
