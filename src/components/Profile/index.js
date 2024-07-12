@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, Image, FlatList} from 'react-native';
 import ImagePath from '../ImagePath';
 import {useSelector} from 'react-redux';
@@ -9,31 +9,62 @@ import {
 const Profile = () => {
   const selector = useSelector(state => state.SupplierDetail?.detail);
   const isFetching = useSelector(state => state.isFetching);
+  const [ownerDetails, setOwnerDetails] = useState([]);
+  const [productImg1, setProductImg1] = useState([]);
+
+  useEffect(() => {
+    const original = Array.isArray(selector?.productImg)
+      ? selector?.productImg
+      : [];
+    getOwneres1(original);
+  }, [selector]);
+  const getOwneres1 = array => {
+    const filtered = array.filter(item => item.ImageName != null);
+    setProductImg1(filtered);
+  };
+
+  useEffect(() => {
+    const original = Array.isArray(selector?.ownerDetail)
+      ? selector?.ownerDetail
+      : [];
+    getOwneres(original);
+  }, [selector]);
+  const getOwneres = array => {
+    const filtered = array.filter(item => item.ImageName != null);
+    setOwnerDetails(filtered);
+  };
+
   const ownerImagePath = useSelector(
     state => state.SupplierDetail?.ownerImagePath,
   );
-
+  console.log('details  addd to network ', selector);
   return (
     <View style={{flex: 1, backgroundColor: '#fff', paddingVertical: 20}}>
       {/* {isFetching ? <Loader /> : null} */}
 
       <View style={{paddingHorizontal: 20, alignItems: 'flex-start'}}>
-        <View
-          style={{
-            backgroundColor: '#032e63',
-            //  paddingHorizontal: 20,
-            //  paddingVertical: 8,
-            borderRadius: 20,
-            height: hp(5),
-            width: wp(35),
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Text
-            style={{color: '#fff', fontSize: wp(4), fontFamily: 'Acephimere'}}>
-            About us
-          </Text>
-        </View>
+        {selector?.SupplierIntroduction ? (
+          <View
+            style={{
+              backgroundColor: '#032e63',
+              //  paddingHorizontal: 20,
+              //  paddingVertical: 8,
+              borderRadius: 20,
+              height: hp(5),
+              width: wp(35),
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                color: '#fff',
+                fontSize: wp(4),
+                fontFamily: 'Acephimere',
+              }}>
+              About us
+            </Text>
+          </View>
+        ) : null}
         <Text
           style={{
             fontSize: wp(4),
@@ -46,26 +77,32 @@ const Profile = () => {
           {selector?.SupplierIntroduction}
         </Text>
 
-        <View
-          style={{
-            backgroundColor: '#032e63',
-            // paddingHorizontal: 19,
-            //  paddingVertical: 8,
-            borderRadius: 20,
-            height: hp(5),
-            width: wp(35),
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: 15,
-          }}>
-          <Text
-            style={{color: '#fff', fontSize: wp(4), fontFamily: 'Acephimere'}}>
-            Founders
-          </Text>
-        </View>
+        {ownerDetails.length == 0 ? null : (
+          <View
+            style={{
+              backgroundColor: '#032e63',
+              // paddingHorizontal: 19,
+              //  paddingVertical: 8,
+              borderRadius: 20,
+              height: hp(5),
+              width: wp(35),
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 15,
+            }}>
+            <Text
+              style={{
+                color: '#fff',
+                fontSize: wp(4),
+                fontFamily: 'Acephimere',
+              }}>
+              Founders
+            </Text>
+          </View>
+        )}
 
         <View style={{flexDirection: 'row'}}>
-          {selector?.ownerDetail?.map(item =>
+          {ownerDetails?.map(item =>
             item.Type == 'Owner Image' ? (
               <View
                 style={{
@@ -108,27 +145,31 @@ const Profile = () => {
           )}
         </View>
 
-    
-        <View
-          style={{
-            backgroundColor: '#032e63',
-            // paddingHorizontal: 19,
-            //  paddingVertical: 8,
-            borderRadius: 20,
-            height: hp(5),
-            width: wp(35),
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: 15,
-          }}>
-          <Text
-            style={{color: '#fff', fontSize: wp(4), fontFamily: 'Acephimere'}}>
-            Products
-          </Text>
-        </View>
-
+        {productImg1.length == 0 ? null : (
+          <View
+            style={{
+              backgroundColor: '#032e63',
+              // paddingHorizontal: 19,
+              //  paddingVertical: 8,
+              borderRadius: 20,
+              height: hp(5),
+              width: wp(35),
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 15,
+            }}>
+            <Text
+              style={{
+                color: '#fff',
+                fontSize: wp(4),
+                fontFamily: 'Acephimere',
+              }}>
+              Products
+            </Text>
+          </View>
+        )}
         <View style={{flexDirection: 'row'}}>
-          {selector?.productImg?.map(item =>
+          {productImg1?.map(item =>
             item.Type == 'Product Image' ? (
               <View
                 style={{
@@ -146,14 +187,6 @@ const Profile = () => {
                         resizeMode={'stretch'}
                         source={{uri: `${ownerImagePath}${item.ImageName}`}}
                       />
-
-                      {/* <Image
-                      style={{ height: '100%', width: '100%' }}
-                      resizeMode={'stretch'}
-                      source={
-
-                        item.ImageName!=null? { uri: `${ownerImagePath}${item.ImageName}` } : require('../../assets/logo.png')}
-                    /> */}
                     </View>
                   ) : null}
                   <Text
@@ -172,63 +205,67 @@ const Profile = () => {
         </View>
 
         <View>
-          <View
-            style={{
-              backgroundColor: '#032e63',
-              //  paddingHorizontal: 12,
-              //  paddingVertical: 8,
-              borderRadius: 20,
-              height: hp(5),
-              width: wp(35),
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: 15,
-            }}>
-            <Text
+          {selector?.showroomImg?.length == 0 ? null : (
+            <View
               style={{
-                color: '#fff',
-                fontSize: wp(4),
-                fontFamily: 'Acephimere',
-                // width: '90%',
+                backgroundColor: '#032e63',
+                //  paddingHorizontal: 12,
+                //  paddingVertical: 8,
+                borderRadius: 20,
+                height: hp(5),
+                width: wp(35),
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 15,
               }}>
-              Showrooms
-            </Text>
-          </View>
-          <View style={{flexDirection: 'row'}}>
-          {selector?.showroomImg?.map(item =>
-            item.Type == 'ShowRoom Image' ? (
-              <View
+              <Text
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  width: wp(32),
-                  paddingVertical: 15,
+                  color: '#fff',
+                  fontSize: wp(4),
+                  fontFamily: 'Acephimere',
+                  // width: '90%',
                 }}>
-                <View style={{width: '80%', alignItems: 'center'}}>
-                  {item.ImageName != null ? (
-                    <View style={{height: 90, width: '100%', borderWidth: 1}}>
-                      <Image
-                        style={{height: '100%', width: '100%'}}
-                        resizeMode={'stretch'}
-                        source={{uri: `${ownerImagePath}${item.ImageName}`}}
-                      />
+                Showrooms
+              </Text>
+            </View>
+          )}
+          <View style={{flexDirection: 'row'}}>
+            {selector?.showroomImg?.map(item =>
+              item.Type == 'ShowRoom Image' ? (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    width: wp(32),
+                    paddingVertical: 15,
+                  }}>
+                  <View style={{width: '80%', alignItems: 'center'}}>
+                    {item.ImageName != null ? (
+                      <View style={{height: 90, width: '100%', borderWidth: 1}}>
+                        <Image
+                          style={{height: '100%', width: '100%'}}
+                          resizeMode={'stretch'}
+                          source={{uri: `${ownerImagePath}${item.ImageName}`}}
+                        />
 
-                      {/* <Image
+                        {/* <Image
                       style={{ height: '100%', width: '100%' }}
                       resizeMode={'stretch'}
                       source={
 
                         item.ImageName!=null? { uri: `${ownerImagePath}${item.ImageName}` } : require('../../assets/logo.png')}
                     /> */}
-                    </View>
-                  ) : null}
+                      </View>
+                    ) : null}
+                  </View>
                 </View>
-              </View>
-            ) : null,
-          )}
+              ) : null,
+            )}
+          </View>
         </View>
-        </View>
+
+        {selector?.Address ? (
           <View
             style={{
               backgroundColor: '#032e63',
@@ -248,10 +285,13 @@ const Profile = () => {
                 fontFamily: 'Acephimere',
                 // width: '90%',
               }}>
-             Address
+              Address
             </Text>
           </View>
-          <View style={{paddingHorizontal: 20, marginTop: 20}}>
+        ) : null}
+
+        <View style={{paddingHorizontal: 20, marginTop: 20}}>
+          {selector?.Address ? (
             <View
               style={{
                 flexDirection: 'row',
@@ -272,72 +312,75 @@ const Profile = () => {
                 {selector?.Address}
               </Text>
             </View>
-          </View>
-        
+          ) : null}
+        </View>
 
         <View>
-          <View
-            style={{
-              backgroundColor: '#032e63',
-              //  paddingHorizontal: 20,
-              // paddingVertical: 8,
-              borderRadius: 20,
-
-              height: hp(5),
-              width: wp(35),
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: 15,
-            }}>
-            <Text
-              style={{
-                color: '#fff',
-                fontSize: wp(4),
-                fontFamily: 'Acephimere',
-              }}>
-              Contact
-            </Text>
-          </View>
-          <View style={{paddingHorizontal: 20, marginTop: 20}}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Image
-                style={{height: 28, width: 28}}
-                source={require('../../assets/PartnerImage/16.png')}
-              />
-              <View>
-                <Text
-                  style={{
-                    marginLeft: 20,
-                    fontSize: wp(4),
-                    fontFamily: 'Acephimere',
-                    color: '#424242',
-                  }}>{`+91${selector?.MobileNo}`}</Text>
-                {/* <Text style={{marginLeft:30,fontSize:14,fontFamily:'Acephimere',color:'#424242'}}>{'Ph:9876567898 '}</Text>
-                     <Text style={{marginLeft:30,fontSize:14,fontFamily:'Acephimere',color:'#424242'}}>{'Ph:9876567898 '}</Text> */}
-              </View>
-            </View>
+          {selector?.MobileNo || selector.EmailId ? (
             <View
               style={{
-                flexDirection: 'row',
-                marginTop: 20,
+                backgroundColor: '#032e63',
+                borderRadius: 20,
+
+                height: hp(5),
+                width: wp(35),
                 alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 15,
               }}>
-              <Image
-                style={{height: 28, width: 28}}
-                source={require('../../assets/PartnerImage/msg.png')}
-              />
-              <View>
-                <Text
-                  style={{
-                    marginLeft: 20,
-                    fontSize: wp(4),
-                    fontFamily: 'Acephimere',
-                    color: '#424242',
-                  }}>
-                  {selector?.EmailId}
-                </Text>
-              </View>
+              <Text
+                style={{
+                  color: '#fff',
+                  fontSize: wp(4),
+                  fontFamily: 'Acephimere',
+                }}>
+                Contact
+              </Text>
             </View>
+          ) : null}
+
+          <View style={{paddingHorizontal: 20, marginTop: 20}}>
+            {selector?.MobileNo ? (
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image
+                  style={{height: 28, width: 28}}
+                  source={require('../../assets/PartnerImage/16.png')}
+                />
+                <View>
+                  <Text
+                    style={{
+                      marginLeft: 20,
+                      fontSize: wp(4),
+                      fontFamily: 'Acephimere',
+                      color: '#424242',
+                    }}>{`+91${selector?.MobileNo}`}</Text>
+                </View>
+              </View>
+            ) : null}
+            {selector?.EmailId ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginTop: 20,
+                  alignItems: 'center',
+                }}>
+                <Image
+                  style={{height: 28, width: 28}}
+                  source={require('../../assets/PartnerImage/msg.png')}
+                />
+                <View>
+                  <Text
+                    style={{
+                      marginLeft: 20,
+                      fontSize: wp(4),
+                      fontFamily: 'Acephimere',
+                      color: '#424242',
+                    }}>
+                    {selector?.EmailId}
+                  </Text>
+                </View>
+              </View>
+            ) : null}
 
             {/* <View style={{ flexDirection: 'row', marginTop: 20 }}>
               <Image

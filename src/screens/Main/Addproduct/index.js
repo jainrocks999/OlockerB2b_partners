@@ -114,7 +114,7 @@ const AddProducts = ({route}) => {
     txtVStoneWt: '',
     txtVDecoWt: '',
     txtMrp: '',
-    DeliveryDays: 0,
+    DeliveryDays: '',
     hdnGrossWt: '',
     DecoItemName: '',
     submit: 'create product',
@@ -144,9 +144,8 @@ const AddProducts = ({route}) => {
   useEffect(() => {
     prodcutfile ? EditData() : null;
   }, [editProduct]);
-  console.log('ojgjdfgpojdfpgjdfg',productType);
+  console.log('ojgjdfgpojdfpgjdfg', productType);
   const EditData = () => {
-   
     setInputs(prev => ({
       ...prev,
       radioInventoryPreInsured: products?.isPreInsured,
@@ -164,7 +163,10 @@ const AddProducts = ({route}) => {
       StoneGrandTotal: editProduct?.productStoneGrandTotal,
       DecorationGrandTotal: editProduct?.productDecoGrandTotal,
       GrossWt: products?.GrossWt,
-      txtProductCharges:products?.ProductCharges==null?0:parseFloat(products?.ProductCharges)?.toFixed(2),
+      txtProductCharges:
+        products?.ProductCharges == null
+          ? 0
+          : parseFloat(products?.ProductCharges)?.toFixed(2),
       txtMrp:
         products?.ProductsPrice == null
           ? 0
@@ -900,6 +902,7 @@ const AddProducts = ({route}) => {
                   placeholderTextColor="#474747"
                   placeholder="Delivery Days"
                   value={inputs.DeliveryDays}
+                  keyboardType="numeric"
                   onChangeText={input => {
                     handleInputs('DeliveryDays', input);
                   }}
@@ -1722,7 +1725,7 @@ const AddProducts = ({route}) => {
                 height: hp(17),
                 // borderWidth: 1,
                 marginTop: 4,
-                alignItems: 'center',
+                alignItems: 'flex-start',
                 justifyContent: 'center',
               }}>
               <FlatList
@@ -1731,27 +1734,43 @@ const AddProducts = ({route}) => {
                 horizontal={true}
                 renderItem={({item, index}) => (
                   <View>
-                    <TouchableOpacity
-                      onPress={() => {
-                        Alert.alert(
-                          'Are you want to Delete image ?',
-                          '',
-                          [
-                            {
-                              text: 'Cancel',
-                              onPress: () => {
-                                cancelable: false;
+                    <TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => {
+                          Alert.alert(
+                            'Are you want to Delete image ?',
+                            '',
+                            [
+                              {
+                                text: 'Cancel',
+                                onPress: () => {
+                                  cancelable: false;
+                                },
+                                style: 'cancel',
                               },
-                              style: 'cancel',
-                            },
-                            {
-                              text: 'ok',
-                              onPress: () => handleOnVisible(index, item),
-                            },
-                          ],
-                          {cancelable: false},
-                        );
-                      }}>
+                              {
+                                text: 'ok',
+                                onPress: () => handleOnVisible(index, item),
+                              },
+                            ],
+                            {cancelable: false},
+                          );
+                        }}
+                        style={{
+                          height: hp(4),
+                          width: wp(7),
+                          borderRadius: hp(2),
+                          position: 'absolute',
+                          zIndex: 4,
+                          right: -2,
+                          top: -1,
+                        }}>
+                        <Entypo
+                          name="circle-with-cross"
+                          size={20}
+                          color={'#FFF'}
+                        />
+                      </TouchableOpacity>
                       <Image
                         style={{
                           height: hp(15),

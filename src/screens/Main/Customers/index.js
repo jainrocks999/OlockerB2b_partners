@@ -110,10 +110,11 @@ const HomeScreen = ({route}) => {
         const showroomImage = item[`ShowRoomImageName${i}`];
         const productImage = item[`ProductImage${i}`];
         const ownerName = item[`OwnerName${i}`];
-        const ProductName=item[`ProductName${i}`];
+        const ProductName = item[`ProductName${i}`];
         ownerImage && images.owner.push({Image: ownerImage, name: ownerName});
         showroomImage && images.showroom.push({Image: showroomImage});
-        productImage && images.product.push({Image: productImage,name:ProductName});
+        productImage &&
+          images.product.push({Image: productImage, name: ProductName});
       }
     });
     return images;
@@ -281,28 +282,34 @@ const HomeScreen = ({route}) => {
         </View>
 
         <View style={{marginTop: 0}}>
-          <View style={{flex: 1, backgroundColor: '#fff', paddingVertical: 20}}>
-            <View style={{paddingHorizontal: 20, alignItems: 'flex-start'}}>
-              <View
-                style={{
-                  backgroundColor: '#032e63',
-                  // paddingHorizontal: 20,
-                  // paddingVertical: 8,
-                  borderRadius: 20,
-                  height: hp(5),
-                  width: wp(35),
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: '#fff',
+              paddingVertical: 20,
+              paddingHorizontal: 20,
+            }}>
+            <View style={{alignItems: 'flex-start'}}>
+              {detail?.PartnerIntroduction ? (
+                <View
                   style={{
-                    color: '#fff',
-                    fontSize: wp(4),
-                    fontFamily: 'Acephimere',
+                    backgroundColor: '#032e63',
+                    borderRadius: 20,
+                    height: hp(5),
+                    width: wp(35),
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}>
-                  About us
-                </Text>
-              </View>
+                  <Text
+                    style={{
+                      color: '#fff',
+                      fontSize: wp(4),
+                      fontFamily: 'Acephimere',
+                    }}>
+                    About us
+                  </Text>
+                </View>
+              ) : null}
               <Text
                 style={{
                   fontSize: wp(4),
@@ -314,28 +321,28 @@ const HomeScreen = ({route}) => {
                 }}>
                 {detail?.PartnerIntroduction}
               </Text>
-
-              <View
-                style={{
-                  backgroundColor: '#032e63',
-                  // paddingHorizontal: 19,
-                  // paddingVertical: 8,
-                  borderRadius: 20,
-                  height: hp(5),
-                  width: wp(35),
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginTop: 15,
-                }}>
-                <Text
+              {Array.isArray(extractedImages?.owner) &&
+              extractedImages.owner.length > 0 ? (
+                <View
                   style={{
-                    color: '#fff',
-                    fontSize: wp(4),
-                    fontFamily: 'Acephimere',
+                    backgroundColor: '#032e63',
+                    borderRadius: 20,
+                    height: hp(5),
+                    width: wp(35),
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 15,
                   }}>
-                  Founders
-                </Text>
-              </View>
+                  <Text
+                    style={{
+                      color: '#fff',
+                      fontSize: wp(4),
+                      fontFamily: 'Acephimere',
+                    }}>
+                    Founders
+                  </Text>
+                </View>
+              ) : null}
 
               <View style={{flexDirection: 'row'}}>
                 {extractedImages?.owner?.map(item => (
@@ -370,28 +377,30 @@ const HomeScreen = ({route}) => {
                   </View>
                 ))}
               </View>
-
-              <View
-                style={{
-                  backgroundColor: '#032e63',
-                  // paddingHorizontal: 19,
-                  // paddingVertical: 8,
-                  borderRadius: 20,
-                  height: hp(5),
-                  width: wp(35),
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginTop: 15,
-                }}>
-                <Text
+              {Array.isArray(extractedImages?.product) &&
+              extractedImages.product.length > 0 ? (
+                <View
                   style={{
-                    color: '#fff',
-                    fontSize: wp(4),
-                    fontFamily: 'Acephimere',
+                    backgroundColor: '#032e63',
+                    // paddingHorizontal: 19,
+                    // paddingVertical: 8,
+                    borderRadius: 20,
+                    height: hp(5),
+                    width: wp(35),
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 15,
                   }}>
-                 Products
-                </Text>
-              </View>
+                  <Text
+                    style={{
+                      color: '#fff',
+                      fontSize: wp(4),
+                      fontFamily: 'Acephimere',
+                    }}>
+                    Products
+                  </Text>
+                </View>
+              ) : null}
               <View style={{flexDirection: 'row'}}>
                 {extractedImages?.product?.map(item => (
                   <View
@@ -426,32 +435,32 @@ const HomeScreen = ({route}) => {
                 ))}
               </View>
 
-
-
               <View>
-                <View
-                  style={{
-                    backgroundColor: '#032e63',
-                    borderRadius: 20,
-                    height: hp(5),
-                    width: wp(35),
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: 15,
-                  }}>
-                  <Text
+                {Array.isArray(extractedImages?.showroom) &&
+                extractedImages.showroom.length > 0 ? (
+                  <View
                     style={{
-                      color: '#fff',
-                      fontSize: wp(4),
-                      fontFamily: 'Acephimere',
-                      // width: '90%',
+                      backgroundColor: '#032e63',
+                      borderRadius: 20,
+                      height: hp(5),
+                      width: wp(35),
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: 15,
                     }}>
-                    Showrooms
-                  </Text>
-                </View>
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontSize: wp(4),
+                        fontFamily: 'Acephimere',
+                        // width: '90%',
+                      }}>
+                      Showrooms
+                    </Text>
+                  </View>
+                ) : null}
                 <View style={{flexDirection: 'row'}}>
                   {extractedImages?.showroom?.map(item => (
-                 
                     <View
                       style={{
                         flexDirection: 'row',
@@ -477,61 +486,10 @@ const HomeScreen = ({route}) => {
                   ))}
                 </View>
               </View>
-
-              <View
-                style={{
-                  backgroundColor: '#032e63',
-                  // paddingHorizontal: 20,
-                  // paddingVertical: 8,
-                  borderRadius: 20,
-                  height: hp(5),
-                  width: wp(35),
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginTop: 15,
-                }}>
-                <Text
-                  style={{
-                    color: '#fff',
-                    fontSize: wp(4),
-                    fontFamily: 'Acephimere',
-                  }}>
-                  Address
-                </Text>
-              </View>
-              <View style={{paddingHorizontal: 20, marginTop: 10}}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Image
-                    style={{height: 30, width: 22}}
-                    source={require('../../../assets/Image/loc.png')}
-                  />
-                  <Text
-                    style={{
-                      marginLeft: 20,
-                      fontSize: wp(4),
-                      fontFamily: 'Acephimere',
-                      color: '#424242',
-                    }}>
-                    {`${
-                      detail?.HOaddress
-                    } , ${data1?.District?.toLowerCase()} , ${data1?.State?.toLowerCase()} , ${
-                      data1?.Pincode
-                    }`}
-                  </Text>
-                </View>
-              </View>
-
-              <View>
+              {detail?.HOaddress ? (
                 <View
                   style={{
                     backgroundColor: '#032e63',
-                    // paddingHorizontal: 20,
-                    // paddingVertical: 8,
                     borderRadius: 20,
                     height: hp(5),
                     width: wp(35),
@@ -545,43 +503,105 @@ const HomeScreen = ({route}) => {
                       fontSize: wp(4),
                       fontFamily: 'Acephimere',
                     }}>
-                    Contact
+                    Address
                   </Text>
                 </View>
-                <View style={{paddingHorizontal: 20, marginTop: 20}}>
-                  <View style={{flexDirection: 'row',alignItems:'center'}}>
+              ) : null}
+              {detail?.HOaddress ? (
+                <View style={{paddingHorizontal: 20, marginTop: 10}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
                     <Image
-                      style={{height: 28, width: 28}}
-                      source={require('../../../assets/PartnerImage/16.png')}
+                      style={{height: 30, width: 22}}
+                      source={require('../../../assets/Image/loc.png')}
                     />
-                    <View>
+                    <Text
+                      style={{
+                        marginLeft: 20,
+                        fontSize: wp(4),
+                        fontFamily: 'Acephimere',
+                        color: '#424242',
+                      }}>
+                      {`${
+                        detail?.HOaddress
+                      } , ${data1?.District?.toLowerCase()} , ${data1?.State?.toLowerCase()} , ${
+                        data1?.Pincode
+                      }`}
+                    </Text>
+                  </View>
+                </View>
+              ) : null}
+              <View>
+                {selector?.partnerlogins?.Mobile ||
+                detail?.BillingContactEmail ||
+                detail?.Website ? (
+                  <View
+                    style={{
+                      backgroundColor: '#032e63',
+                      borderRadius: 20,
+                      height: hp(5),
+                      width: wp(35),
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: 15,
+                    }}>
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontSize: wp(4),
+                        fontFamily: 'Acephimere',
+                      }}>
+                      Contact
+                    </Text>
+                  </View>
+                ) : null}
+                <View style={{paddingHorizontal: 20, marginTop: 20}}>
+                  {selector?.partnerlogins?.Mobile ? (
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Image
+                        style={{height: 28, width: 28}}
+                        source={require('../../../assets/PartnerImage/16.png')}
+                      />
+                      <View>
+                        <Text
+                          style={{
+                            marginLeft: 20,
+                            fontSize: wp(4),
+                            fontFamily: 'Acephimere',
+                            color: '#424242',
+                          }}>{`+91${selector?.partnerlogins?.Mobile}`}</Text>
+                      </View>
+                    </View>
+                  ) : null}
+                  {detail?.BillingContactEmail ? (
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        marginTop: 20,
+                        alignItems: 'center',
+                      }}>
+                      <Image
+                        style={{height: 28, width: 28}}
+                        source={require('../../../assets/PartnerImage/msg.png')}
+                      />
+
                       <Text
                         style={{
                           marginLeft: 20,
                           fontSize: wp(4),
                           fontFamily: 'Acephimere',
                           color: '#424242',
-                        }}>{`+91${selector?.partnerlogins?.Mobile}`}</Text>
-                    </View>
-                  </View>
-                  <View style={{flexDirection: 'row', marginTop: 20,alignItems:'center'}}>
-                    <Image
-                      style={{height: 28, width: 28}}
-                      source={require('../../../assets/PartnerImage/msg.png')}
-                    />
-                   
-                      <Text
-                        style={{
-                          marginLeft: 20,
-                          fontSize: wp(4),
-                          fontFamily: 'Acephimere',
-                          color: '#424242',textAlign:'center'
+                          textAlign: 'center',
                         }}>
                         {detail?.BillingContactEmail}
                       </Text>
-                    
-                  </View>
-                  {/* {detail?.Website ? ( */}
+                    </View>
+                  ) : null}
+                  {detail?.Website ? (
                     <View style={{flexDirection: 'row', marginTop: 20}}>
                       <Image
                         style={{height: 28, width: 28}}
@@ -599,7 +619,7 @@ const HomeScreen = ({route}) => {
                         </Text>
                       </View>
                     </View>
-                  {/* ) : null} */}
+                  ) : null}
                   <View style={{height: 100}} />
                 </View>
               </View>

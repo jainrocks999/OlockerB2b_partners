@@ -741,7 +741,10 @@ const EditSupplierProfile = ({route}) => {
   }, [inputs.gold_purity]);
   useEffect(() => {
     if (inputs.diamond_purity.includes('Custom purity')) {
-      handleInputs('diamondcustom_purity', selector?.typeOfjewellery?.isDiamondCpVal);
+      handleInputs(
+        'diamondcustom_purity',
+        selector?.typeOfjewellery?.isDiamondCpVal,
+      );
       setCustomPurityDia(true);
     } else {
       setCustomPurityDia(false);
@@ -751,7 +754,10 @@ const EditSupplierProfile = ({route}) => {
 
   useEffect(() => {
     if (inputs.platinum_purity.includes('Custom purity')) {
-      handleInputs('platinumcustom_purity', selector?.typeOfjewellery?.isPlatinumCpVal);
+      handleInputs(
+        'platinumcustom_purity',
+        selector?.typeOfjewellery?.isPlatinumCpVal,
+      );
       setCustomPurityPla(true);
     } else {
       setCustomPurityPla(false);
@@ -759,16 +765,17 @@ const EditSupplierProfile = ({route}) => {
     }
   }, [inputs.platinum_purity]);
   useEffect(() => {
-    
     if (inputs.silver_purity.includes('Custom purity')) {
-      handleInputs('silvercustom_purity', selector?.typeOfjewellery?.isSilverCpVal);
+      handleInputs(
+        'silvercustom_purity',
+        selector?.typeOfjewellery?.isSilverCpVal,
+      );
       setCustomPuritySil(true);
     } else {
       setCustomPuritySil(false);
       handleInputs('silvercustom_purity', '');
     }
   }, [inputs.silver_purity]);
-  
 
   const renderScreen = () => {
     return (
@@ -1719,7 +1726,7 @@ const EditSupplierProfile = ({route}) => {
                 style={{
                   height: wp(30),
                   width: wp(30),
-                  alignSelf: 'center',
+                  alignSelf: 'flex-start',
                   marginTop: 10,
                 }}
                 source={{uri: inputs.ProductImage1?.uri}}
@@ -1794,7 +1801,7 @@ const EditSupplierProfile = ({route}) => {
                   style={{
                     height: wp(30),
                     width: wp(30),
-                    alignSelf: 'center',
+                    alignSelf: 'flex-start',
                     marginTop: 10,
                   }}
                   source={{uri: inputs.ProductImage2?.uri}}
@@ -1869,7 +1876,7 @@ const EditSupplierProfile = ({route}) => {
                   style={{
                     height: wp(30),
                     width: wp(30),
-                    alignSelf: 'center',
+                    alignSelf: 'flex-start',
                     marginTop: 10,
                   }}
                   source={{uri: inputs.ProductImage3?.uri}}
@@ -2020,7 +2027,7 @@ const EditSupplierProfile = ({route}) => {
                   style={{
                     height: wp(30),
                     width: wp(30),
-                    alignSelf: 'center',
+                    alignSelf: 'flex-start',
                     marginTop: 10,
                   }}
                   source={{uri: inputs.showroomimage1?.uri}}
@@ -2079,7 +2086,7 @@ const EditSupplierProfile = ({route}) => {
                   style={{
                     height: wp(30),
                     width: wp(30),
-                    alignSelf: 'center',
+                    alignSelf: 'flex-start',
                     marginTop: 10,
                   }}
                   source={{uri: inputs.showroomimage2?.uri}}
@@ -2138,7 +2145,7 @@ const EditSupplierProfile = ({route}) => {
                   style={{
                     height: wp(30),
                     width: wp(30),
-                    alignSelf: 'center',
+                    alignSelf: 'flex-start',
                     marginTop: 10,
                   }}
                   source={{uri: inputs.showroomimage3?.uri}}
@@ -2225,7 +2232,7 @@ const EditSupplierProfile = ({route}) => {
                 style={{
                   height: wp(30),
                   width: wp(30),
-                  alignSelf: 'center',
+                  alignSelf: 'flex-start',
                   marginTop: 10,
                 }}
                 source={{uri: inputs.Ownerimg1?.uri}}
@@ -2308,7 +2315,7 @@ const EditSupplierProfile = ({route}) => {
                 style={{
                   height: wp(30),
                   width: wp(30),
-                  alignSelf: 'center',
+                  alignSelf: 'flex-start',
                   marginTop: 10,
                 }}
                 source={{uri: inputs.Ownerimg2?.uri}}
@@ -2391,7 +2398,7 @@ const EditSupplierProfile = ({route}) => {
                 style={{
                   height: wp(30),
                   width: wp(30),
-                  alignSelf: 'center',
+                  alignSelf: 'flex-start',
                   marginTop: 10,
                 }}
                 source={{uri: inputs.Ownerimg3?.uri}}
@@ -2450,7 +2457,7 @@ const EditSupplierProfile = ({route}) => {
                 style={{
                   height: wp(30),
                   width: wp(30),
-                  alignSelf: 'center',
+                  alignSelf: 'flex-start',
                   marginTop: 10,
                 }}
                 source={{uri: inputs.ProductLogo?.uri}}

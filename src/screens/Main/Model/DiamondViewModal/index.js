@@ -110,12 +110,58 @@ const DiamondViewModal = ({
     }
   };
 
+  // const AddDiamond = async (isEdit, item) => {
+  //   // if(item.SrNo == ""){
+  //   //     if (!validateInputs()) {
+  //   //         return;
+  //   //     }
+  //   // }
+  //   if (isEdit) {
+  //     setInputs({
+  //       Diamondwt: item?.StoneWt,
+  //       DiamondWtUnit: item?.UnitStoneWt,
+  //       DiamondName: item?.StoneName,
+  //       ChargAmt: item?.StoneChargeableAmount,
+  //       DiamondShape: item?.StoneShape,
+  //       DiamondQuality: item?.StoneQuality,
+  //       hDiamondSrNo: item.SrNo,
+  //     });
+  //   } else {
+  //     if (inputs.Diamondwt == 0) {
+  //       Toast.show('Please enter the diamond weight');
+  //       return;
+  //     } else if (inputs.DiamondWtUnit == '') {
+  //       Toast.show('Please select the unit weight');
+  //       return;
+  //     } else if (
+  //       (inputs.ChargAmt == '' ||
+  //       parseFloat(inputs.ChargAmt) == 0) && isBrekup == 0)
+  //      {
+  //       Toast.show('Please enter diamond value ');
+  //       return;
+  //     } else if (inputs.DiamondName == '') {
+  //       Toast.show('Please select the diamond details');
+  //       return;
+  //     }
+  //     const Token = await AsyncStorage.getItem('loginToken');
+  //     const Id = await AsyncStorage.getItem('Partnersrno');
+
+  //     dispatch({
+  //       type: 'product_addDiamond_Request',
+  //       url: 'partners/addDiamond',
+  //       Token: Token,
+  //       data: {
+  //         ...inputs,
+  //         current_session_id: prodcutfile ? 0 : session_id,
+  //         BreakUp: isBrekup == 0 ? 1 : 0,
+  //         hProductSrNo: prodcutfile ? hProductSrNo : 0,
+  //         isAdd: prodcutfile ? 0 : 1,
+  //       },
+  //     });
+  //   }
+  // };
+
   const AddDiamond = async (isEdit, item) => {
-    // if(item.SrNo == ""){
-    //     if (!validateInputs()) {
-    //         return;
-    //     }
-    // }
     if (isEdit) {
       setInputs({
         Diamondwt: item?.StoneWt,
@@ -127,39 +173,56 @@ const DiamondViewModal = ({
         hDiamondSrNo: item.SrNo,
       });
     } else {
-      if (inputs.Diamondwt == 0) {
-        Toast.show('Please enter the diamond weight');
-        return;
-      } else if (inputs.DiamondWtUnit == '') {
-        Toast.show('Please select the unit weight');
-        return;
-      } else if (
-        (inputs.ChargAmt == '' ||
-        parseFloat(inputs.ChargAmt) == 0) && isBrekup == 0)
-       {
-        Toast.show('Please enter diamond value ');
-        return;
-      } else if (inputs.DiamondName == '') {
-        Toast.show('Please select the diamond details');
-        return;
-      }
-      const Token = await AsyncStorage.getItem('loginToken');
-      const Id = await AsyncStorage.getItem('Partnersrno');
-
-      dispatch({
-        type: 'product_addDiamond_Request',
-        url: 'partners/addDiamond',
-        Token: Token,
-        data: {
-          ...inputs,
-          current_session_id: prodcutfile ? 0 : session_id,
-          BreakUp: isBrekup == 0 ? 1 : 0,
-          hProductSrNo: prodcutfile ? hProductSrNo : 0,
-          isAdd: prodcutfile ? 0 : 1,
+      const validationMessages = [
+        {
+          condition: inputs.Diamondwt == 0,
+          message: 'Please enter the diamond weight',
         },
-      });
+        {
+          condition: inputs.DiamondWtUnit == '',
+          message: 'Please select the unit weight',
+        },
+        {
+          condition:
+            (inputs.ChargAmt == '' || parseFloat(inputs.ChargAmt) == 0) &&
+            isBrekup == 0,
+          message: 'Please enter diamond value',
+        },
+        {
+          condition: inputs.DiamondName == '',
+          message: 'Please select the diamond details',
+        },
+      ];
+
+      for (let {condition, message} of validationMessages) {
+        if (condition) {
+          Toast.show(message);
+          return;
+        }
+      }
+
+      try {
+        const Token = await AsyncStorage.getItem('loginToken');
+        const Id = await AsyncStorage.getItem('Partnersrno');
+
+        dispatch({
+          type: 'product_addDiamond_Request',
+          url: 'partners/addDiamond',
+          Token: Token,
+          data: {
+            ...inputs,
+            current_session_id: prodcutfile ? 0 : session_id,
+            BreakUp: isBrekup == 0 ? 1 : 0,
+            hProductSrNo: prodcutfile ? hProductSrNo : 0,
+            isAdd: prodcutfile ? 0 : 1,
+          },
+        });
+      } catch (error) {
+        Toast.show('An error occurred. Please try again.');
+      }
     }
   };
+
   const RemoveDiamond = async item => {
     const Token = await AsyncStorage.getItem('loginToken');
     dispatch({

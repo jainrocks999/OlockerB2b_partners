@@ -163,7 +163,6 @@ const MyProducts = ({route}) => {
   const handleEndReached = () => {
     if (!isEndReached) {
       setIsEndReached(true);
-      console.log('datatattaa');
       ProductList();
     }
   };
